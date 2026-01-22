@@ -2,8 +2,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, BookOpen, Check } from "lucide-react";
+import CareerLabHeader from "@/components/CareerLabHeader";
+import CareerLabFooter from "@/components/CareerLabFooter";
 
 const bookBenefits = [
   "The Laboratory Method: a 5-step framework for career experimentation",
@@ -17,40 +18,7 @@ const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/free-review-career-
 export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-cream">
-      {/* Header */}
-      <header className="bg-navy py-4 px-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="JMCB Technology Group"
-              width={120}
-              height={43}
-              className="h-10 w-auto"
-            />
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link
-              href="/"
-              className="text-gray-300 hover:text-white text-sm font-medium transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href="/services"
-              className="text-gray-300 hover:text-white text-sm font-medium transition-colors"
-            >
-              Services
-            </Link>
-            <Link
-              href="/#career"
-              className="text-gray-300 hover:text-white text-sm font-medium transition-colors"
-            >
-              Career Lab
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <CareerLabHeader />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20">
         {/* Back Link */}
@@ -174,19 +142,7 @@ export default function ProductsPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-navy-dark py-8 border-t border-gray-800">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-sm text-gray-500">
-            © 2026 JMCB Technology Group. All rights reserved.
-          </p>
-          <p className="text-sm text-gray-600 mt-2">
-            <Link href="/" className="hover:text-gray-400 transition-colors">
-              jmcbtech.com
-            </Link>
-          </p>
-        </div>
-      </footer>
+      <CareerLabFooter />
     </div>
   );
 }

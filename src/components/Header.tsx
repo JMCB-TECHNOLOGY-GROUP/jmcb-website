@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, LayoutDashboard } from "lucide-react";
-import { useAuth, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { useAuth, UserButton, SignInButton } from "@clerk/nextjs";
 
 const navLinks = [
   { href: "/platform", label: "Platform" },
@@ -95,11 +95,14 @@ export default function Header() {
                         Sign In
                       </button>
                     </SignInButton>
-                    <SignUpButton mode="modal">
-                      <button className="btn-primary text-sm">
-                        Get Started
-                      </button>
-                    </SignUpButton>
+                    <Link
+                      href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary text-sm"
+                    >
+                      Book Strategy Call
+                    </Link>
                   </div>
                 )}
               </>
@@ -171,11 +174,15 @@ export default function Header() {
                           Sign In
                         </button>
                       </SignInButton>
-                      <SignUpButton mode="modal">
-                        <button className="btn-primary text-sm text-center">
-                          Get Started Free
-                        </button>
-                      </SignUpButton>
+                      <Link
+                        href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="btn-primary text-sm text-center"
+                      >
+                        Book Strategy Call
+                      </Link>
                     </>
                   )}
                 </>

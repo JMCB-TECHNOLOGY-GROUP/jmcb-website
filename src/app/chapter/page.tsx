@@ -1,7 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import CareerLabHeader from "@/components/CareerLabHeader";
+import CareerLabFooter from "@/components/CareerLabFooter";
 
 export const metadata: Metadata = {
   title: "Free Chapter | Skills Close the Deal",
@@ -12,16 +13,11 @@ export const metadata: Metadata = {
 export default function ChapterPage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-primary text-white py-12 md:py-16">
+      <CareerLabHeader />
+
+      {/* Hero */}
+      <section className="bg-primary text-white py-12 md:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white mb-6 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Link>
           <span className="inline-block bg-accent text-primary px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-6">
             Free Chapter
           </span>
@@ -33,7 +29,7 @@ export default function ChapterPage() {
           </p>
           <p className="text-white/70">By Jermaine Barker</p>
         </div>
-      </header>
+      </section>
 
       {/* Content */}
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12 md:py-16">
@@ -293,8 +289,8 @@ export default function ChapterPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-50 py-12">
+      {/* About the Author */}
+      <section className="bg-gray-50 py-12">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
           <h4 className="text-lg font-heading font-bold text-primary mb-4">
             About the Author
@@ -306,12 +302,6 @@ export default function ChapterPage() {
             that credentials open conversations. But skills close the deal.
           </p>
           <div className="text-sm text-gray-500 space-y-1">
-            <p>
-              <strong>AI Strategy & Consulting:</strong>{" "}
-              <Link href="/" className="text-secondary hover:underline">
-                www.jmcbtech.com
-              </Link>
-            </p>
             <p>
               <strong>LinkedIn:</strong>{" "}
               <Link
@@ -325,7 +315,9 @@ export default function ChapterPage() {
             </p>
           </div>
         </div>
-      </footer>
+      </section>
+
+      <CareerLabFooter />
     </div>
   );
 }

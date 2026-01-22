@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import CareerLabHeader from "@/components/CareerLabHeader";
+import CareerLabFooter from "@/components/CareerLabFooter";
 import {
   Users,
   Target,
@@ -83,7 +82,7 @@ const outcomes = [
 export default function WorkforcePage() {
   return (
     <main className="min-h-screen bg-white">
-      <Header />
+      <CareerLabHeader />
 
       {/* Hero */}
       <section className="pt-32 pb-20 bg-gradient-to-br from-navy via-navy to-gray-900">
@@ -101,7 +100,7 @@ export default function WorkforcePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
+                href="https://calendly.com/jermaine-jmcbtech/free-review-career-lab-review"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition-all hover:-translate-y-0.5 hover:shadow-lg"
@@ -252,7 +251,7 @@ export default function WorkforcePage() {
                 your AI transformation and employee development initiatives.
               </p>
               <Link
-                href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
+                href="https://calendly.com/jermaine-jmcbtech/free-review-career-lab-review"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-secondary text-white font-semibold rounded-lg hover:bg-primary transition-all"
@@ -312,7 +311,7 @@ export default function WorkforcePage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
+              href="https://calendly.com/jermaine-jmcbtech/free-review-career-lab-review"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition-all hover:-translate-y-0.5 hover:shadow-lg"
@@ -330,7 +329,7 @@ export default function WorkforcePage() {
         </div>
       </section>
 
-      <Footer />
+      <CareerLabFooter />
     </main>
   );
 }

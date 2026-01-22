@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeft, ArrowRight, Check, RotateCcw, Target, Compass, Rocket, Users, Save, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, RotateCcw, Target, Compass, Rocket, Users, Save } from "lucide-react";
 import { useAuth, useUser } from "@clerk/nextjs";
+import CareerLabHeader from "@/components/CareerLabHeader";
+import CareerLabFooter from "@/components/CareerLabFooter";
 
 // Career Assessment Questions
 const questions = [
@@ -229,21 +230,7 @@ export default function CareerAssessmentPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-navy py-4 px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <Link href="/" className="flex items-center gap-3">
-          <Image
-            src="/logo.png"
-            alt="JMCB Technology Group"
-            width={120}
-            height={40}
-            className="h-8 w-auto"
-          />
-        </Link>
-        <span className="px-4 py-2 bg-secondary/20 border border-secondary/30 rounded-md text-xs font-semibold text-secondary tracking-wide">
-          Career Lab Assessment
-        </span>
-      </header>
+      <CareerLabHeader />
 
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12 md:py-16">
         {/* INTRO SCREEN */}
@@ -674,18 +661,7 @@ export default function CareerAssessmentPage() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-8 text-center">
-        <p className="text-sm text-gray-500">
-          © 2026 JMCB Technology Group. All rights reserved.
-        </p>
-        <p className="text-sm text-gray-400 mt-2">
-          <Link href="/" className="hover:text-gray-600">
-            jmcbtech.com
-          </Link>{" "}
-          · Career Lab
-        </p>
-      </footer>
+      <CareerLabFooter />
     </div>
   );
 }
