@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Menu, X, LayoutDashboard } from "lucide-react";
 import { useAuth, UserButton, SignInButton } from "@clerk/nextjs";
 
@@ -38,13 +37,10 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/assessment" className="flex items-center">
-            <Image
+            <img
               src="/logo.png"
               alt="JMCB Technology Group"
-              width={120}
-              height={43}
               className="h-10 w-auto"
-              priority
             />
           </Link>
 

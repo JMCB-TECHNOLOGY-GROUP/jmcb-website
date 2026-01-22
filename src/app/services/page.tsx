@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   Search,
   Map,
@@ -423,11 +422,9 @@ export default function ServicesPage() {
       <header className="bg-navy py-4 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center">
-            <Image
+            <img
               src="/logo.png"
               alt="JMCB Technology Group"
-              width={120}
-              height={43}
               className="h-10 w-auto"
             />
           </Link>

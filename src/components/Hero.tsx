@@ -132,7 +132,7 @@ export default function Hero() {
               The Method
             </p>
             <h3 className="text-lg font-heading font-bold text-white mb-2">
-              ASCEND Framework
+              JMCB ASCEND™ Framework
             </h3>
             <p className="text-gray-400 text-sm">
               A proven 5-step process that takes you from "where do we start?" to working AI tools your team actually uses.

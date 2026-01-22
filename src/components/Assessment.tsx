@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Assessment() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -30,11 +29,9 @@ export default function Assessment() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="animate-on-scroll">
           <div className="w-20 h-20 bg-white rounded-2xl shadow-lg flex items-center justify-center mx-auto mb-8">
-            <Image
+            <img
               src="/logo.png"
               alt="JMCB"
-              width={60}
-              height={60}
               className="w-12 h-12 object-contain"
             />
           </div>

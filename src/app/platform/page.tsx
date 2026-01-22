@@ -1,10 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight, ClipboardCheck, Target, Wrench, Play, Rocket, ClipboardList, BookOpen, Bot } from "lucide-react";
 
 export const metadata = {
   title: "Platform | JMCB Technology",
-  description: "The JMCB Technology platform: ASCEND AI Framework, AI Enablement Products, and flexible engagement models.",
+  description: "The JMCB Technology platform: JMCB ASCEND™ Framework, AI Enablement Products, and flexible engagement models.",
 };
 
 const ascendStages = [
@@ -113,11 +112,9 @@ export default function PlatformPage() {
       <header className="bg-navy py-4 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center">
-            <Image
+            <img
               src="/logo.png"
               alt="JMCB Technology"
-              width={120}
-              height={43}
               className="h-10 w-auto"
             />
           </Link>
@@ -174,7 +171,7 @@ export default function PlatformPage() {
                 Layer 1: IP Core
               </p>
               <h3 className="text-2xl font-heading font-bold text-gray-900 mb-3">
-                ASCEND AI Framework
+                JMCB ASCEND™ Framework
               </h3>
               <p className="text-gray-600 mb-4">
                 The proprietary methodology at the center of everything we do. Five stages that guide organizations from initial assessment through full deployment.
@@ -192,7 +189,7 @@ export default function PlatformPage() {
                 AI Enablement Products
               </h3>
               <p className="text-gray-600 mb-4">
-                Assessments, playbooks, and automated agents built on the ASCEND framework. Products that deliver value without custom engagements.
+                Assessments, playbooks, and automated agents built on the JMCB ASCEND™ Framework. Products that deliver value without custom engagements.
               </p>
               <p className="text-sm text-gray-500">
                 Self-service options. Immediate application.
@@ -217,7 +214,7 @@ export default function PlatformPage() {
         </div>
       </section>
 
-      {/* ASCEND Framework Detail */}
+      {/* JMCB ASCEND™ Framework Detail */}
       <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -225,7 +222,7 @@ export default function PlatformPage() {
               Layer 1
             </p>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
-              The ASCEND AI Framework
+              The JMCB ASCEND™ Framework
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               A five-stage methodology that provides structure without rigidity. Each stage has clear activities, deliverables, and success criteria.
@@ -284,7 +281,7 @@ export default function PlatformPage() {
               AI Enablement Products
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Productized offerings built on the ASCEND framework. Each product is designed for immediate application with clear deliverables.
+              Productized offerings built on the JMCB ASCEND™ Framework. Each product is designed for immediate application with clear deliverables.
             </p>
           </div>
 

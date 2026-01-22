@@ -99,7 +99,7 @@ export async function sendAssessmentReport({
     <a href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation" style="color: #F59E0B; text-decoration: none; font-size: 14px;">Schedule a Strategy Session</a>
     <p style="color: #d1d5db; font-size: 12px; margin-top: 20px;">
       © 2026 JMCB Technology Group. All rights reserved.<br>
-      Powered by the ASCEND™ Framework
+      Powered by the JMCB ASCEND™ Framework
     </p>
   </div>
 

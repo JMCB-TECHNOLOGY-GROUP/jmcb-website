@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useAuth, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
 
@@ -22,13 +21,10 @@ export default function CareerLabHeader() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/career-assessment" className="flex items-center gap-3">
-            <Image
+            <img
               src="/logo.png"
               alt="Career Lab"
-              width={120}
-              height={43}
               className="h-10 w-auto"
-              priority
             />
             <span className="hidden sm:inline-block px-3 py-1 bg-secondary/20 border border-secondary/30 rounded-md text-xs font-semibold text-secondary">
               Career Lab

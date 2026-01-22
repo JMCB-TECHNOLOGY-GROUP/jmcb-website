@@ -288,14 +288,14 @@ export default function AssessmentPage() {
                   AI Readiness<br />Assessment
                 </h1>
                 <p className="text-lg text-gray-500 max-w-lg mx-auto">
-                  Evaluate your organization&apos;s preparedness for responsible AI adoption with our proprietary ASCEND™ methodology.
+                  Evaluate your organization&apos;s preparedness for responsible AI adoption with our proprietary JMCB ASCEND™ methodology.
                 </p>
               </div>
 
-              {/* ASCEND Framework */}
+              {/* JMCB ASCEND™ Framework */}
               <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 mb-8">
                 <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
-                  The ASCEND™ Framework
+                  The JMCB ASCEND™ Framework
                 </p>
                 <p className="text-gray-700 mb-6">
                   A proven methodology for evaluating and accelerating organizational AI maturity across five critical stages:
@@ -372,7 +372,7 @@ export default function AssessmentPage() {
               {/* Question Card */}
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
                 <span className="inline-block px-3 py-1 bg-gray-100 rounded text-xs font-semibold text-gray-700 uppercase tracking-wide mb-4">
-                  ASCEND™ {dimensions[currentQ].phase}
+                  JMCB ASCEND™ {dimensions[currentQ].phase}
                 </span>
                 <h2 className="text-xl font-heading font-bold text-gray-900 mb-3">
                   {dimensions[currentQ].title}

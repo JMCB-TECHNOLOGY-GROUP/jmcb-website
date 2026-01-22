@@ -71,12 +71,12 @@ export default function AscendFramework() {
     <section ref={sectionRef} className="py-24 md:py-32 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 animate-on-scroll">
-          <p className="section-label">The ASCEND Framework</p>
+          <p className="section-label">The JMCB ASCEND™ Framework</p>
           <h2 className="section-heading text-gray-900 mb-4">
             From "Where Do We Start?" to Working AI in 8 Weeks
           </h2>
           <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
-            Most AI projects fail because teams skip steps or overcomplicate things. ASCEND keeps you focused on what matters: getting AI tools that your team will actually use.
+            Most AI projects fail because teams skip steps or overcomplicate things. JMCB ASCEND™ keeps you focused on what matters: getting AI tools that your team will actually use.
           </p>
         </div>
 

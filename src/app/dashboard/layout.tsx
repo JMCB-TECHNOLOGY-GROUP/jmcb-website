@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import {
@@ -48,11 +47,9 @@ export default function DashboardLayout({
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-700">
             <Link href="/" className="flex items-center">
-              <Image
+              <img
                 src="/logo.png"
                 alt="JMCB Technology Group"
-                width={100}
-                height={36}
                 className="h-8 w-auto"
               />
             </Link>

@@ -1,10 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight, Building2, Key, Check } from "lucide-react";
 
 export const metadata = {
   title: "Solutions | JMCB Technology",
-  description: "Enterprise AI transformation and ASCEND framework licensing from JMCB Technology.",
+  description: "Enterprise AI transformation and JMCB ASCEND™ Framework licensing from JMCB Technology.",
 };
 
 export default function SolutionsPage() {
@@ -14,11 +13,9 @@ export default function SolutionsPage() {
       <header className="bg-navy py-4 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center">
-            <Image
+            <img
               src="/logo.png"
               alt="JMCB Technology"
-              width={120}
-              height={43}
               className="h-10 w-auto"
             />
           </Link>
@@ -173,7 +170,7 @@ export default function SolutionsPage() {
               <p className="text-sm text-gray-500 mb-6">Custom scope</p>
 
               <p className="text-gray-600 mb-6">
-                Full ASCEND engagement for teams deploying multiple AI solutions across the organization.
+                Full JMCB ASCEND™ engagement for teams deploying multiple AI solutions across the organization.
               </p>
 
               <div className="space-y-4 mb-8">
@@ -229,7 +226,7 @@ export default function SolutionsPage() {
               Add AI Services to Your Practice
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              License the ASCEND framework and our AI agents to deliver AI enablement under your own brand. We provide the methodology; you keep the client relationship.
+              License the JMCB ASCEND™ Framework and our AI agents to deliver AI enablement under your own brand. We provide the methodology; you keep the client relationship.
             </p>
           </div>
 
@@ -295,7 +292,7 @@ export default function SolutionsPage() {
                     <Check className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">ASCEND Framework License</p>
+                    <p className="font-medium text-gray-900">JMCB ASCEND™ Framework License</p>
                     <p className="text-sm text-gray-600">Full methodology, templates, client-ready deliverables</p>
                   </div>
                 </div>
@@ -316,7 +313,7 @@ export default function SolutionsPage() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">Team Certification</p>
-                    <p className="text-sm text-gray-600">Train your consultants to deliver ASCEND engagements</p>
+                    <p className="text-sm text-gray-600">Train your consultants to deliver JMCB ASCEND™ engagements</p>
                   </div>
                 </div>
 

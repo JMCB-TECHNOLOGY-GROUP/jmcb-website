@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Linkedin, Mail, Calendar } from "lucide-react";
 
 const careerLinks = [
@@ -22,11 +21,9 @@ export default function CareerLabFooter() {
           {/* Brand Column */}
           <div>
             <Link href="/career-assessment" className="inline-flex items-center gap-3 mb-4">
-              <Image
+              <img
                 src="/logo.png"
                 alt="Career Lab"
-                width={120}
-                height={43}
                 className="h-10 w-auto"
               />
             </Link>

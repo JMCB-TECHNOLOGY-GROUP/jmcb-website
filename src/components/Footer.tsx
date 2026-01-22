@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Linkedin, Mail, Calendar } from "lucide-react";
 
 const consultingLinks = [
@@ -22,11 +21,9 @@ export default function Footer() {
           {/* Brand Column */}
           <div>
             <Link href="/" className="inline-block mb-4">
-              <Image
+              <img
                 src="/logo.png"
                 alt="JMCB Technology Group"
-                width={120}
-                height={43}
                 className="h-10 w-auto"
               />
             </Link>
