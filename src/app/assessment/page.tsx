@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, ArrowRight, Check, RotateCcw, Save, Mail } from "lucide-react";
 import Script from "next/script";
 import { useAuth, useUser } from "@clerk/nextjs";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Data
 const dimensions = [
@@ -273,23 +274,9 @@ export default function AssessmentPage() {
       <Script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js" />
 
       <div className="min-h-screen bg-white">
-        {/* Header */}
-        <header className="bg-navy py-4 px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="JMCB Technology Group"
-              width={120}
-              height={40}
-              className="h-8 w-auto"
-            />
-          </Link>
-          <span className="px-4 py-2 bg-accent/20 border border-accent/30 rounded-md text-xs font-semibold text-accent tracking-wide">
-            ASCEND™ Framework
-          </span>
-        </header>
+        <Header />
 
-        <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12 md:py-16">
+        <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12 md:py-16 pt-28">
           {/* INTRO SCREEN */}
           {screen === "intro" && (
             <div className="animate-fade-in">
@@ -734,18 +721,7 @@ export default function AssessmentPage() {
           )}
         </main>
 
-        {/* Footer */}
-        <footer className="bg-gray-50 border-t border-gray-200 py-8 text-center">
-          <p className="text-sm text-gray-500">
-            © 2026 JMCB Technology Group. All rights reserved.
-          </p>
-          <p className="text-sm text-gray-400 mt-2">
-            <Link href="/" className="hover:text-gray-600">
-              jmcbtech.com
-            </Link>{" "}
-            · Powered by the ASCEND™ Framework
-          </p>
-        </footer>
+        <Footer />
       </div>
     </>
   );
