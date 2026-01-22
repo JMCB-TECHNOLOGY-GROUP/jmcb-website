@@ -15,6 +15,7 @@ const careerLinks = [
   { href: "/chapter", label: "Read Free Chapter" },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const resourceLinks = [
   { href: "/assessment", label: "AI Readiness Assessment" },
   { href: "#assessment", label: "Get Your AI Score" },

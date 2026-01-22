@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Check, Download, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, RotateCcw } from "lucide-react";
 import Script from "next/script";
 
 // Data
@@ -20,6 +20,8 @@ const dimensions = [
   { id: "improvement", phase: "Differentiate", title: "Continuous Improvement", text: "We regularly evaluate AI systems for performance, business impact, drift, and unintended consequences with documented review cycles.", benchmark: 3.4 },
 ];
 
+// Maturity levels for reference
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const maturityLevels: Record<number, string> = {
   1: "Not in place",
   2: "Ad hoc",

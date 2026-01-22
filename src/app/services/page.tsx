@@ -19,8 +19,6 @@ import {
   Target,
   ArrowRight,
   Clock,
-  DollarSign,
-  Users,
 } from "lucide-react";
 
 // Service data
@@ -592,7 +590,7 @@ export default function ServicesPage() {
                 </tr>
               </thead>
               <tbody>
-                {services.map((service, index) => (
+                {services.map((service) => (
                   <tr
                     key={service.id}
                     className={`border-b border-gray-100 ${
@@ -669,8 +667,8 @@ export default function ServicesPage() {
           </div>
 
           <div className="bg-gray-50 rounded-2xl p-6 md:p-8">
-            {faqs.map((faq, index) => (
-              <FAQItem key={index} faq={faq} />
+            {faqs.map((faq, idx) => (
+              <FAQItem key={idx} faq={faq} />
             ))}
           </div>
         </div>

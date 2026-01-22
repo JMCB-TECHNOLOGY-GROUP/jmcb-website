@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -39,7 +40,7 @@ export default function ChapterPage() {
         {/* Pull Quote */}
         <blockquote className="bg-light border-l-4 border-primary px-6 py-5 my-8 text-center">
           <p className="text-xl md:text-2xl italic text-primary">
-            "Credentials open conversations. Skills close the deal."
+            &quot;Credentials open conversations. Skills close the deal.&quot;
           </p>
         </blockquote>
 
@@ -54,9 +55,9 @@ export default function ChapterPage() {
           </p>
 
           <p className="text-gray-700 leading-relaxed mb-5">
-            That was the plan. The only plan that made sense. President's
+            That was the plan. The only plan that made sense. President&apos;s
             College in Guyana. Howard University in three years instead of four.
-            Research publications before graduation. A master's program in
+            Research publications before graduation. A master&apos;s program in
             molecular genetics, mapping enzyme pathways, doing work that
             mattered.
           </p>
@@ -69,7 +70,7 @@ export default function ChapterPage() {
               Caribbean Wisdom
             </p>
             <p className="text-xl italic text-primary mb-2">
-              "Big tree fall hard."
+              "            &quot;Big tree fall hard.&quot;"
             </p>
             <p className="text-sm text-gray-500">
               Back home, we know that the higher you build your expectations,

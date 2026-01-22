@@ -68,7 +68,7 @@ export default function About() {
                 In 2025, Jermaine was selected as a Johns Hopkins Ward Infinity
                 Fellow, focused on bringing proactive healthcare to an industry
                 that has long favored reactive approaches. Through this work,
-                he's building connected, data-led solutions that provide better
+                he&apos;s building connected, data-led solutions that provide better
                 access and care to providers and their patients.
               </p>
 

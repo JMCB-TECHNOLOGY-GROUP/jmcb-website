@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Building2, User, ArrowRight } from "lucide-react";
 
 const businessLinks = [
@@ -36,7 +35,7 @@ export default function Hero() {
             <span className="text-accent">Delivers Results</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Whether you're scaling enterprise AI or building a career that compounds, we bring the same systematic approach to help you succeed.
+            Whether you&apos;re scaling enterprise AI or building a career that compounds, we bring the same systematic approach to help you succeed.
           </p>
         </div>
 
@@ -98,7 +97,7 @@ export default function Hero() {
         {/* Trusted By Section */}
         <div className="text-center">
           <p className="text-xs uppercase tracking-widest text-gray-500 mb-6">
-            Organizations We've Worked With
+            Organizations We&apos;ve Worked With
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
             <div className="text-gray-400 font-heading font-semibold text-lg tracking-wide hover:text-gray-300 transition-colors">

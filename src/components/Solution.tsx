@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { Lightbulb, ClipboardCheck, Route, Zap, UserCog, ArrowRight } from "lucide-react";
+import { Lightbulb, ClipboardCheck, Route, Zap, ArrowRight } from "lucide-react";
 
 const services = [
   {
