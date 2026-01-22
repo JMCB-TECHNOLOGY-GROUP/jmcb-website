@@ -1,21 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { Building2, User, ArrowRight } from "lucide-react";
-
-const businessLinks = [
-  { href: "/services", label: "Services & Pricing" },
-  { href: "/assessment", label: "AI Readiness Assessment" },
-  { href: "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation", label: "Book Consultation", external: true },
-];
-
-const careerLinks = [
-  { href: "/#career", label: "Career Coaching" },
-  { href: "/career-assessment", label: "Career Assessment" },
-  { href: "/products", label: "Book & Resources" },
-];
+import { ArrowRight, Clock, DollarSign, Users } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center bg-navy overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center bg-navy overflow-hidden">
       {/* Background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy to-primary/20" />
 
@@ -27,94 +17,156 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 w-full">
-        {/* Top Section - Headline */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-bold text-white leading-tight mb-6">
-            AI Strategy That{" "}
-            <span className="text-accent">Delivers Results</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Whether you&apos;re scaling enterprise AI or building a career that compounds, we bring the same systematic approach to help you succeed.
-          </p>
-        </div>
-
-        {/* Persona Selection Cards */}
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto mb-16">
-          {/* Business Persona */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all group">
-            <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6">
-              <Building2 className="w-7 h-7 text-accent" />
-            </div>
-            <h2 className="text-2xl font-heading font-bold text-white mb-3">
-              For Business
-            </h2>
-            <p className="text-gray-300 mb-6">
-              Enterprise AI consulting, strategy, and implementation for organizations ready to move from pilot to production.
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Hero Content */}
+          <div>
+            <p className="text-accent text-sm font-semibold tracking-widest uppercase mb-6">
+              AI That Actually Works for Your Business
             </p>
-            <div className="space-y-3">
-              {businessLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  target={link.external ? "_blank" : undefined}
-                  rel={link.external ? "noopener noreferrer" : undefined}
-                  className="flex items-center justify-between text-gray-200 hover:text-accent transition-colors py-2 border-b border-white/10 last:border-0"
-                >
-                  <span>{link.label}</span>
-                  <ArrowRight className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-                </Link>
-              ))}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-bold text-white leading-tight mb-6">
+              Deploy AI in Weeks,{" "}
+              <span className="text-accent">Not Quarters</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl leading-relaxed mb-8">
+              Stop experimenting. Start shipping. We help small and mid-sized businesses get real AI tools running in their operations, without the enterprise price tag or 12-month timelines.
+            </p>
+
+            {/* Value Props */}
+            <div className="flex flex-wrap gap-6 mb-10">
+              <div className="flex items-center gap-2 text-gray-300">
+                <Clock className="w-5 h-5 text-accent" />
+                <span className="text-sm">Results in 4-8 weeks</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-300">
+                <DollarSign className="w-5 h-5 text-accent" />
+                <span className="text-sm">Starts at $2,500</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-300">
+                <Users className="w-5 h-5 text-accent" />
+                <span className="text-sm">Built for teams of 5-500</span>
+              </div>
             </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <Link
+                href="/assessment"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                Free AI Readiness Assessment
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link
+                href="/solutions"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all border border-white/20"
+              >
+                See Solutions & Pricing
+              </Link>
+            </div>
+
+            <p className="text-sm text-gray-500">
+              Trusted by professional services firms, healthcare practices, and growing tech teams
+            </p>
           </div>
 
-          {/* Career Persona */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all group">
-            <div className="w-14 h-14 bg-secondary/20 rounded-xl flex items-center justify-center mb-6">
-              <User className="w-7 h-7 text-secondary" />
-            </div>
-            <h2 className="text-2xl font-heading font-bold text-white mb-3">
-              For Professionals
-            </h2>
-            <p className="text-gray-300 mb-6">
-              Career coaching, strategy sessions, and resources to help you build a career that compounds over time.
-            </p>
-            <div className="space-y-3">
-              {careerLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="flex items-center justify-between text-gray-200 hover:text-secondary transition-colors py-2 border-b border-white/10 last:border-0"
-                >
-                  <span>{link.label}</span>
-                  <ArrowRight className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-                </Link>
-              ))}
+          {/* Hero Visual */}
+          <div className="hidden lg:block relative">
+            <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              {/* Assessment Preview Mock */}
+              <div className="bg-white rounded-lg p-6 shadow-2xl">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide">AI Readiness Score</p>
+                    <p className="text-4xl font-bold text-gray-900">72<span className="text-lg text-gray-400">/100</span></p>
+                  </div>
+                  <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center">
+                    <span className="text-2xl">📊</span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-600">Strategy Alignment</span>
+                      <span className="font-semibold text-green-600">Strong</span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full">
+                      <div className="h-2 bg-green-500 rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-600">Data Readiness</span>
+                      <span className="font-semibold text-amber-600">Moderate</span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full">
+                      <div className="h-2 bg-amber-500 rounded-full" style={{ width: "60%" }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-600">Team Capability</span>
+                      <span className="font-semibold text-amber-600">Moderate</span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full">
+                      <div className="h-2 bg-amber-500 rounded-full" style={{ width: "55%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <p className="text-sm text-gray-600">Top Opportunity: <span className="font-semibold text-gray-900">Customer Service Automation</span></p>
+                  <p className="text-xs text-green-600 mt-1">Est. ROI: $45,000/year</p>
+                </div>
+              </div>
+              <div className="absolute -bottom-4 -right-4 bg-accent text-white px-4 py-2 rounded-lg font-semibold text-sm">
+                See your AI score in 3 minutes
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Trusted By Section */}
-        <div className="text-center">
-          <p className="text-xs uppercase tracking-widest text-gray-500 mb-6">
-            Organizations We&apos;ve Worked With
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
-            <div className="text-gray-400 font-heading font-semibold text-lg tracking-wide hover:text-gray-300 transition-colors">
-              Johns Hopkins Ward Infinity
-            </div>
-            <div className="text-gray-400 font-heading font-semibold text-lg tracking-wide hover:text-gray-300 transition-colors">
-              ThorBoys Auto Body
-            </div>
-            <div className="text-gray-400 font-heading font-semibold text-lg tracking-wide hover:text-gray-300 transition-colors">
-              Damascus House
-            </div>
+        {/* Three Pillars */}
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mt-16">
+          <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+            <p className="text-accent text-xs font-semibold tracking-widest uppercase mb-3">
+              The Method
+            </p>
+            <h3 className="text-lg font-heading font-bold text-white mb-2">
+              ASCEND Framework
+            </h3>
+            <p className="text-gray-400 text-sm">
+              A proven 5-step process that takes you from "where do we start?" to working AI tools your team actually uses.
+            </p>
+          </div>
+
+          <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+            <p className="text-accent text-xs font-semibold tracking-widest uppercase mb-3">
+              Ready-to-Use
+            </p>
+            <h3 className="text-lg font-heading font-bold text-white mb-2">
+              AI Products & Agents
+            </h3>
+            <p className="text-gray-400 text-sm">
+              Pre-built AI agents for content, operations, and customer service. Deploy in days, not months.
+            </p>
+          </div>
+
+          <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+            <p className="text-accent text-xs font-semibold tracking-widest uppercase mb-3">
+              Your Way
+            </p>
+            <h3 className="text-lg font-heading font-bold text-white mb-2">
+              Flexible Packages
+            </h3>
+            <p className="text-gray-400 text-sm">
+              DIY with our playbooks, get hands-on help, or license for your own clients. Pick what fits your budget.
+            </p>
           </div>
         </div>
       </div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-100 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
     </section>
   );
 }

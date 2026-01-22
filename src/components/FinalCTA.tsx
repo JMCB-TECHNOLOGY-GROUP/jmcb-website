@@ -48,21 +48,19 @@ export default function FinalCTA() {
           {/* Business CTA */}
           <div className="animate-on-scroll bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 text-center">
             <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
-              For Business
+              For Organizations
             </p>
             <h3 className="text-xl font-heading font-bold text-white mb-3">
-              AI Strategy Consultation
+              Start Your AI Journey
             </h3>
             <p className="text-gray-300 mb-6">
-              Assess your AI opportunities and get a clear path to results.
+              Begin with the AI Readiness Assessment or schedule a platform walkthrough.
             </p>
             <Link
-              href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/assessment"
               className="inline-flex items-center justify-center w-full px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition-all"
             >
-              Book AI Consultation
+              Take the Assessment
             </Link>
           </div>
 
@@ -72,18 +70,16 @@ export default function FinalCTA() {
               For Professionals
             </p>
             <h3 className="text-xl font-heading font-bold text-white mb-3">
-              Career Strategy Session
+              Career Acceleration
             </h3>
             <p className="text-gray-300 mb-6">
-              Map out your next career move with a free 30-minute session.
+              AI-powered coaching and resume services to advance your career.
             </p>
             <Link
-              href="https://calendly.com/jermaine-jmcbtech/free-review-career-lab-review"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/solutions#career"
               className="inline-flex items-center justify-center w-full px-6 py-3 bg-secondary text-white font-semibold rounded-lg hover:bg-primary transition-all"
             >
-              Book Free Session
+              View Career Programs
             </Link>
           </div>
         </div>

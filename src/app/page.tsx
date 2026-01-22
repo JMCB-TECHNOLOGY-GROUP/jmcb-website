@@ -1,14 +1,9 @@
 import {
   Header,
   Hero,
-  TrustBar,
-  Problem,
-  Solution,
-  Testimonials,
-  Proof,
-  About,
-  EmailCapture,
-  CareerCoaching,
+  AscendFramework,
+  Products,
+  SocialProof,
   FinalCTA,
   Footer,
 } from "@/components";
@@ -19,14 +14,9 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <TrustBar />
-        <Problem />
-        <Solution />
-        <Testimonials />
-        <Proof />
-        <About />
-        <EmailCapture />
-        <CareerCoaching />
+        <AscendFramework />
+        <Products />
+        <SocialProof />
         <FinalCTA />
       </main>
       <Footer />

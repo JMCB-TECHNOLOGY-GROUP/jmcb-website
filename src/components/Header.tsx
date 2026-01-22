@@ -3,17 +3,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
+import { useAuth, UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
 
 const navLinks = [
-  { href: "/services", label: "Services" },
-  { href: "#results", label: "Credentials" },
-  { href: "#about", label: "About" },
-  { href: "#career", label: "Career Lab" },
+  { href: "/platform", label: "Platform" },
+  { href: "/solutions", label: "Solutions" },
   { href: "/assessment", label: "Assessment" },
 ];
 
 export default function Header() {
+  const { isSignedIn, isLoaded } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -61,14 +61,49 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary text-sm"
-            >
-              Book a Strategy Call
-            </Link>
+
+            {isLoaded && (
+              <>
+                {isSignedIn ? (
+                  <div className="flex items-center gap-4">
+                    <Link
+                      href="/dashboard"
+                      className={`text-sm font-medium transition-colors duration-300 hover:text-accent flex items-center gap-2 ${
+                        isScrolled ? "text-gray-700" : "text-gray-200"
+                      }`}
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Dashboard
+                    </Link>
+                    <UserButton
+                      afterSignOutUrl="/"
+                      appearance={{
+                        elements: {
+                          avatarBox: "w-8 h-8",
+                        },
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <SignInButton mode="modal">
+                      <button
+                        className={`text-sm font-medium transition-colors duration-300 hover:text-accent ${
+                          isScrolled ? "text-gray-700" : "text-gray-200"
+                        }`}
+                      >
+                        Sign In
+                      </button>
+                    </SignInButton>
+                    <SignUpButton mode="modal">
+                      <button className="btn-primary text-sm">
+                        Get Started
+                      </button>
+                    </SignUpButton>
+                  </div>
+                )}
+              </>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -99,15 +134,52 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="btn-primary text-sm text-center"
-              >
-                Book a Strategy Call
-              </Link>
+
+              {isLoaded && (
+                <>
+                  {isSignedIn ? (
+                    <>
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`text-sm font-medium flex items-center gap-2 ${
+                          isScrolled ? "text-gray-700" : "text-white"
+                        }`}
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        Dashboard
+                      </Link>
+                      <div className="pt-2">
+                        <UserButton
+                          afterSignOutUrl="/"
+                          appearance={{
+                            elements: {
+                              avatarBox: "w-8 h-8",
+                            },
+                          }}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <SignInButton mode="modal">
+                        <button
+                          className={`text-sm font-medium text-left ${
+                            isScrolled ? "text-gray-700" : "text-white"
+                          }`}
+                        >
+                          Sign In
+                        </button>
+                      </SignInButton>
+                      <SignUpButton mode="modal">
+                        <button className="btn-primary text-sm text-center">
+                          Get Started Free
+                        </button>
+                      </SignUpButton>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </nav>
         )}

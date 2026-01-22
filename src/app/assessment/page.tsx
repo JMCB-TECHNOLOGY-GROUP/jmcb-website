@@ -1,23 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Check, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, RotateCcw, Save, Mail } from "lucide-react";
 import Script from "next/script";
+import { useAuth, useUser } from "@clerk/nextjs";
 
 // Data
 const dimensions = [
   { id: "strategic", phase: "Assess", title: "Strategic Alignment", text: "Our organization has a clearly defined purpose for AI adoption that directly supports measurable business objectives, not exploratory experimentation.", benchmark: 3.5 },
   { id: "executive", phase: "Strategize", title: "Executive Sponsorship", text: "There is explicit executive ownership and accountability for AI strategy, investments, and outcomes at the C-suite or board level.", benchmark: 4.0 },
-  { id: "oversight", phase: "Navigate", title: "Human Oversight", text: "AI-assisted decisions are reviewed and governed by qualified humans through defined, consistent processes with clear escalation paths.", benchmark: 3.6 },
+  { id: "oversight", phase: "Capability Build", title: "Human Oversight", text: "AI-assisted decisions are reviewed and governed by qualified humans through defined, consistent processes with clear escalation paths.", benchmark: 3.6 },
   { id: "data", phase: "Assess", title: "Data Foundation", text: "We have confidence in the quality, relevance, lineage, and governance of data that would feed AI systems across the organization.", benchmark: 3.8 },
-  { id: "security", phase: "Navigate", title: "Security & Privacy", text: "Security controls, privacy requirements, and access policies for AI tools and associated data are clearly defined, documented, and enforced.", benchmark: 3.7 },
-  { id: "risk", phase: "Navigate", title: "Risk Management", text: "We have systematically identified, assessed, and documented potential AI risks including bias, accuracy, misuse, and over-reliance.", benchmark: 3.6 },
-  { id: "governance", phase: "Navigate", title: "Governance Framework", text: "A formal process exists for evaluating, approving, monitoring, and retiring AI use cases with clear decision rights and review cadences.", benchmark: 3.9 },
-  { id: "integration", phase: "Execute", title: "Operational Integration", text: "AI initiatives are embedded into production workflows and core business systems, not isolated in innovation labs or pilot programs.", benchmark: 3.5 },
-  { id: "workforce", phase: "Construct", title: "Workforce Enablement", text: "Teams across the organization understand how to work effectively alongside AI systems and their responsibilities when AI is involved.", benchmark: 3.6 },
-  { id: "improvement", phase: "Differentiate", title: "Continuous Improvement", text: "We regularly evaluate AI systems for performance, business impact, drift, and unintended consequences with documented review cycles.", benchmark: 3.4 },
+  { id: "security", phase: "Capability Build", title: "Security & Privacy", text: "Security controls, privacy requirements, and access policies for AI tools and associated data are clearly defined, documented, and enforced.", benchmark: 3.7 },
+  { id: "risk", phase: "Capability Build", title: "Risk Management", text: "We have systematically identified, assessed, and documented potential AI risks including bias, accuracy, misuse, and over-reliance.", benchmark: 3.6 },
+  { id: "governance", phase: "Capability Build", title: "Governance Framework", text: "A formal process exists for evaluating, approving, monitoring, and retiring AI use cases with clear decision rights and review cadences.", benchmark: 3.9 },
+  { id: "integration", phase: "Execution", title: "Operational Integration", text: "AI initiatives are embedded into production workflows and core business systems, not isolated in innovation labs or pilot programs.", benchmark: 3.5 },
+  { id: "workforce", phase: "Capability Build", title: "Workforce Enablement", text: "Teams across the organization understand how to work effectively alongside AI systems and their responsibilities when AI is involved.", benchmark: 3.6 },
+  { id: "improvement", phase: "Deployment", title: "Continuous Improvement", text: "We regularly evaluate AI systems for performance, business impact, drift, and unintended consequences with documented review cycles.", benchmark: 3.4 },
 ];
 
 // Maturity levels for reference
@@ -104,6 +105,8 @@ interface FormData {
 }
 
 export default function AssessmentPage() {
+  const { isSignedIn, isLoaded } = useAuth();
+  const { user } = useUser();
   const [screen, setScreen] = useState<Screen>("intro");
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -115,6 +118,22 @@ export default function AssessmentPage() {
     role: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [savedResultId, setSavedResultId] = useState<string | null>(null);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+
+  // Pre-fill form data from Clerk user if signed in
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user) {
+      setFormData((prev) => ({
+        ...prev,
+        firstName: user.firstName || prev.firstName,
+        lastName: user.lastName || prev.lastName,
+        email: user.emailAddresses[0]?.emailAddress || prev.email,
+      }));
+    }
+  }, [isLoaded, isSignedIn, user]);
 
   const getScore = () => {
     let sum = 0;
@@ -151,16 +170,20 @@ export default function AssessmentPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const currentScore = getScore();
+    const currentBand = getBand(currentScore);
+    const currentProfile = resultProfiles[currentBand];
+
     try {
-      // Send data to Make.com webhook
+      // Send data to Make.com webhook (for marketing/CRM)
       const webhookData = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
         organization: formData.organization,
         role: formData.role,
-        score: getScore(),
-        band: getBand(getScore()),
+        score: currentScore,
+        band: currentBand,
         answers: answers,
         dimensions: dimensions.map((dim, i) => ({
           title: dim.title,
@@ -176,12 +199,60 @@ export default function AssessmentPage() {
         body: JSON.stringify(webhookData),
         mode: "no-cors",
       });
+
+      // If user is signed in, save to database
+      if (isSignedIn) {
+        const saveResponse = await fetch("/api/assessments", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            assessment_type: "ai_readiness",
+            score: currentScore,
+            band: currentBand,
+            answers: answers,
+            dimensions: dimensions.map((dim, i) => ({
+              title: dim.title,
+              score: answers[i] || 0,
+              benchmark: dim.benchmark,
+            })),
+            recommendations: currentProfile.recommendations,
+            organization: formData.organization,
+            role: formData.role,
+          }),
+        });
+
+        if (saveResponse.ok) {
+          const { result } = await saveResponse.json();
+          setIsSaved(true);
+          setSavedResultId(result.id);
+        }
+      }
     } catch (error) {
-      console.error("Webhook error:", error);
+      console.error("Submit error:", error);
     }
 
     setIsSubmitting(false);
     setScreen("results");
+  };
+
+  const handleSendEmail = async () => {
+    if (!savedResultId || !isSignedIn) return;
+
+    setIsSendingEmail(true);
+    try {
+      const response = await fetch("/api/email/send-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assessmentId: savedResultId }),
+      });
+
+      if (response.ok) {
+        setEmailSent(true);
+      }
+    } catch (error) {
+      console.error("Email send error:", error);
+    }
+    setIsSendingEmail(false);
   };
 
   const restart = () => {
@@ -240,16 +311,15 @@ export default function AssessmentPage() {
                   The ASCEND™ Framework
                 </p>
                 <p className="text-gray-700 mb-6">
-                  A proven methodology for evaluating and accelerating organizational AI maturity across six critical dimensions:
+                  A proven methodology for evaluating and accelerating organizational AI maturity across five critical stages:
                 </p>
-                <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                <div className="grid grid-cols-5 gap-3">
                   {[
                     { letter: "A", word: "ASSESS", desc: "Current State" },
-                    { letter: "S", word: "STRATEGIZE", desc: "Vision & Goals" },
-                    { letter: "C", word: "CONSTRUCT", desc: "Build Capability" },
-                    { letter: "E", word: "EXECUTE", desc: "Implement & Scale" },
-                    { letter: "N", word: "NAVIGATE", desc: "Risk & Governance" },
-                    { letter: "D", word: "DIFFERENTIATE", desc: "Competitive Edge" },
+                    { letter: "S", word: "STRATEGIZE", desc: "Priorities & Roadmap" },
+                    { letter: "C", word: "CAPABILITY", desc: "Skills & Infrastructure" },
+                    { letter: "E", word: "EXECUTION", desc: "Build & Validate" },
+                    { letter: "D", word: "DEPLOYMENT", desc: "Scale & Optimize" },
                   ].map((item) => (
                     <div key={item.letter} className="bg-white border border-gray-200 rounded-lg p-3 text-center">
                       <div className="text-2xl font-bold text-accent mb-1">{item.letter}</div>
@@ -581,6 +651,57 @@ export default function AssessmentPage() {
                   ))}
                 </div>
               </div>
+
+              {/* Save Status Banner */}
+              {isSignedIn && isSaved ? (
+                <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <Save className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-green-800">Results Saved to Dashboard</p>
+                      <p className="text-sm text-green-600">Access your results anytime from your dashboard</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Link
+                      href="/dashboard"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      View Dashboard
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                    <button
+                      onClick={handleSendEmail}
+                      disabled={isSendingEmail || emailSent}
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-green-300 text-green-700 font-medium rounded-lg hover:bg-green-100 transition-colors disabled:opacity-50"
+                    >
+                      <Mail className="w-4 h-4" />
+                      {emailSent ? "Email Sent!" : isSendingEmail ? "Sending..." : "Email Report"}
+                    </button>
+                  </div>
+                </div>
+              ) : !isSignedIn ? (
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Save className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-blue-800">Save Your Results</p>
+                      <p className="text-sm text-blue-600">Create a free account to save and track your progress over time</p>
+                    </div>
+                  </div>
+                  <Link
+                    href="/sign-up"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Create Free Account
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              ) : null}
 
               {/* CTA */}
               <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8 text-center">

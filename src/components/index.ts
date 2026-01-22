@@ -12,3 +12,6 @@ export { default as CareerCoaching } from "./CareerCoaching";
 export { default as Assessment } from "./Assessment";
 export { default as FinalCTA } from "./FinalCTA";
 export { default as Footer } from "./Footer";
+export { default as AscendFramework } from "./AscendFramework";
+export { default as Products } from "./Products";
+export { default as SocialProof } from "./SocialProof";
