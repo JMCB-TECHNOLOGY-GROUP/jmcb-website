@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Building2, User, Key, Check } from "lucide-react";
+import { ArrowRight, Building2, User, Key, Check, Users } from "lucide-react";
 
 export const metadata = {
   title: "Solutions | JMCB Technology",
@@ -209,6 +209,96 @@ export default function SolutionsPage() {
               >
                 Discuss Your Needs
               </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Workforce Development */}
+      <section id="workforce" className="py-16 md:py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="w-14 h-14 bg-secondary/10 rounded-xl flex items-center justify-center mb-6">
+                <Users className="w-7 h-7 text-secondary" />
+              </div>
+              <p className="text-secondary text-sm font-semibold tracking-widest uppercase mb-4">
+                Workforce Development
+              </p>
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
+                Prepare Your Team for AI
+              </h2>
+              <p className="text-lg text-gray-600 mb-6">
+                AI will transform every role in your organization. Assess your workforce&apos;s readiness, identify skill gaps, and build a team that thrives alongside intelligent systems.
+              </p>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-600">Baseline workforce readiness assessment</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-600">Individual and aggregate team insights</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-600">Targeted L&D recommendations</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-600">Progress tracking over time</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/workforce"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-secondary text-white font-semibold rounded-lg hover:bg-primary transition-all"
+                >
+                  Learn More
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/career-assessment"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-all"
+                >
+                  Try Assessment
+                </Link>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 border border-gray-200">
+              <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-6">Ideal For</p>
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span className="text-accent font-bold">1</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">Pre-AI Implementation</p>
+                    <p className="text-sm text-gray-600">Assess readiness before rolling out AI tools</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span className="text-accent font-bold">2</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">Change Management</p>
+                    <p className="text-sm text-gray-600">Understand employee adaptability during transformation</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span className="text-accent font-bold">3</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">L&D Programs</p>
+                    <p className="text-sm text-gray-600">Measure development effectiveness and ROI</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

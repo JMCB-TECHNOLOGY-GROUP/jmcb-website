@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Check, RotateCcw, Target, Compass, Rocket, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, RotateCcw, Target, Compass, Rocket, Users, Save, Mail } from "lucide-react";
+import { useAuth, useUser } from "@clerk/nextjs";
 
 // Career Assessment Questions
 const questions = [
@@ -115,6 +116,8 @@ interface FormData {
 }
 
 export default function CareerAssessmentPage() {
+  const { isSignedIn, isLoaded } = useAuth();
+  const { user } = useUser();
   const [screen, setScreen] = useState<Screen>("intro");
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -126,6 +129,20 @@ export default function CareerAssessmentPage() {
     goal: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [savedResultId, setSavedResultId] = useState<string | null>(null);
+
+  // Pre-fill form data from Clerk user if signed in
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user) {
+      setFormData((prev) => ({
+        ...prev,
+        firstName: user.firstName || prev.firstName,
+        lastName: user.lastName || prev.lastName,
+        email: user.emailAddresses[0]?.emailAddress || prev.email,
+      }));
+    }
+  }, [isLoaded, isSignedIn, user]);
 
   const getScore = () => {
     let sum = 0;
@@ -154,8 +171,44 @@ export default function CareerAssessmentPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Brief delay for UX
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const currentScore = getScore();
+    const currentBand = getBand(currentScore);
+    const currentProfile = resultProfiles[currentBand];
+
+    try {
+      // If user is signed in, save to database
+      if (isSignedIn) {
+        const saveResponse = await fetch("/api/assessments", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            assessment_type: "career",
+            score: currentScore,
+            band: currentBand,
+            answers: answers,
+            dimensions: questions.map((q, i) => ({
+              title: q.title,
+              score: answers[i] || 0,
+              benchmark: 4, // Target score
+            })),
+            recommendations: [{
+              title: currentProfile.recommendation,
+              details: currentProfile.recommendationDesc,
+            }],
+            organization: formData.currentRole,
+            role: formData.goal,
+          }),
+        });
+
+        if (saveResponse.ok) {
+          const { result } = await saveResponse.json();
+          setIsSaved(true);
+          setSavedResultId(result.id);
+        }
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
 
     setIsSubmitting(false);
     setScreen("results");
@@ -523,6 +576,47 @@ export default function CareerAssessmentPage() {
                 })}
               </div>
             </div>
+
+            {/* Save Status Banner */}
+            {isSignedIn && isSaved ? (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <Save className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-green-800">Results Saved to Dashboard</p>
+                    <p className="text-sm text-green-600">Access your results anytime from your dashboard</p>
+                  </div>
+                </div>
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  View Dashboard
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            ) : !isSignedIn ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Save className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-blue-800">Save Your Results</p>
+                    <p className="text-sm text-blue-600">Create a free account to save and track your progress over time</p>
+                  </div>
+                </div>
+                <Link
+                  href="/sign-up"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Create Free Account
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            ) : null}
 
             {/* Recommendation */}
             <div

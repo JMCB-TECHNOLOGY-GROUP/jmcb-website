@@ -10,7 +10,8 @@ const consultingLinks = [
 ];
 
 const careerLinks = [
-  { href: "#career", label: "Career Lab" },
+  { href: "/career-assessment", label: "Career Assessment" },
+  { href: "/workforce", label: "Workforce Development" },
   { href: "/products", label: "Products" },
   { href: "/chapter", label: "Read Free Chapter" },
 ];
