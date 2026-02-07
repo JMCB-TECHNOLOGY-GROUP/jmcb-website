@@ -1,32 +1,32 @@
-import { Quote, TrendingUp, Clock, AlertTriangle } from "lucide-react";
+import { Quote, TrendingUp, Clock, Users } from "lucide-react";
 
 const caseStudies = [
   {
     icon: Clock,
-    industry: "Federal Contractor",
-    size: "200+ employees",
-    challenge: "Manual report generation consuming 40+ hours/week across compliance teams",
-    result: "Deployed AI-powered document processing workflow in 60 days",
-    metric: "62% reduction in processing time",
-    metricDetail: "Saving ~25 hours/week with human-in-the-loop review",
-  },
-  {
-    icon: TrendingUp,
     industry: "Healthcare Practice Group",
     size: "50+ staff across 3 locations",
-    challenge: "Inconsistent patient intake and scheduling causing revenue leakage",
-    result: "Implemented AI triage agent with appointment optimization",
-    metric: "3.2x improvement in lead response time",
+    challenge: "Inconsistent patient intake and scheduling causing revenue leakage across locations",
+    result: "Implemented AI triage workflow with appointment optimization and automated follow-ups",
+    metric: "3.2x faster lead response",
     metricDetail: "From 4+ hours to under 75 minutes average first response",
   },
   {
-    icon: AlertTriangle,
+    icon: TrendingUp,
+    industry: "Mid-Market Professional Services",
+    size: "200+ employees",
+    challenge: "Manual report generation consuming 40+ hours/week across compliance teams",
+    result: "Deployed AI-powered document processing with human-in-the-loop review",
+    metric: "62% reduction in processing time",
+    metricDetail: "Saving ~25 hours/week while maintaining quality standards",
+  },
+  {
+    icon: Users,
     industry: "Trade Association",
     size: "15-person team, 2,000+ members",
-    challenge: "Member inquiries overwhelming small staff, knowledge scattered across documents",
-    result: "Built internal knowledge assistant with source-cited answers",
-    metric: "85% of routine inquiries handled automatically",
-    metricDetail: "Staff redirected to high-value member engagement",
+    challenge: "Member inquiries overwhelming small staff, knowledge scattered across hundreds of documents",
+    result: "Built internal knowledge assistant with source-cited answers and escalation workflows",
+    metric: "85% of routine inquiries automated",
+    metricDetail: "Staff redirected to high-value member engagement and retention",
   },
 ];
 
@@ -34,10 +34,10 @@ const testimonials = [
   {
     quote: "We went from 'AI sounds interesting' to having a production workflow in 8 weeks. The governance framework alone was worth the engagement.",
     role: "COO",
-    org: "Mid-Atlantic Federal Contractor",
+    org: "Mid-Market Professional Services Firm",
   },
   {
-    quote: "Jermaine brought a level of rigor we hadn't seen from other consultants. He understood our compliance requirements from day one.",
+    quote: "Jermaine brought a level of rigor we hadn't seen from other consultants. He understood our compliance requirements from day one and didn't try to sell us tools we didn't need.",
     role: "Managing Partner",
     org: "Healthcare Practice Group",
   },
@@ -55,8 +55,8 @@ export default function SocialProof() {
             From assessment to production in 90 days
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Real outcomes from organizations that used the ASCEND™ framework to
-            deploy AI with confidence.
+            Real outcomes from organizations that used the ASCEND™ framework
+            to deploy AI with confidence.
           </p>
         </div>
 

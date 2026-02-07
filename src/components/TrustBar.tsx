@@ -1,10 +1,10 @@
 import { Award, Building2, GraduationCap, ShieldCheck } from "lucide-react";
 
 const credentials = [
-  { icon: Building2, text: "U.S. Department of Justice", sub: "15+ Years Tech Leadership" },
+  { icon: Building2, text: "Enterprise Program Leadership", sub: "$2B+ Technology Programs Managed" },
   { icon: GraduationCap, text: "Johns Hopkins University", sub: "Ward Infinity AI Safety Fellow" },
   { icon: Award, text: "Howard University", sub: "M.S. Molecular Genetics" },
-  { icon: ShieldCheck, text: "Federal Programs", sub: "$2B+ Delivered" },
+  { icon: ShieldCheck, text: "Responsible AI", sub: "Governance-First Methodology" },
 ];
 
 export default function TrustBar() {

@@ -9,7 +9,7 @@ const tiers = [
     name: "AI Readiness Scan",
     anchor: "Starting at $3,500",
     duration: "2-week engagement",
-    desc: "Find out exactly where AI fits — and what's blocking you.",
+    desc: "Find out exactly where AI fits and what's blocking you.",
     deliverables: [
       "ASCEND™ Assessment across 10 dimensions",
       "Executive AI Readiness Briefing",
