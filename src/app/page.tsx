@@ -1,12 +1,8 @@
 "use client";
 
 import Link from "next/link";
-<<<<<<< HEAD
 import Image from "next/image";
 import { ArrowRight, Shield, Brain, Zap, ChevronRight, Clock, Target, Users, CheckCircle2, Building2, Sparkles } from "lucide-react";
-=======
-import { ArrowRight, Shield, Brain, Zap, ChevronRight, Clock, Target, Users, CheckCircle2 } from "lucide-react";
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TrustBar from "@/components/TrustBar";
@@ -16,7 +12,6 @@ import SocialProof from "@/components/SocialProof";
 const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
 
 const verticals = [
-<<<<<<< HEAD
   { name: "Healthcare", href: "/healthcare", icon: Brain, desc: "HIPAA-conscious AI workflows for providers and health systems" },
   { name: "Enterprise & Mid-Market", href: "/enterprise", icon: Target, desc: "Scalable AI strategy for companies with 50-500 employees" },
   { name: "Associations & Nonprofits", href: "/associations", icon: Users, desc: "Member-focused AI for trade associations and mission-driven orgs" },
@@ -26,17 +21,6 @@ const verticals = [
 const stats = [
   { value: "$2B+", label: "Programs Managed" },
   { value: "15+", label: "Years Tech Leadership" },
-=======
-  { name: "Federal & Government", href: "/federal", icon: Shield, desc: "FedRAMP-aligned AI governance for agencies and contractors" },
-  { name: "Healthcare", href: "/healthcare", icon: Brain, desc: "HIPAA-conscious AI workflows for providers and health systems" },
-  { name: "Enterprise", href: "/enterprise", icon: Target, desc: "Scalable AI strategy for mid-market and growing companies" },
-  { name: "Associations", href: "/associations", icon: Users, desc: "Member-focused AI for trade associations and nonprofits" },
-];
-
-const stats = [
-  { value: "$2B+", label: "Programs Delivered" },
-  { value: "15+", label: "Years Federal Tech Leadership" },
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
   { value: "90", label: "Days to First AI Workflow" },
   { value: "10", label: "ASCEND™ Dimensions Assessed" },
 ];
@@ -53,7 +37,6 @@ export default function HomePage() {
             AI Strategy & Implementation for Growing Businesses
           </p>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
-<<<<<<< HEAD
             Deploy AI with confidence.{" "}
             <span className="text-accent">See results in 90 days.</span>
           </h1>
@@ -61,15 +44,6 @@ export default function HomePage() {
             80% of AI projects fail before production. We bring the discipline
             behind $2B technology programs to help your team deploy AI safely
             and profitably, without the Big 4 price tag.
-=======
-            Federal-grade AI strategy.{" "}
-            <span className="text-accent">Built for your business.</span>
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-            80% of AI projects fail before production. We bring the same rigor that
-            protects $2B government programs to help your team deploy AI safely and
-            profitably — in 90 days.
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Link
@@ -105,13 +79,8 @@ export default function HomePage() {
               Most AI initiatives stall. Yours won't.
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-<<<<<<< HEAD
               The gap between AI ambition and AI execution is where businesses
               lose time, money, and competitive advantage.
-=======
-              The gap between AI ambition and AI execution is where businesses lose
-              time, money, and competitive advantage.
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
@@ -130,7 +99,6 @@ export default function HomePage() {
         </div>
       </section>
 
-<<<<<<< HEAD
       {/* ===== ABOUT / CREDIBILITY ===== */}
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-4xl mx-auto">
@@ -179,10 +147,6 @@ export default function HomePage() {
 
       {/* ===== ASCEND METHOD ===== */}
       <section className="py-16 md:py-24 px-4 bg-gray-50">
-=======
-      {/* ===== ASCEND METHOD ===== */}
-      <section className="py-16 md:py-24 px-4">
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
@@ -192,13 +156,8 @@ export default function HomePage() {
               The JMCB ASCEND™ Framework
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-<<<<<<< HEAD
               A battle-tested methodology for deploying agentic AI, starting
               with the workflows that create measurable impact first.
-=======
-              A battle-tested methodology for deploying agentic AI — starting with
-              the workflows that create measurable impact first.
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -210,11 +169,7 @@ export default function HomePage() {
               { letter: "N", word: "Navigate", desc: "Implement guardrails for responsible, governed AI" },
               { letter: "D", word: "Deploy", desc: "Roll out, measure, and continuously improve" },
             ].map((step) => (
-<<<<<<< HEAD
               <div key={step.letter} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-accent transition-colors">
-=======
-              <div key={step.letter} className="bg-gray-50 border border-gray-200 rounded-xl p-5 hover:border-accent transition-colors">
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
                 <div className="flex items-center gap-3 mb-2">
                   <span className="w-10 h-10 bg-accent text-white rounded-lg flex items-center justify-center font-bold text-lg">
                     {step.letter}
@@ -288,11 +243,7 @@ export default function HomePage() {
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto">
             Take our free 5-minute assessment to find out exactly where AI
-<<<<<<< HEAD
             can help, and what to do first.
-=======
-            can help — and what to do first.
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

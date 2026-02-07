@@ -48,42 +48,10 @@ export default function Header() {
               </Link>
             ))}
             <Link
-<<<<<<< HEAD
               href={CALENDLY_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-4 py-2 bg-accent text-white text-sm font-semibold rounded-lg hover:bg-amber-600 transition-colors"
-=======
-              href="/services"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Services
-            </Link>
-            <Link
-              href="/assessment"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Assessment
-            </Link>
-            <Link
-              href="/federal"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Federal
-            </Link>
-            <Link
-              href="/healthcare"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Healthcare
-            </Link>
-            <Link
-              href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-4 py-2 bg-accent text-white text-sm font-semibold rounded-lg hover:bg-amber-600 transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
             >
               Book a Call
             </Link>
@@ -114,39 +82,7 @@ export default function Header() {
                 </Link>
               ))}
               <Link
-<<<<<<< HEAD
                 href={CALENDLY_URL}
-=======
-                href="/services"
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Services
-              </Link>
-              <Link
-                href="/assessment"
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Assessment
-              </Link>
-              <Link
-                href="/federal"
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Federal
-              </Link>
-              <Link
-                href="/healthcare"
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Healthcare
-              </Link>
-              <Link
-                href="https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation"
->>>>>>> e8adc05595613088e1c7fa98ff18aafee72083c7
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-4 py-2 bg-accent text-white text-sm font-semibold rounded-lg hover:bg-amber-600 transition-colors"
