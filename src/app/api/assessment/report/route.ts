@@ -48,17 +48,21 @@ export async function POST(request: NextRequest) {
 
     if (process.env.ANTHROPIC_API_KEY) {
       try {
-        // Dynamic import to avoid build errors if SDK not installed yet
-        const { default: Anthropic } = await import("@anthropic-ai/sdk");
-        const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-        const summaryResponse = await anthropic.messages.create({
-          model: "claude-sonnet-4-5-20250929",
-          max_tokens: 800,
-          messages: [
-            {
-              role: "user",
-              content: `You are writing the executive summary for an AI Readiness Assessment report for ${organization} (${companySize} employees). Write as Jermaine Barker, Founder of JMCB Technology Group.
+        // Use fetch directly to avoid @anthropic-ai/sdk dependency
+        const summaryRes = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-5-20250929",
+            max_tokens: 800,
+            messages: [
+              {
+                role: "user",
+                content: `You are writing the executive summary for an AI Readiness Assessment report for ${organization} (${companySize} employees). Write as Jermaine Barker, Founder of JMCB Technology Group.
 
 Assessment Results:
 - Overall Score: ${overallScore}/100
@@ -70,22 +74,33 @@ Assessment Results:
 ${dimensionBreakdown}
 
 Write 2-3 paragraphs. No em dashes or en dashes. Use contractions. No corporate jargon. Vary sentence length. Sound like a real consultant, not a template.`,
-            },
-          ],
+              },
+            ],
+          }),
         });
 
-        executiveSummary =
-          summaryResponse.content[0].type === "text"
-            ? summaryResponse.content[0].text
-            : "";
+        if (summaryRes.ok) {
+          const summaryData = await summaryRes.json();
+          executiveSummary =
+            summaryData.content?.[0]?.type === "text"
+              ? summaryData.content[0].text
+              : "";
+        }
 
-        const recsResponse = await anthropic.messages.create({
-          model: "claude-sonnet-4-5-20250929",
-          max_tokens: 1500,
-          messages: [
-            {
-              role: "user",
-              content: `Write personalized recommendations for ${organization} (${companySize} employees).
+        const recsRes = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-5-20250929",
+            max_tokens: 1500,
+            messages: [
+              {
+                role: "user",
+                content: `Write personalized recommendations for ${organization} (${companySize} employees).
 
 Scores:
 ${dimensionBreakdown}
@@ -94,19 +109,23 @@ For each dimension, write exactly 2 sentences: one diagnosing where they are, on
 
 Respond ONLY with a JSON array:
 [{"dimension": "...", "score": N, "recommendation": "Two sentences."}]`,
-            },
-          ],
+              },
+            ],
+          }),
         });
 
-        const recsText =
-          recsResponse.content[0].type === "text"
-            ? recsResponse.content[0].text
-            : "[]";
-        const cleaned = recsText
-          .replace(/```json\s*/g, "")
-          .replace(/```\s*/g, "")
-          .trim();
-        recommendations = JSON.parse(cleaned);
+        if (recsRes.ok) {
+          const recsData = await recsRes.json();
+          const recsText =
+            recsData.content?.[0]?.type === "text"
+              ? recsData.content[0].text
+              : "[]";
+          const cleaned = recsText
+            .replace(/```json\s*/g, "")
+            .replace(/```\s*/g, "")
+            .trim();
+          recommendations = JSON.parse(cleaned);
+        }
       } catch (aiError) {
         console.error("Claude API error:", aiError);
       }
