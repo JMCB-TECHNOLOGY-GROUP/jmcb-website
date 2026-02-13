@@ -1,974 +1,559 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, RotateCcw, AlertTriangle, Zap, Calendar } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ASSESSMENT_QUESTIONS,
+  getQuestionsForSize,
+  calculateOverallScore,
+  generateMicroInsight,
+  ASCEND_PHASES,
+  REPORT_BRANDING,
+  PRIORITY_ACTIONS,
+  DIMENSION_SERVICE_MAP,
+  type AssessmentQuestion,
+  type CompanySize,
+  type Role,
+} from "@/lib/assessment-content";
 
-// Updated dimensions based on product specialist feedback - SMB/Agentic AI focused
-const dimensions = [
-  {
-    id: "strategic",
-    phase: "Assess",
-    title: "Strategic Alignment",
-    text: "We have 1–3 specific workflows where AI (including agents) will create measurable impact in the next 90 days (time saved, revenue gained, errors reduced), and we've defined how we'll measure success.",
-    benchmark: 3.5,
-    levels: {
-      1: "No defined AI use case or success metric.",
-      2: "Trying tools informally (ChatGPT, automations), but no agreed workflow, owner, or KPI.",
-      3: "We've selected 1–3 workflows and basic KPIs (time saved, lead response time, cost), but execution plan is light.",
-      4: "We have a documented plan (30/60/90), an owner, baseline measurements, and a pilot workflow selected.",
-      5: "We review KPIs regularly, refine workflows, and have a repeatable process for selecting and scaling new AI/agent use cases.",
-    },
-  },
-  {
-    id: "executive",
-    phase: "Strategize",
-    title: "Executive Ownership",
-    text: "A specific leader (e.g., owner/CEO, managing partner, practice director, GM, or department head) is accountable for AI decisions and outcomes - including approving use cases, budget/time, and success metrics.",
-    benchmark: 4.0,
-    levels: {
-      1: "No clear owner for AI. Adoption is individual/experimental.",
-      2: "Leadership is supportive, but no named owner, no budget, and no recurring review.",
-      3: "A leader is named and approves tool spend/use cases, but accountability and reporting are inconsistent.",
-      4: "Owner is named, responsibilities are clear, a small budget or time allocation exists, and progress is reviewed on a schedule.",
-      5: "AI ownership is embedded in operations: KPIs are tracked, decisions are documented, and scaling/guardrails are consistently enforced.",
-    },
-  },
-  {
-    id: "oversight",
-    phase: "Navigate",
-    title: "Human Oversight",
-    text: "For AI/agent-driven workflows, we have clear \"human-in-the-loop\" approval steps, defined exception rules, and an escalation path when confidence is low or risk is high (customer-facing, financial, legal, or clinical).",
-    benchmark: 3.6,
-    levels: {
-      1: "AI outputs are used without review, or review is inconsistent and undocumented.",
-      2: "People occasionally review AI work, but it depends on the person and there's no standard process.",
-      3: "We've defined where review is required (e.g., customer messages, payments), and who approves, but escalation/exception handling is still informal.",
-      4: "We have a consistent review workflow (approval gates), documented escalation paths, and a way to handle exceptions.",
-      5: "Oversight is risk-based and measurable: we track error rates, review turnaround time, and continuously tune guardrails and thresholds as we scale.",
-    },
-  },
-  {
-    id: "data",
-    phase: "Assess",
-    title: "Data Foundation",
-    text: "We have confidence that the data feeding AI/agent workflows is accurate, up to date, and permissioned across our core systems (CRM/sales, support tickets, finance/accounting, inventory/ops, internal documents) and we can trace where it came from.",
-    benchmark: 3.8,
-    levels: {
-      1: "Data is scattered across tools/spreadsheets, inconsistent, and we don't know what the source of truth is.",
-      2: "Some clean datasets exist, but quality varies, access is messy, and updates depend on individuals.",
-      3: "We know our core systems of record (e.g., CRM/accounting), have basic data standards, and can use the data for a pilot use case.",
-      4: "Data is reliable for key workflows: ownership is clear, access permissions are managed, and we have routine cleanup/validation.",
-      5: "Data is audit-ready for AI at scale: consistent definitions, monitored quality, controlled access, and the ability to trace inputs/changes for AI decisions.",
-    },
-  },
-  {
-    id: "security",
-    phase: "Navigate",
-    title: "Security & Privacy",
-    text: "We have clear rules and controls for what AI tools/agents can access and share (customer data, internal docs, financial data), including permissions, approved tools, and how sensitive data is handled.",
-    benchmark: 3.7,
-    levels: {
-      1: "No defined rules for AI tool use or data access; people use whatever tools they want.",
-      2: "Some informal \"do/don't\" guidance exists, but it isn't documented or consistently followed.",
-      3: "We have documented rules for approved tools and what data can/can't be used, but enforcement and monitoring are limited.",
-      4: "Access is permissioned (least privilege), sensitive data handling is clear, vendors are reviewed/approved, and policies are communicated and followed.",
-      5: "Controls are enforced and continuously improved: training is routine, audits/checks occur, incidents are tracked, and policies evolve as AI use scales.",
-    },
-  },
-  {
-    id: "risk",
-    phase: "Navigate",
-    title: "Risk Management",
-    text: "We've identified the main ways AI/agents could go wrong in our business (wrong answers, biased outcomes, data exposure, misuse, or over-reliance) and we have practical safeguards to detect and reduce these risks.",
-    benchmark: 3.6,
-    levels: {
-      1: "We haven't discussed AI risks or set guardrails.",
-      2: "We've talked about risks informally, but nothing is documented and controls vary by person.",
-      3: "We've documented key risks for our intended use cases and defined basic mitigations (what needs review, what data is restricted, what AI shouldn't do).",
-      4: "Risk controls are built into workflows: approval gates for high-impact actions, testing/validation steps, logs for key actions, and an escalation plan when issues arise.",
-      5: "Risk management is ongoing and measurable: we monitor incidents/errors, update guardrails regularly, train staff, and refine policies as we scale AI/agent use.",
-    },
-  },
-  {
-    id: "governance",
-    phase: "Navigate",
-    title: "Governance Framework",
-    text: "We have a lightweight process to approve, manage, and review AI/agent workflows - including who can approve them, how success/risk is monitored, and when a workflow must be paused or retired.",
-    benchmark: 3.9,
-    levels: {
-      1: "No approval or review process; AI use is unmanaged.",
-      2: "Approvals happen informally (if at all) and there's no consistent review cadence.",
-      3: "We have a basic documented process (who approves + what to check), but monitoring and retirement decisions are inconsistent.",
-      4: "AI/agent workflows follow a consistent lifecycle: evaluate → approve → pilot → monitor → improve/retire, with clear decision rights and a regular review cadence.",
-      5: "Governance is embedded and efficient: standardized checklists, strong documentation/logging, KPI + risk dashboards, and fast iteration or shutdown when performance or risk thresholds are breached.",
-    },
-  },
-  {
-    id: "integration",
-    phase: "Execution",
-    title: "Operational Integration",
-    text: "AI/agent workflows are integrated into the tools and processes our team already uses (CRM, support/helpdesk, scheduling, finance/accounting, docs) with clear handoffs and approvals - not just one-off experiments.",
-    benchmark: 3.5,
-    levels: {
-      1: "AI isn't used in core workflows or systems.",
-      2: "Individuals use AI tools manually (copy/paste), but nothing is standardized or integrated.",
-      3: "We've identified specific workflows to integrate AI into and have basic SOPs, but integration is still partial or inconsistent.",
-      4: "At least one AI/agent workflow is running in production with defined steps, approvals, and integration into core systems (or reliable automations).",
-      5: "AI/agent workflows are standardized and scalable across teams: monitored, documented, continuously improved, and reliably connected to core systems.",
-    },
-  },
-  {
-    id: "workforce",
-    phase: "Capability",
-    title: "Workforce Enablement",
-    text: "Our team knows how to use AI/agents safely and effectively in their day-to-day work - including what's allowed, what requires human approval, and who is responsible for outcomes.",
-    benchmark: 3.6,
-    levels: {
-      1: "No training or guidance; people use AI inconsistently or not at all.",
-      2: "A few individuals know how to use AI, but there's no shared playbook, templates, or accountability.",
-      3: "We have basic training and written guidelines (do/don't, data rules, review requirements), but adoption varies by team.",
-      4: "Training is role-based, templates/SOPs exist for key workflows, and responsibilities are clear (who reviews, who approves, who owns results).",
-      5: "Enablement is continuous: onboarding includes AI, refreshers occur regularly, performance is measured, and the playbook evolves based on outcomes and risk learnings.",
-    },
-  },
-  {
-    id: "improvement",
-    phase: "Deployment",
-    title: "Continuous Improvement",
-    text: "We regularly review AI/agent workflows on a defined schedule (monthly/quarterly) to ensure they're delivering business value - tracking KPIs like ROI/time saved, accuracy/error rates, and any unintended impacts.",
-    benchmark: 3.4,
-    levels: {
-      1: "No performance tracking or formal review of AI results.",
-      2: "We notice issues when they happen, but reviews and fixes are inconsistent and not documented.",
-      3: "We track basic metrics (e.g., time saved, accuracy/error rate) and have an intended review cadence, but follow-through varies.",
-      4: "We have documented review cycles, clear owners, KPI + error monitoring, and a consistent process to improve or pause workflows when results degrade.",
-      5: "Continuous improvement is systematic: we benchmark performance, run structured updates, document changes, and proactively detect reliability drops as we scale.",
-    },
-  },
-];
+// ============================================================
+// TYPES
+// ============================================================
 
-const scaleOptions = [
-  { value: 1, label: "Not in place" },
-  { value: 2, label: "Ad hoc" },
-  { value: 3, label: "Defined" },
-  { value: 4, label: "Established" },
-  { value: 5, label: "Optimized" },
-];
+type AssessmentStage =
+  | "intro"
+  | "profiling"
+  | "questions"
+  | "mid-capture"
+  | "questions-2"
+  | "final-capture"
+  | "analyzing"
+  | "results";
 
-// Recommended first workflows based on score patterns
-const workflowRecommendations = [
-  {
-    name: "Customer Support Triage Agent",
-    description: "Supervised agent that categorizes and routes support tickets, drafts initial responses for human review.",
-    kpis: ["First response time", "Ticket routing accuracy", "Agent time saved"],
-    bestFor: "Teams with high support volume and inconsistent response times",
-  },
-  {
-    name: "Sales Research & Prep Agent",
-    description: "Agent that researches prospects, summarizes company info, and drafts personalized outreach for human approval.",
-    kpis: ["Research time saved", "Meeting prep quality", "Outreach response rate"],
-    bestFor: "Sales teams spending too much time on manual research",
-  },
-  {
-    name: "Document Processing Agent",
-    description: "Agent that extracts data from documents (invoices, contracts, forms), flags exceptions for human review.",
-    kpis: ["Processing time", "Extraction accuracy", "Exception rate"],
-    bestFor: "Teams with repetitive document handling workflows",
-  },
-  {
-    name: "Internal Knowledge Assistant",
-    description: "Agent that answers team questions using your internal docs, SOPs, and knowledge base - with source citations.",
-    kpis: ["Questions resolved", "Time to answer", "Source accuracy"],
-    bestFor: "Teams where tribal knowledge slows down onboarding and daily work",
-  },
-];
-
-const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
-const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/wsneore7j9b7sy6smxpbs0al2mf8ef75";
-
-type Screen = "intro" | "questions" | "capture" | "results";
-type Band = "early" | "developing" | "advanced";
-
-interface FormData {
+interface UserProfile {
+  companySize: CompanySize | null;
+  role: Role | null;
+  organization: string;
   firstName: string;
   lastName: string;
   email: string;
-  organization: string;
-  role: string;
-  companySize: string;
 }
 
+interface AssessmentResults {
+  overallScore: number;
+  dimensionScores: Record<string, number>;
+  weakestDimension: string;
+  strongestDimension: string;
+  leadScore: string;
+  reportBranding: { title: string; subtitle: string; focus: string };
+  priorityActions: string[];
+  serviceRecommendations: Array<{
+    dimension: string;
+    service: string;
+    description: string;
+    deliverable: string;
+  }>;
+  benchmarks: Record<string, number>;
+}
+
+// ============================================================
+// CONSTANTS
+// ============================================================
+
+const CALENDLY_LINK =
+  "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
+
+const COMPANY_SIZES: { value: CompanySize; label: string }[] = [
+  { value: "1-10", label: "1 to 10 employees" },
+  { value: "11-50", label: "11 to 50 employees" },
+  { value: "51-200", label: "51 to 200 employees" },
+  { value: "200+", label: "200+ employees" },
+];
+
+const ROLES: { value: Role; label: string }[] = [
+  { value: "c-suite", label: "C-Suite (CEO, CTO, COO, etc.)" },
+  { value: "vp", label: "Vice President" },
+  { value: "director", label: "Director" },
+  { value: "manager", label: "Manager" },
+  { value: "business-owner", label: "Business Owner" },
+  { value: "individual-contributor", label: "Individual Contributor" },
+  { value: "consultant", label: "Consultant / Advisor" },
+  { value: "student", label: "Student / Researcher" },
+];
+
+const ANALYZING_STEPS = [
+  "Mapping responses to ASCEND framework...",
+  "Calculating dimension scores...",
+  "Benchmarking against industry data...",
+  "Identifying priority gaps...",
+  "Generating personalized insights...",
+  "Building your readiness profile...",
+];
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
+
 export default function AssessmentPage() {
-  const [screen, setScreen] = useState<Screen>("intro");
-  const [currentQ, setCurrentQ] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [formData, setFormData] = useState<FormData>({
+  const [stage, setStage] = useState<AssessmentStage>("intro");
+  const [profile, setProfile] = useState<UserProfile>({
+    companySize: null,
+    role: null,
+    organization: "",
     firstName: "",
     lastName: "",
     email: "",
-    organization: "",
-    role: "",
-    companySize: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [questions, setQuestions] = useState<AssessmentQuestion[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [showHelp, setShowHelp] = useState(false);
+  const [microInsight, setMicroInsight] = useState<string | null>(null);
+  const [results, setResults] = useState<AssessmentResults | null>(null);
+  const [analyzingStep, setAnalyzingStep] = useState(0);
+  const [emailCaptured, setEmailCaptured] = useState(false);
+  const [utmParams, setUtmParams] = useState({ utmSource: "", utmMedium: "", utmCampaign: "" });
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const getScore = () => {
-    let sum = 0;
-    for (let i = 0; i < 10; i++) sum += answers[i] || 0;
-    return sum;
-  };
-
-  const getBand = (score: number): Band => {
-    if (score <= 24) return "early";
-    if (score <= 39) return "developing";
-    return "advanced";
-  };
-
-  // Get top 3 blockers (lowest scoring dimensions)
-  const getBlockers = () => {
-    const scored = dimensions.map((dim, i) => ({
-      ...dim,
-      score: answers[i] || 0,
-      index: i,
-    }));
-    return scored
-      .filter((d) => d.score < 4) // Only include scores below "Established"
-      .sort((a, b) => a.score - b.score)
-      .slice(0, 3);
-  };
-
-  // Get recommended workflow based on answers
-  const getRecommendedWorkflow = () => {
-    const dataScore = answers[3] || 0;
-    const integrationScore = answers[7] || 0;
-    const workforceScore = answers[8] || 0;
-
-    // If data foundation is weak, start with internal knowledge
-    if (dataScore <= 2) return workflowRecommendations[3];
-    // If integration is weak, start with document processing (standalone)
-    if (integrationScore <= 2) return workflowRecommendations[2];
-    // If workforce enablement is weak, start with sales research (high visibility)
-    if (workforceScore <= 2) return workflowRecommendations[1];
-    // Default to support triage (common quick win)
-    return workflowRecommendations[0];
-  };
-
-  // Generate recommendations based on ACTUAL low scores
-  const getRecommendations = () => {
-    const blockers = getBlockers();
-    const recommendations: { title: string; details: string }[] = [];
-
-    blockers.forEach((blocker) => {
-      switch (blocker.id) {
-        case "strategic":
-          recommendations.push({
-            title: "Define 1-3 AI Quick Wins",
-            details: "Identify specific workflows with measurable KPIs (time saved, errors reduced) and a 30/60/90-day execution plan.",
-          });
-          break;
-        case "executive":
-          recommendations.push({
-            title: "Establish AI Ownership",
-            details: "Name a specific leader accountable for AI decisions, budget, and outcomes with a regular review cadence.",
-          });
-          break;
-        case "oversight":
-          recommendations.push({
-            title: "Define Human-in-the-Loop Rules",
-            details: "Document which AI outputs require human approval, who approves, and escalation paths for exceptions.",
-          });
-          break;
-        case "data":
-          recommendations.push({
-            title: "Audit Your Data Foundation",
-            details: "Identify your systems of record, clean up data quality issues, and establish access permissions for AI tools.",
-          });
-          break;
-        case "security":
-          recommendations.push({
-            title: "Set AI Security Policies",
-            details: "Document approved tools, data access rules, and sensitive data handling procedures.",
-          });
-          break;
-        case "risk":
-          recommendations.push({
-            title: "Create an AI Risk Register",
-            details: "Document potential failure modes, define guardrails, and establish monitoring for AI/agent workflows.",
-          });
-          break;
-        case "governance":
-          recommendations.push({
-            title: "Build a Lightweight Governance Process",
-            details: "Create a simple approval workflow for AI use cases with defined decision rights and review cadence.",
-          });
-          break;
-        case "integration":
-          recommendations.push({
-            title: "Pilot One Integrated Workflow",
-            details: "Move from copy/paste AI use to one production workflow integrated with your core systems.",
-          });
-          break;
-        case "workforce":
-          recommendations.push({
-            title: "Create AI Usage Guidelines",
-            details: "Document what's allowed, what requires approval, and train your team on responsible AI use.",
-          });
-          break;
-        case "improvement":
-          recommendations.push({
-            title: "Establish Review Cadence",
-            details: "Set up monthly/quarterly reviews of AI performance with clear KPIs and improvement triggers.",
-          });
-          break;
-      }
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    setUtmParams({
+      utmSource: params.get("utm_source") || "",
+      utmMedium: params.get("utm_medium") || "",
+      utmCampaign: params.get("utm_campaign") || "",
     });
+    const token = params.get("resume");
+    if (token) resumeFromToken(token);
+  }, []);
 
-    // If somehow no blockers, give general advice
-    if (recommendations.length === 0) {
-      recommendations.push({
-        title: "Scale Your AI Success",
-        details: "You're well-positioned. Focus on expanding proven workflows and refining governance as you scale.",
-      });
-    }
-
-    return recommendations;
-  };
-
-  const selectAnswer = (val: number) => {
-    setAnswers({ ...answers, [currentQ]: val });
-    setTimeout(() => {
-      if (currentQ < 9) {
-        setCurrentQ(currentQ + 1);
-      } else {
-        setScreen("capture");
+  const resumeFromToken = async (token: string) => {
+    try {
+      const res = await fetch(`/api/assessment/partial?token=${token}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.partial) {
+          const p = data.partial;
+          setProfile({ companySize: p.companySize, role: p.role, organization: p.organization || "", firstName: p.firstName || "", lastName: p.lastName || "", email: p.email || "" });
+          setAnswers(p.answersSoFar || {});
+          setEmailCaptured(true);
+          if (p.companySize) { const qs = getQuestionsForSize(p.companySize); setQuestions(qs); setCurrentQuestionIndex(p.currentQuestion || 5); }
+          setStage("questions-2");
+        }
       }
-    }, 250);
+    } catch { /* Start fresh */ }
   };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  useEffect(() => { if (profile.companySize) setQuestions(getQuestionsForSize(profile.companySize)); }, [profile.companySize]);
 
-    const currentScore = getScore();
-    const currentBand = getBand(currentScore);
-    const blockers = getBlockers();
-    const recommendations = getRecommendations();
-    const recommendedWorkflow = getRecommendedWorkflow();
+  const totalQuestions = questions.length || 10;
+  const answeredCount = Object.keys(answers).length;
+  const progressPercent = Math.round((answeredCount / totalQuestions) * 100);
 
-    const dimensionData = dimensions.map((dim, i) => ({
-      title: dim.title,
-      score: answers[i] || 0,
-      benchmark: dim.benchmark,
-      phase: dim.phase,
-    }));
+  useEffect(() => {
+    if (stage !== "analyzing") return;
+    const interval = setInterval(() => { setAnalyzingStep((prev) => { if (prev >= ANALYZING_STEPS.length - 1) { clearInterval(interval); return prev; } return prev + 1; }); }, 600);
+    return () => clearInterval(interval);
+  }, [stage]);
+
+  const handleAnswer = useCallback((questionId: string, value: number) => {
+    const newAnswers = { ...answers, [questionId]: value };
+    setAnswers(newAnswers);
+    const question = questions.find((q) => q.id === questionId);
+    if (question && profile.companySize) setMicroInsight(generateMicroInsight(question, value, profile.companySize));
+    setTimeout(() => {
+      setMicroInsight(null);
+      const nextIndex = currentQuestionIndex + 1;
+      if (nextIndex === 5 && !emailCaptured) { setStage("mid-capture"); return; }
+      if (nextIndex >= questions.length) { if (!emailCaptured) { setStage("final-capture"); } else { submitAssessment(newAnswers); } return; }
+      setCurrentQuestionIndex(nextIndex);
+    }, 2200);
+  }, [answers, currentQuestionIndex, questions, profile.companySize, emailCaptured]);
+
+  const savePartialCompletion = async () => {
+    try {
+      await fetch("/api/assessment/partial", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: profile.email, firstName: profile.firstName, lastName: profile.lastName, organization: profile.organization, companySize: profile.companySize, role: profile.role, answersSoFar: answers, currentQuestion: currentQuestionIndex, ...utmParams }),
+      });
+    } catch { /* Silent */ }
+  };
+
+  const buildLocalResults = (finalAnswers: Record<string, number>): AssessmentResults => {
+    const overallScore = calculateOverallScore(finalAnswers);
+    const dimensionScores: Record<string, number> = {};
+    questions.forEach((q) => { if (finalAnswers[q.id] !== undefined) dimensionScores[q.dimension] = finalAnswers[q.id]; });
+    const sorted = Object.entries(dimensionScores).sort(([, a], [, b]) => a - b);
+    const weakest = sorted[0]?.[0] || "Data Foundation";
+    const strongest = sorted[sorted.length - 1]?.[0] || "Strategic Alignment";
+    const size = profile.companySize || "11-50";
+    return {
+      overallScore, dimensionScores, weakestDimension: weakest, strongestDimension: strongest, leadScore: "warm",
+      reportBranding: REPORT_BRANDING[size],
+      priorityActions: PRIORITY_ACTIONS[weakest] || ["Focus on building foundations in this area."],
+      serviceRecommendations: sorted.filter(([, s]) => s < 3).slice(0, 3).map(([dim]) => ({ dimension: dim, ...(DIMENSION_SERVICE_MAP[dim] || { service: "AI Strategy Session", description: "Personalized guidance.", deliverable: "Action plan" }) })),
+      benchmarks: Object.fromEntries(questions.map((q) => [q.dimension, q.benchmarks[size]])),
+    };
+  };
+
+  const submitAssessment = async (finalAnswers: Record<string, number>) => {
+    setStage("analyzing");
+    setAnalyzingStep(0);
+    // Safety net: always show results after 5 seconds no matter what
+    const safetyTimeout = setTimeout(() => {
+      setResults((prev) => prev || buildLocalResults(finalAnswers));
+      setStage("results");
+    }, 5000);
 
     try {
-      // Send data to Make.com webhook
-      const webhookData = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        organization: formData.organization,
-        role: formData.role,
-        companySize: formData.companySize,
-        score: currentScore,
-        band: currentBand,
-        answers: answers,
-        dimensions: dimensionData,
-        blockers: blockers.map((b) => ({ title: b.title, score: b.score })),
-        recommendations: recommendations,
-        recommendedWorkflow: recommendedWorkflow,
-        calendlyUrl: CALENDLY_URL,
-        timestamp: new Date().toISOString(),
-      };
-
-      // Fire webhook to Make
-      await fetch(MAKE_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(webhookData),
-        mode: "no-cors",
+      const res = await fetch("/api/assessment/submit", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName: profile.firstName, lastName: profile.lastName, email: profile.email, organization: profile.organization, companySize: profile.companySize, role: profile.role, answers: finalAnswers, ...utmParams }),
       });
-
-      // Save lead to database
-      try {
-        await fetch("/api/leads", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-            organization: formData.organization,
-            role: formData.role,
-            companySize: formData.companySize,
-            score: currentScore,
-            band: currentBand,
-            answers: answers,
-            dimensions: dimensionData,
-          }),
-        });
-      } catch (leadError) {
-        console.error("Lead capture error:", leadError);
+      if (!res.ok) throw new Error(`API returned ${res.status}`);
+      const data = await res.json();
+      if (data.success) {
+        clearTimeout(safetyTimeout);
+        setResults({ overallScore: data.overallScore, dimensionScores: data.dimensionScores, weakestDimension: data.weakestDimension, strongestDimension: data.strongestDimension, leadScore: data.leadScore, reportBranding: data.reportBranding, priorityActions: data.priorityActions, serviceRecommendations: data.serviceRecommendations, benchmarks: data.benchmarks });
+        setTimeout(() => setStage("results"), 4000);
+      } else {
+        clearTimeout(safetyTimeout);
+        setResults(buildLocalResults(finalAnswers));
+        setTimeout(() => setStage("results"), 4000);
       }
     } catch (error) {
+      clearTimeout(safetyTimeout);
       console.error("Submit error:", error);
+      setResults(buildLocalResults(finalAnswers));
+      setTimeout(() => setStage("results"), 4000);
     }
-
-    setIsSubmitting(false);
-    setScreen("results");
   };
 
-  const restart = () => {
-    setCurrentQ(0);
-    setAnswers({});
-    setFormData({ firstName: "", lastName: "", email: "", organization: "", role: "", companySize: "" });
-    setScreen("intro");
+  const handleShare = () => {
+    if (!results) return;
+    const text = `I scored ${results.overallScore}/100 on the JMCB AI Readiness Assessment. How ready is YOUR organization for AI?\n\nTake the free assessment: jmcbtech.com/assessment`;
+    if (navigator.share) { navigator.share({ title: "My AI Readiness Score", text, url: "https://jmcbtech.com/assessment" }); }
+    else { navigator.clipboard.writeText(text); alert("Share text copied to clipboard!"); }
   };
 
-  const score = getScore();
-  const band = getBand(score);
-  const blockers = getBlockers();
-  const recommendations = getRecommendations();
-  const recommendedWorkflow = getRecommendedWorkflow();
-  const pct = Math.round(((currentQ + 1) / 10) * 100);
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [stage, currentQuestionIndex]);
 
-  const bandInfo = {
-    early: {
-      color: "#DC2626",
-      bgColor: "#FEF2F2",
-      label: "Foundation Stage",
-      risk: "Higher Risk Profile",
-      summary: "is in the early stages of agentic AI readiness. Focus on establishing fundamentals before deploying AI agents.",
-    },
-    developing: {
-      color: "#D97706",
-      bgColor: "#FFFBEB",
-      label: "Developing Stage",
-      risk: "Moderate Risk Profile",
-      summary: "has foundations in place but gaps remain. Address blockers before scaling agentic AI workflows.",
-    },
-    advanced: {
-      color: "#059669",
-      bgColor: "#F0FDF4",
-      label: "Advanced Stage",
-      risk: "Lower Risk Profile",
-      summary: "is well-positioned for agentic AI. Focus on scaling proven workflows and refining governance.",
-    },
+  // ── STYLES: Amber/Gold brand palette ──
+  const accent = "#d97706";
+  const accentLight = "#f59e0b";
+  const accentGlow = "rgba(217, 119, 6, 0.15)";
+  const accentBorder = "rgba(217, 119, 6, 0.25)";
+  const success = "#10b981";
+  const danger = "#ef4444";
+
+  const S = {
+    root: { minHeight: "100vh", background: "linear-gradient(160deg, #0f0f0f 0%, #1a1207 40%, #1c1510 70%, #0f0f0f 100%)", color: "#e2e8f0", fontFamily: "'Inter', system-ui, sans-serif", WebkitFontSmoothing: "antialiased" as const },
+    container: { maxWidth: "680px", margin: "0 auto", padding: "24px 20px", minHeight: "100vh", display: "flex", flexDirection: "column" as const, justifyContent: "center" as const },
+    containerTop: { maxWidth: "680px", margin: "0 auto", padding: "80px 20px 24px" },
+    label: { fontSize: "13px", color: accent, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" as const, marginBottom: "10px" },
+    h1: { fontSize: "clamp(28px, 5vw, 42px)", fontWeight: 700, lineHeight: 1.15, marginBottom: "16px", background: "linear-gradient(135deg, #f8fafc 0%, #d4d4d8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" },
+    h2: { fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 600, lineHeight: 1.3, marginBottom: "12px", color: "#f1f5f9" },
+    p: { fontSize: "15px", color: "#a1a1aa", lineHeight: 1.65, marginBottom: "24px" },
+    btnPrimary: { background: `linear-gradient(135deg, ${accent} 0%, #b45309 100%)`, color: "white", border: "none", padding: "14px 32px", borderRadius: "10px", fontSize: "16px", fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s ease" },
+    btnSecondary: { background: "transparent", color: "#a1a1aa", border: "1px solid #2a2a2a", padding: "12px 28px", borderRadius: "10px", fontSize: "15px", fontWeight: 500, cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s ease" },
+    input: { width: "100%", background: "rgba(20, 20, 20, 0.8)", border: "1px solid #2a2a2a", borderRadius: "10px", padding: "14px 18px", color: "#e2e8f0", fontSize: "16px", fontFamily: "inherit", outline: "none", boxSizing: "border-box" as const },
+    card: { background: "rgba(20, 20, 20, 0.6)", border: "1px solid #2a2a2a", borderRadius: "16px", padding: "28px", backdropFilter: "blur(12px)" },
+    optionCard: (selected: boolean) => ({ background: selected ? accentGlow : "rgba(20, 20, 20, 0.5)", border: `1.5px solid ${selected ? accent : "#2a2a2a"}`, borderRadius: "12px", padding: "18px 22px", cursor: "pointer", textAlign: "left" as const, width: "100%", color: "#e2e8f0", fontFamily: "inherit", transition: "all 0.2s ease", boxShadow: selected ? `0 0 20px ${accentGlow}` : "none" }),
   };
-
-  const profile = bandInfo[band];
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12 md:py-16 pt-28">
-        {/* INTRO SCREEN */}
-        {screen === "intro" && (
-          <div className="animate-fade-in">
-            <div className="text-center mb-10">
-              <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-6">
-                Executive Assessment
-              </p>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                AI Readiness Assessment
-              </h1>
-              <p className="text-lg text-accent font-medium mb-4">
-                Ready for agentic AI? Start with the right workflows and guardrails.
-              </p>
-              <p className="text-gray-500 max-w-lg mx-auto">
-                Assess your data, processes, and risk exposure, then get a recommended starting point and rollout plan via the JMCB ASCEND™ methodology.
-              </p>
-            </div>
-
-            {/* JMCB ASCEND Framework */}
-            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 mb-8">
-              <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-3">
-                The JMCB ASCEND™ Framework
-              </p>
-              <p className="text-gray-700 text-sm mb-4">
-                A practical path to deploy agentic AI safely — starting with the workflows that matter most.
-              </p>
-              <div className="space-y-3 text-sm">
-                <div className="flex gap-3">
-                  <span className="font-bold text-accent w-6">A</span>
-                  <div><strong>Assess</strong> — Identify your best AI use cases + what's blocking them</div>
-                </div>
-                <div className="flex gap-3">
-                  <span className="font-bold text-accent w-6">S</span>
-                  <div><strong>Strategize</strong> — Pick priorities and define ROI with a 30/60/90-day roadmap</div>
-                </div>
-                <div className="flex gap-3">
-                  <span className="font-bold text-accent w-6">C</span>
-                  <div><strong>Capability</strong> — Confirm your tools, skills, and data access</div>
-                </div>
-                <div className="flex gap-3">
-                  <span className="font-bold text-accent w-6">E</span>
-                  <div><strong>Execution</strong> — Pilot one workflow with clear success metrics</div>
-                </div>
-                <div className="flex gap-3">
-                  <span className="font-bold text-accent w-6">N</span>
-                  <div><strong>Navigate</strong> — Put guardrails in place for responsible AI</div>
-                </div>
-                <div className="flex gap-3">
-                  <span className="font-bold text-accent w-6">D</span>
-                  <div><strong>Deployment</strong> — Roll out and optimize with continuous improvement</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div className="flex justify-center gap-8 mb-8 flex-wrap">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">10</div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide">Questions</div>
-              </div>
-              <div className="w-px bg-gray-200" />
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">5</div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide">Minutes</div>
-              </div>
-              <div className="w-px bg-gray-200" />
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">Free</div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide">Report</div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <button
-                onClick={() => setScreen("questions")}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition-all hover:-translate-y-0.5 hover:shadow-lg"
-              >
-                Start Your Assessment
-                <ArrowRight className="w-4 h-4" />
-              </button>
-              <p className="mt-6 text-sm text-gray-400">
-                Built for small teams: clear steps, minimal disruption, measurable outcomes.
-              </p>
-            </div>
+    <div ref={containerRef} style={S.root}>
+      {/* PROGRESS BAR */}
+      {(stage === "questions" || stage === "questions-2" || stage === "mid-capture" || stage === "final-capture") && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50 }}>
+          <div style={{ height: "3px", background: "#1a1a1a", width: "100%" }}>
+            <div style={{ height: "100%", background: `linear-gradient(90deg, ${accent}, ${accentLight})`, width: `${progressPercent}%`, transition: "width 0.5s ease", borderRadius: "0 2px 2px 0" }} />
           </div>
-        )}
-
-        {/* QUESTIONS SCREEN */}
-        {screen === "questions" && (
-          <div className="animate-fade-in">
-            {/* Progress */}
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-sm text-gray-500">
-                  Question {currentQ + 1} of 10
-                </span>
-                <span className="text-sm font-semibold text-accent">{pct}%</span>
-              </div>
-              <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-accent to-amber-500 rounded-full transition-all duration-400"
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Question Card */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
-              <span className="inline-block px-3 py-1 bg-accent/10 text-accent rounded text-xs font-semibold uppercase tracking-wide mb-4">
-                ASCEND™ {dimensions[currentQ].phase}
-              </span>
-              <h2 className="text-xl font-bold text-gray-900 mb-3">
-                {dimensions[currentQ].title}
-              </h2>
-              <p className="text-gray-600 leading-relaxed">
-                {dimensions[currentQ].text}
-              </p>
-            </div>
-
-            {/* Scale Options - Stacked with descriptions */}
-            <div className="space-y-2 mb-6">
-              {scaleOptions.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => selectAnswer(option.value)}
-                  className={`w-full p-4 rounded-lg border-2 text-left transition-all hover:border-accent ${
-                    answers[currentQ] === option.value
-                      ? "bg-accent/10 border-accent"
-                      : "bg-white border-gray-200"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <span
-                      className={`text-lg font-bold ${
-                        answers[currentQ] === option.value ? "text-accent" : "text-gray-400"
-                      }`}
-                    >
-                      {option.value}
-                    </span>
-                    <div>
-                      <div className={`font-semibold ${answers[currentQ] === option.value ? "text-accent" : "text-gray-900"}`}>
-                        {option.label}
-                      </div>
-                      <div className="text-sm text-gray-500 mt-1">
-                        {dimensions[currentQ].levels[option.value as 1 | 2 | 3 | 4 | 5]}
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            {/* Navigation */}
-            {currentQ > 0 && (
-              <button
-                onClick={() => setCurrentQ(currentQ - 1)}
-                className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Previous
-              </button>
-            )}
+          <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 20px", background: "rgba(15, 15, 15, 0.9)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(42, 42, 42, 0.5)" }}>
+            <span style={{ fontSize: "13px", color: "#71717a", fontWeight: 500 }}>JMCB AI Readiness Assessment</span>
+            <span style={{ fontSize: "13px", color: accent, fontWeight: 600 }}>{progressPercent}% complete</span>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* CAPTURE SCREEN */}
-        {screen === "capture" && (
-          <div className="animate-fade-in">
-            <div className="text-center mb-8">
-              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Check className="w-7 h-7 text-green-600" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Your Agentic AI Readiness Report is Ready
-              </h2>
-              <p className="text-gray-500 max-w-md mx-auto">
-                Enter your details to unlock:
-              </p>
-              <ul className="text-gray-600 mt-4 space-y-2 max-w-sm mx-auto text-left">
-                <li className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Your ASCEND™ Readiness Score + risk flags</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Top 3 blockers to agentic AI in your business</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Recommended first AI agent workflow</span>
-                </li>
-              </ul>
+      <AnimatePresence mode="wait">
+        {/* INTRO */}
+        {stage === "intro" && (
+          <motion.div key="intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }} style={{ ...S.container, textAlign: "center" }}>
+            <div style={{ width: 56, height: 56, borderRadius: "14px", background: `linear-gradient(135deg, ${accent} 0%, #92400e 100%)`, margin: "0 auto 28px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", fontWeight: 800, color: "white" }}>AI</div>
+            <h1 style={S.h1}>How ready is your organization for AI?</h1>
+            <p style={{ ...S.p, maxWidth: "520px", margin: "0 auto 28px" }}>Get a personalized diagnostic across 10 critical dimensions. In 5 minutes, you'll know exactly where you stand and what to do next.</p>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "8px 16px", borderRadius: "20px", background: accentGlow, border: `1px solid ${accentBorder}`, marginBottom: "32px" }}>
+              <span style={{ fontSize: "13px", color: accentLight, fontWeight: 500 }}>Join 500+ organizations assessed</span>
             </div>
 
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    First Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.firstName}
-                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.lastName}
-                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Work Email *
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Organization *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.organization}
-                  onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Role *
-                </label>
-                <select
-                  required
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent appearance-none bg-white"
-                >
-                  <option value="">Select your role...</option>
-                  <option value="Owner / Founder">Owner / Founder</option>
-                  <option value="CEO / President">CEO / President</option>
-                  <option value="COO / Operations">COO / Operations</option>
-                  <option value="CFO / Finance">CFO / Finance</option>
-                  <option value="CTO / CIO / Technology">CTO / CIO / Technology</option>
-                  <option value="VP / Director">VP / Director</option>
-                  <option value="Manager">Manager</option>
-                  <option value="Consultant / Advisor">Consultant / Advisor</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Company Size *
-                </label>
-                <select
-                  required
-                  value={formData.companySize}
-                  onChange={(e) => setFormData({ ...formData, companySize: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent appearance-none bg-white"
-                >
-                  <option value="">Select company size...</option>
-                  <option value="1-10">1-10 employees</option>
-                  <option value="11-50">11-50 employees</option>
-                  <option value="51-200">51-200 employees</option>
-                  <option value="201-500">201-500 employees</option>
-                  <option value="501+">501+ employees</option>
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full mt-6 inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Generating Report...
-                  </>
-                ) : (
-                  <>
-                    Unlock My Results
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-
-              <p className="text-center text-xs text-gray-400 mt-4">
-                We'll email your report. No spam. Unsubscribe anytime. We never sell your data.
-              </p>
-            </form>
-          </div>
-        )}
-
-        {/* RESULTS SCREEN */}
-        {screen === "results" && (
-          <div className="animate-fade-in">
-            {/* Score Header */}
-            <div className="text-center mb-8">
-              <p
-                className="text-xs font-semibold tracking-widest uppercase mb-3"
-                style={{ color: profile.color }}
-              >
-                {profile.risk}
-              </p>
-              <div
-                className="text-6xl font-bold mb-3"
-                style={{ color: profile.color }}
-              >
-                {score}
-                <span className="text-2xl opacity-60">/50</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-3">
-                {profile.label}
-              </h1>
-              <p className="text-gray-500 max-w-lg mx-auto">
-                {formData.organization} {profile.summary}
-              </p>
-            </div>
-
-            {/* TOP 3 BLOCKERS */}
-            {blockers.length > 0 && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <AlertTriangle className="w-5 h-5 text-red-600" />
-                  <p className="text-sm font-semibold text-red-800 uppercase tracking-wide">
-                    Top {blockers.length} Blockers to Agentic AI
-                  </p>
-                </div>
-                <div className="space-y-3">
-                  {blockers.map((blocker, i) => (
-                    <div
-                      key={blocker.id}
-                      className="bg-white border border-red-200 rounded-lg p-4 flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-lg font-bold text-red-600">{i + 1}</span>
-                        <div>
-                          <div className="font-semibold text-gray-900">{blocker.title}</div>
-                          <div className="text-sm text-gray-500">
-                            Score: {blocker.score}/5 • {blocker.phase} phase
-                          </div>
-                        </div>
-                      </div>
-                      <span
-                        className="text-2xl font-bold"
-                        style={{
-                          color: blocker.score <= 2 ? "#DC2626" : "#D97706",
-                        }}
-                      >
-                        {blocker.score}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* RECOMMENDED FIRST WORKFLOW */}
-            <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Zap className="w-5 h-5 text-green-600" />
-                <p className="text-sm font-semibold text-green-800 uppercase tracking-wide">
-                  Recommended First Agent Workflow
-                </p>
-              </div>
-              <div className="bg-white border border-green-200 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 text-lg mb-2">
-                  {recommendedWorkflow.name}
-                </h3>
-                <p className="text-gray-600 mb-3">{recommendedWorkflow.description}</p>
-                <div className="mb-3">
-                  <p className="text-xs font-semibold text-gray-500 uppercase mb-1">KPIs to Track:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {recommendedWorkflow.kpis.map((kpi) => (
-                      <span key={kpi} className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">
-                        {kpi}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <p className="text-sm text-gray-500">
-                  <strong>Best for:</strong> {recommendedWorkflow.bestFor}
-                </p>
-              </div>
-            </div>
-
-            {/* RECOMMENDATIONS */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
-              <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">
-                Priority Actions
-              </p>
-              <div className="space-y-3">
-                {recommendations.map((rec, i) => (
-                  <div
-                    key={i}
-                    className="bg-white border border-gray-200 rounded-lg p-4 flex items-start gap-4"
-                  >
-                    <span className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
-                      {i + 1}
-                    </span>
-                    <div>
-                      <div className="font-semibold text-gray-900">{rec.title}</div>
-                      <div className="text-sm text-gray-500 mt-1">{rec.details}</div>
-                    </div>
+            {/* ASCEND Framework */}
+            <div style={{ ...S.card, textAlign: "left", maxWidth: "520px", margin: "0 auto 32px", borderColor: accentBorder, background: `linear-gradient(135deg, rgba(217, 119, 6, 0.04) 0%, rgba(20, 20, 20, 0.6) 100%)` }}>
+              <p style={{ fontSize: "12px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: accent, marginBottom: "12px" }}>The JMCB ASCEND Framework</p>
+              <p style={{ fontSize: "14px", color: "#a1a1aa", lineHeight: 1.6, marginBottom: "16px" }}>A practical path to deploy AI safely, starting with the workflows that matter most.</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                {[
+                  { letter: "A", word: "Assess", desc: "Identify your best AI use cases and what's blocking them" },
+                  { letter: "S", word: "Strategize", desc: "Pick priorities and define ROI with a 30/60/90-day roadmap" },
+                  { letter: "C", word: "Construct", desc: "Confirm your tools, skills, and data access" },
+                  { letter: "E", word: "Execute", desc: "Pilot one workflow with clear success metrics" },
+                  { letter: "N", word: "Navigate", desc: "Put guardrails in place for responsible AI" },
+                  { letter: "D", word: "Develop", desc: "Roll out and optimize with continuous improvement" },
+                ].map((item) => (
+                  <div key={item.letter} style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                    <span style={{ fontWeight: 800, color: accent, fontSize: "16px", width: "18px", flexShrink: 0 }}>{item.letter}</span>
+                    <div><span style={{ fontWeight: 600, color: "#e2e8f0", fontSize: "14px" }}>{item.word}</span><span style={{ color: "#71717a", fontSize: "13px" }}>{" "}&mdash; {item.desc}</span></div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* DIMENSION BREAKDOWN */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8">
-              <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">
-                Full Assessment Breakdown
-              </p>
-              <div className="space-y-2">
-                {dimensions.map((dim, i) => {
-                  const val = answers[i] || 0;
-                  const barColor = val >= 4 ? "#059669" : val >= 3 ? "#D97706" : "#DC2626";
-                  return (
-                    <div
-                      key={dim.id}
-                      className="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between"
-                    >
-                      <div>
-                        <div className="font-medium text-gray-900 text-sm">{dim.title}</div>
-                        <div className="text-xs text-gray-400">{dim.phase}</div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full rounded-full"
-                            style={{ width: `${(val / 5) * 100}%`, backgroundColor: barColor }}
-                          />
-                        </div>
-                        <span
-                          className="text-sm font-semibold min-w-[20px] text-right"
-                          style={{ color: barColor }}
-                        >
-                          {val}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
+            <div style={{ display: "flex", justifyContent: "center", gap: "32px", marginBottom: "32px", flexWrap: "wrap" }}>
+              {[{ val: "10", label: "Questions" }, { val: "5", label: "Minutes" }, { val: "Free", label: "Report" }].map((s, i) => (
+                <div key={i} style={{ textAlign: "center" }}><div style={{ fontSize: "28px", fontWeight: 700, color: "#f1f5f9" }}>{s.val}</div><div style={{ fontSize: "11px", color: "#71717a", textTransform: "uppercase", letterSpacing: "0.08em" }}>{s.label}</div></div>
+              ))}
+            </div>
+            <div><button style={{ ...S.btnPrimary, fontSize: "17px", padding: "16px 40px" }} onClick={() => setStage("profiling")}>Start Your Assessment</button></div>
+            <p style={{ fontSize: "13px", color: "#52525b", marginTop: "20px" }}>Built for small teams: clear steps, minimal disruption, measurable outcomes.</p>
+          </motion.div>
+        )}
+
+        {/* PROFILING */}
+        {stage === "profiling" && (
+          <motion.div key="profiling" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.35 }} style={S.container}>
+            <p style={S.label}>Before we begin</p>
+            <h2 style={S.h2}>Tell us about your organization</h2>
+            <p style={{ fontSize: "15px", color: "#71717a", marginBottom: "32px" }}>We'll tailor the assessment and benchmarks to companies like yours.</p>
+            <div style={{ marginBottom: "24px" }}>
+              <label style={{ fontSize: "14px", fontWeight: 500, color: "#a1a1aa", display: "block", marginBottom: "8px" }}>Organization name</label>
+              <input style={S.input} type="text" placeholder="Acme Corporation" value={profile.organization} onChange={(e) => setProfile({ ...profile, organization: e.target.value })} />
+            </div>
+            <div style={{ marginBottom: "24px" }}>
+              <label style={{ fontSize: "14px", fontWeight: 500, color: "#a1a1aa", display: "block", marginBottom: "10px" }}>How many employees?</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                {COMPANY_SIZES.map((size) => (<button key={size.value} style={{ ...S.optionCard(profile.companySize === size.value), padding: "14px 16px" }} onClick={() => setProfile({ ...profile, companySize: size.value })}><span style={{ fontSize: "15px", fontWeight: 500 }}>{size.label}</span></button>))}
               </div>
+            </div>
+            <div style={{ marginBottom: "32px" }}>
+              <label style={{ fontSize: "14px", fontWeight: 500, color: "#a1a1aa", display: "block", marginBottom: "10px" }}>Your role</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                {ROLES.map((r) => (<button key={r.value} style={{ ...S.optionCard(profile.role === r.value), padding: "12px 16px" }} onClick={() => setProfile({ ...profile, role: r.value })}><span style={{ fontSize: "15px" }}>{r.label}</span></button>))}
+              </div>
+            </div>
+            <button style={{ ...S.btnPrimary, opacity: (!profile.companySize || !profile.role) ? 0.5 : 1 }} disabled={!profile.companySize || !profile.role} onClick={() => { setCurrentQuestionIndex(0); setStage("questions"); }}>Begin Assessment</button>
+          </motion.div>
+        )}
+
+        {/* QUESTIONS */}
+        {(stage === "questions" || stage === "questions-2") && questions.length > 0 && currentQuestionIndex < questions.length && (
+          <motion.div key={`q-${currentQuestionIndex}`} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: 0.3 }} style={S.containerTop}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+              <span style={{ fontSize: "13px", color: accent, fontWeight: 600, letterSpacing: "0.06em" }}>QUESTION {currentQuestionIndex + 1} OF {questions.length}</span>
+              <span style={{ fontSize: "11px", color: "#71717a", background: accentGlow, padding: "3px 8px", borderRadius: "4px", fontWeight: 500 }}>{questions[currentQuestionIndex].ascendPhase}</span>
+            </div>
+            <p style={{ fontSize: "13px", color: "#71717a", marginBottom: "12px", fontWeight: 500 }}>Dimension: {questions[currentQuestionIndex].dimension}</p>
+            <h2 style={S.h2}>{questions[currentQuestionIndex].questionText}</h2>
+            <button onClick={() => setShowHelp(!showHelp)} style={{ background: "none", border: "none", color: "#71717a", fontSize: "13px", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", marginBottom: "20px", fontFamily: "inherit", padding: "4px 0" }}>{showHelp ? "▲ Hide" : "▼ Why this matters"}</button>
+            <AnimatePresence>
+              {showHelp && (
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} style={{ overflow: "hidden", marginBottom: "20px" }}>
+                  <div style={{ padding: "16px 18px", borderRadius: "10px", background: accentGlow, border: `1px solid ${accentBorder}`, fontSize: "14px", lineHeight: 1.6, color: "#a1a1aa" }}>{questions[currentQuestionIndex].helpText}</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "24px" }}>
+              {questions[currentQuestionIndex].options.map((option) => {
+                const isSelected = answers[questions[currentQuestionIndex].id] === option.value;
+                return (
+                  <button key={option.value} style={S.optionCard(isSelected)} onClick={() => handleAnswer(questions[currentQuestionIndex].id, option.value)}>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
+                      <div style={{ width: "28px", height: "28px", borderRadius: "8px", border: `2px solid ${isSelected ? accent : "#3f3f46"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "13px", fontWeight: 600, color: isSelected ? accent : "#71717a" }}>{option.value}</div>
+                      <div><div style={{ fontWeight: 500, fontSize: "15px", marginBottom: "4px", color: "#e2e8f0" }}>{option.label}</div><div style={{ fontSize: "13px", color: "#71717a", lineHeight: 1.5 }}>{option.description}</div></div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            <AnimatePresence>
+              {microInsight && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} style={{ padding: "14px 18px", borderRadius: "10px", background: "rgba(16, 185, 129, 0.06)", border: "1px solid rgba(16, 185, 129, 0.15)", fontSize: "14px", color: "#6ee7b7", lineHeight: 1.5 }}>{microInsight}</motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+
+        {/* MID-CAPTURE */}
+        {stage === "mid-capture" && (
+          <motion.div key="mid" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.35 }} style={S.container}>
+            <div style={S.card}>
+              <h2 style={{ ...S.h2, fontSize: "24px" }}>You're halfway through.</h2>
+              <p style={{ fontSize: "15px", color: "#a1a1aa", marginBottom: "28px", lineHeight: 1.6 }}>Enter your details to save your progress and receive your full personalized ASCEND report when you finish.</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "24px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <input style={S.input} type="text" placeholder="First name" value={profile.firstName} onChange={(e) => setProfile({ ...profile, firstName: e.target.value })} />
+                  <input style={S.input} type="text" placeholder="Last name" value={profile.lastName} onChange={(e) => setProfile({ ...profile, lastName: e.target.value })} />
+                </div>
+                <input style={S.input} type="email" placeholder="Work email" value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} />
+              </div>
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                <button style={{ ...S.btnPrimary, opacity: (!profile.email || !profile.firstName) ? 0.5 : 1 }} disabled={!profile.email || !profile.firstName} onClick={() => { setEmailCaptured(true); savePartialCompletion(); setCurrentQuestionIndex(5); setStage("questions-2"); }}>Save & Continue</button>
+                <button style={S.btnSecondary} onClick={() => { setCurrentQuestionIndex(5); setStage("questions-2"); }}>Skip for now</button>
+              </div>
+              <p style={{ fontSize: "12px", color: "#52525b", marginTop: "16px" }}>We'll never share your information. Unsubscribe anytime.</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* FINAL CAPTURE */}
+        {stage === "final-capture" && (
+          <motion.div key="final" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }} style={S.container}>
+            <div style={S.card}>
+              <h2 style={{ ...S.h2, fontSize: "24px" }}>Almost there.</h2>
+              <p style={{ fontSize: "15px", color: "#a1a1aa", marginBottom: "24px", lineHeight: 1.6 }}>Enter your details to receive your personalized AI Readiness Report as a downloadable PDF.</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "24px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <input style={S.input} type="text" placeholder="First name" value={profile.firstName} onChange={(e) => setProfile({ ...profile, firstName: e.target.value })} />
+                  <input style={S.input} type="text" placeholder="Last name" value={profile.lastName} onChange={(e) => setProfile({ ...profile, lastName: e.target.value })} />
+                </div>
+                <input style={S.input} type="email" placeholder="Work email" value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} />
+              </div>
+              <button style={{ ...S.btnPrimary, opacity: (!profile.email || !profile.firstName) ? 0.5 : 1 }} disabled={!profile.email || !profile.firstName} onClick={() => { setEmailCaptured(true); submitAssessment(answers); }}>Get My Report</button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ANALYZING */}
+        {stage === "analyzing" && (
+          <motion.div key="analyzing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }} style={{ ...S.container, textAlign: "center" }}>
+            <div style={{ width: "64px", height: "64px", margin: "0 auto 32px", borderRadius: "50%", border: "3px solid #2a2a2a", borderTopColor: accent, animation: "spin 1s linear infinite" }} />
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            <h2 style={{ ...S.h2, fontSize: "22px", marginBottom: "24px" }}>Analyzing your responses across 10 dimensions...</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "400px", margin: "0 auto" }}>
+              {ANALYZING_STEPS.map((step, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", opacity: i <= analyzingStep ? 1 : 0.3, transition: "opacity 0.4s ease" }}>
+                  <div style={{ width: "20px", height: "20px", borderRadius: "50%", background: i < analyzingStep ? success : i === analyzingStep ? accent : "#1a1a1a", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", color: "white" }}>{i < analyzingStep ? "✓" : ""}</div>
+                  <span style={{ fontSize: "14px", color: i <= analyzingStep ? "#e2e8f0" : "#52525b" }}>{step}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* RESULTS */}
+        {stage === "results" && results && (
+          <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} style={{ maxWidth: "760px", margin: "0 auto", padding: "24px 20px 60px" }}>
+            <div style={{ textAlign: "center", marginBottom: "40px", paddingTop: "20px" }}>
+              <p style={S.label}>Your AI Readiness Assessment</p>
+              <h1 style={{ ...S.h1, fontSize: "clamp(26px, 5vw, 36px)" }}>{profile.organization ? `${profile.organization}'s Results` : "Your Results"}</h1>
+              <p style={{ fontSize: "14px", color: "#71717a" }}>{results.reportBranding.title}</p>
+            </div>
+
+            {/* Score Gauge */}
+            <div style={{ ...S.card, textAlign: "center", marginBottom: "24px", padding: "40px 28px" }}>
+              <div style={{ width: "180px", height: "180px", margin: "0 auto 20px", position: "relative" }}>
+                <svg viewBox="0 0 120 120" style={{ transform: "rotate(-90deg)" }}>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#1a1a1a" strokeWidth="10" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke={results.overallScore >= 70 ? success : results.overallScore >= 40 ? accentLight : danger} strokeWidth="10" strokeLinecap="round" strokeDasharray={`${(results.overallScore / 100) * 314} 314`} />
+                </svg>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center" }}>
+                  <div style={{ fontSize: "48px", fontWeight: 700, color: "#f1f5f9", lineHeight: 1 }}>{results.overallScore}</div>
+                  <div style={{ fontSize: "12px", color: "#71717a", fontWeight: 500 }}>OUT OF 100</div>
+                </div>
+              </div>
+              <div style={{ fontSize: "18px", fontWeight: 600, color: results.overallScore >= 70 ? success : results.overallScore >= 40 ? accentLight : danger }}>
+                {results.overallScore >= 80 ? "AI Leader" : results.overallScore >= 60 ? "AI Ready" : results.overallScore >= 40 ? "AI Emerging" : "AI Exploring"}
+              </div>
+            </div>
+
+            {/* Strongest / Weakest */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "24px" }}>
+              <div style={{ ...S.card, borderColor: "rgba(16, 185, 129, 0.25)", background: "rgba(16, 185, 129, 0.04)" }}>
+                <div style={{ fontSize: "11px", color: success, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "8px" }}>Strongest</div>
+                <div style={{ fontSize: "17px", fontWeight: 600, color: success, marginBottom: "4px" }}>{results.strongestDimension}</div>
+                <div style={{ fontSize: "28px", fontWeight: 700, color: "#6ee7b7" }}>{results.dimensionScores[results.strongestDimension]}/5</div>
+              </div>
+              <div style={{ ...S.card, borderColor: "rgba(239, 68, 68, 0.25)", background: "rgba(239, 68, 68, 0.04)" }}>
+                <div style={{ fontSize: "11px", color: danger, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "8px" }}>Priority Gap</div>
+                <div style={{ fontSize: "17px", fontWeight: 600, color: danger, marginBottom: "4px" }}>{results.weakestDimension}</div>
+                <div style={{ fontSize: "28px", fontWeight: 700, color: "#fca5a5" }}>{results.dimensionScores[results.weakestDimension]}/5</div>
+              </div>
+            </div>
+
+            {/* Dimension Breakdown */}
+            <div style={{ ...S.card, marginBottom: "24px" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 600, color: "#f1f5f9", marginBottom: "20px" }}>Dimension Breakdown</h3>
+              {Object.entries(results.dimensionScores).sort(([, a], [, b]) => a - b).map(([dim, score]) => {
+                const benchmark = results.benchmarks[dim] || 2.5;
+                const isW = dim === results.weakestDimension;
+                const isS = dim === results.strongestDimension;
+                const barColor = isW ? danger : isS ? success : accent;
+                return (
+                  <div key={dim} style={{ marginBottom: "16px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "14px", fontWeight: 500, color: isW ? "#fca5a5" : isS ? "#6ee7b7" : "#e2e8f0" }}>{dim}</span>
+                      <div style={{ display: "flex", gap: "8px" }}><span style={{ fontSize: "12px", color: "#52525b" }}>Avg: {benchmark}</span><span style={{ fontSize: "14px", fontWeight: 600, color: barColor }}>{score}/5</span></div>
+                    </div>
+                    <div style={{ height: "8px", background: "#1a1a1a", borderRadius: "4px", overflow: "hidden", position: "relative" }}>
+                      <div style={{ position: "absolute", left: `${(benchmark / 5) * 100}%`, top: 0, bottom: 0, width: "2px", background: "#52525b", zIndex: 2 }} />
+                      <div style={{ height: "100%", background: barColor, borderRadius: "4px", width: `${(score / 5) * 100}%`, transition: "width 0.8s ease" }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Priority Action */}
+            <div style={{ ...S.card, marginBottom: "24px", borderColor: accentBorder, background: `linear-gradient(135deg, ${accentGlow} 0%, rgba(20, 20, 20, 0.6) 100%)` }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 600, color: accentLight, marginBottom: "14px" }}>Your Priority Action</h3>
+              <p style={{ fontSize: "14px", color: "#a1a1aa", marginBottom: "16px", lineHeight: 1.6 }}>Based on your {results.weakestDimension} score, here's the ONE thing to focus on first:</p>
+              <div style={{ padding: "16px 18px", background: accentGlow, borderRadius: "10px", border: `1px solid ${accentBorder}`, fontSize: "15px", lineHeight: 1.7, color: "#e2e8f0" }}>{results.priorityActions[0]}</div>
             </div>
 
             {/* CTA */}
-            <div className="bg-accent/10 border border-accent/20 rounded-2xl p-8 text-center">
-              <Calendar className="w-10 h-10 text-accent mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Let's Build Your AI Roadmap
-              </h3>
-              <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                Book a free 30-minute call to review your results, prioritize your blockers, and map out your first AI agent workflow.
-              </p>
-              <Link
-                href={CALENDLY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition-all hover:-translate-y-0.5 hover:shadow-lg"
-              >
-                Book Free Strategy Call
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <div className="mt-6">
-                <button
-                  onClick={restart}
-                  className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors text-sm"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  Retake Assessment
-                </button>
-              </div>
+            <div style={{ ...S.card, textAlign: "center", marginBottom: "24px", padding: "36px 28px", borderColor: accentBorder, background: `linear-gradient(135deg, ${accentGlow} 0%, rgba(146, 64, 14, 0.06) 100%)` }}>
+              <h3 style={{ fontSize: "22px", fontWeight: 600, color: "#f1f5f9", marginBottom: "10px" }}>Ready to close the gaps?</h3>
+              <p style={{ fontSize: "15px", color: "#a1a1aa", marginBottom: "24px", lineHeight: 1.6, maxWidth: "480px", margin: "0 auto 24px" }}>Book a free 30-minute AI Strategy Call. We'll dig into your results and build a concrete action plan.</p>
+              <a href={CALENDLY_LINK} target="_blank" rel="noopener noreferrer" style={{ ...S.btnPrimary, display: "inline-block", textDecoration: "none", fontSize: "17px", padding: "16px 36px" }}>Book Your Free Strategy Call</a>
             </div>
-          </div>
-        )}
-      </main>
 
-      <Footer />
+            {/* PDF */}
+            <div style={{ ...S.card, textAlign: "center", marginBottom: "24px" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 600, color: "#f1f5f9", marginBottom: "8px" }}>Download Your Full ASCEND Report</h3>
+              {emailCaptured ? (
+                <p style={{ fontSize: "14px", color: success }}>Your report is being generated and will arrive in your inbox within 5 minutes.</p>
+              ) : (
+                <div style={{ maxWidth: "400px", margin: "0 auto", display: "flex", gap: "10px" }}>
+                  <input style={{ ...S.input, flex: 1 }} type="email" placeholder="Enter your email" value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} />
+                  <button style={{ ...S.btnPrimary, opacity: !profile.email ? 0.5 : 1 }} disabled={!profile.email} onClick={() => { setEmailCaptured(true); submitAssessment(answers); }}>Send</button>
+                </div>
+              )}
+            </div>
+
+            {/* Share */}
+            <div style={{ textAlign: "center", marginBottom: "40px" }}>
+              <button style={{ ...S.btnSecondary, display: "inline-flex", alignItems: "center", gap: "8px" }} onClick={handleShare}>Share Your Score on LinkedIn</button>
+            </div>
+
+            {/* Services */}
+            {results.serviceRecommendations.length > 0 && (
+              <div style={{ ...S.card, marginBottom: "24px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: 600, color: "#f1f5f9", marginBottom: "16px" }}>How JMCB Can Help</h3>
+                {results.serviceRecommendations.map((svc) => (
+                  <div key={svc.dimension} style={{ padding: "16px", borderRadius: "10px", background: "rgba(20, 20, 20, 0.5)", border: "1px solid #2a2a2a", marginBottom: "12px" }}>
+                    <div style={{ fontSize: "11px", color: danger, fontWeight: 600, textTransform: "uppercase", marginBottom: "4px" }}>Gap: {svc.dimension}</div>
+                    <div style={{ fontSize: "16px", fontWeight: 600, color: "#e2e8f0", marginBottom: "6px" }}>{svc.service}</div>
+                    <p style={{ fontSize: "13px", color: "#a1a1aa", lineHeight: 1.6, marginBottom: "8px" }}>{svc.description}</p>
+                    <div style={{ fontSize: "12px", color: accent, fontWeight: 500 }}>Deliverable: {svc.deliverable}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ textAlign: "center", padding: "24px 0", borderTop: "1px solid #2a2a2a", marginTop: "20px" }}>
+              <p style={{ fontSize: "13px", color: "#52525b" }}>JMCB Technology Group | AI Strategy & Implementation</p>
+              <p style={{ fontSize: "12px", color: "#3f3f46", marginTop: "4px" }}>jmcbtech.com</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
