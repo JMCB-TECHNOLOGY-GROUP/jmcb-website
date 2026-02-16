@@ -42,8 +42,8 @@ export default function HomePage() {
           </h1>
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
             80% of AI projects fail before production. We bring the discipline
-            behind $2B technology programs to help your team deploy AI safely
-            and profitably, without the Big 4 price tag.
+            behind large-scale technology programs to help your team deploy AI safely
+            and profitably, with a clear plan and real accountability.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Link
@@ -123,7 +123,8 @@ export default function HomePage() {
               <p className="text-gray-600 mb-6 leading-relaxed">
                 At JMCB Technology Group, we apply the governance and discipline
                 of enterprise programs to help growing businesses deploy AI
-                without the 6-month timelines or 6-figure minimums of the Big 4.
+                with a structured plan, responsible oversight, and results you
+                can measure within 90 days.
               </p>
               <div className="flex flex-wrap gap-3">
                 {["Johns Hopkins Fellow", "Howard M.S.", "$2B Programs", "15+ Years Leadership"].map((tag) => (
@@ -159,7 +160,7 @@ export default function HomePage() {
               The JMCB ASCEND™ Framework
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              A battle-tested methodology for deploying agentic AI, starting
+              A proven methodology for deploying agentic AI, starting
               with the workflows that create measurable impact first.
             </p>
           </div>

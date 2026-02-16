@@ -26,8 +26,8 @@ const faqs = [
     a: "Healthcare, enterprise and mid-market companies (50-500 employees), trade associations and nonprofits, and small businesses and startups. Our ASCEND™ framework adapts to any environment.",
   },
   {
-    q: "How is this different from hiring a freelance AI consultant?",
-    a: "Freelancers typically lack a structured methodology and governance framework. We bring 15+ years of large-scale program management discipline to every engagement, with a repeatable process that delivers results.",
+    q: "What makes your approach different?",
+    a: "Every engagement follows a structured methodology with a clear governance framework. We bring 15+ years of large-scale program management discipline to every project, with a repeatable process that connects AI strategy directly to measurable business outcomes.",
   },
   {
     q: "What if we're not ready for AI yet?",
@@ -107,8 +107,8 @@ export default function ServicesPage() {
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
               <Zap className="w-8 h-8 text-green-600 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-green-700 mb-1">40-60%</div>
-              <p className="text-sm text-green-700">Typical reduction in manual processing time for targeted workflows</p>
+              <div className="text-3xl font-bold text-green-700 mb-1">Hours Back</div>
+              <p className="text-sm text-green-700">AI workflows that automate the repetitive work so your team focuses on what actually matters</p>
             </div>
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
               <Clock className="w-8 h-8 text-blue-600 mx-auto mb-3" />

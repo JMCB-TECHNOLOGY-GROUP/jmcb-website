@@ -22,12 +22,12 @@ const painPoints = [
   {
     icon: Clock,
     title: "AI Hype, No Clarity",
-    description: "Everyone's talking about AI, but you need a practical roadmap — not another pitch deck full of buzzwords.",
+    description: "Everyone's talking about AI, but you need a practical roadmap, not another pitch deck full of buzzwords.",
   },
   {
     icon: Users,
-    title: "Big Consultants, Bigger Bills",
-    description: "McKinsey wants $500K. Accenture wants a 2-year contract. You need results in 90 days, not 24 months.",
+    title: "Overpaying for Overcomplicated Advice",
+    description: "Most AI engagements take too long and cost too much. You need a focused plan that delivers results in 90 days, not a two-year project.",
   },
   {
     icon: Target,
@@ -37,7 +37,7 @@ const painPoints = [
   {
     icon: Shield,
     title: "Risk Without Guidance",
-    description: "AI governance, data privacy, workforce concerns — you need someone who's navigated these before.",
+    description: "AI governance, data privacy, workforce concerns. You need someone who's navigated these before.",
   },
 ];
 
@@ -57,7 +57,7 @@ const engagements = [
     name: "AI Readiness Scan",
     price: "$5,000",
     duration: "1-2 weeks",
-    description: "A focused diagnostic that tells you exactly where AI can help — and where to start.",
+    description: "A focused diagnostic that tells you exactly where AI can help, and where to start.",
     deliverables: [
       "Executive interview & workflow analysis",
       "Top 3 AI opportunity identification",
@@ -71,7 +71,7 @@ const engagements = [
     name: "AI Strategy Sprint",
     price: "$25,000",
     duration: "4-6 weeks",
-    description: "A complete AI strategy and roadmap — with the business case to get executive buy-in.",
+    description: "A complete AI strategy and roadmap, with the business case to get executive buy-in.",
     deliverables: [
       "Full organizational AI assessment",
       "Use case prioritization matrix",
@@ -105,7 +105,7 @@ const engagements = [
 const differentiators = [
   {
     title: "Enterprise Experience, Mid-Market Focus",
-    description: "We've led $2B federal programs and advised Fortune 500s. We bring that rigor to companies your size — without the bloated timelines or budgets.",
+    description: "We bring the discipline of large-scale federal program management to companies your size. No bloated timelines or budgets.",
   },
   {
     title: "Speed to Value",
@@ -153,8 +153,8 @@ export default function EnterprisePage() {
               You don't need a $500K consulting engagement to get AI right.
             </p>
             <p className="text-xl text-gray-300 mb-8 max-w-3xl">
-              You need a clear strategy, a practical roadmap, and an advisor who's done this before — 
-              at your pace and your budget.
+              You need a clear strategy, a practical roadmap, and an advisor who's done this before. 
+              At your pace and your budget.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
@@ -380,7 +380,7 @@ export default function EnterprisePage() {
             Ready to Build Your AI Strategy?
           </h2>
           <p className="text-xl text-gray-300 mb-8">
-            Schedule a free strategy call. We'll discuss your goals, assess your readiness, and recommend next steps — no obligation.
+            Schedule a free strategy call. We'll discuss your goals, assess your readiness, and recommend next steps. No obligation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

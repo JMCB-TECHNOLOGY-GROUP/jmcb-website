@@ -77,7 +77,7 @@ const engagements = [
     name: "AI Opportunity Assessment",
     price: "$5,000",
     duration: "2 weeks",
-    description: "A focused evaluation of where AI can help your association or nonprofit most — tailored to your mission and budget.",
+    description: "A focused evaluation of where AI can help your association or nonprofit most, tailored to your mission and budget.",
     deliverables: [
       "Staff workflow interviews",
       "AI opportunity mapping",
@@ -121,10 +121,10 @@ const engagements = [
 
 const whyJMCB = [
   "Deep understanding of the association and nonprofit ecosystem",
-  "Mission-first approach — technology should serve your purpose, not distract from it",
-  "Budget-conscious — we work within nonprofit realities, not enterprise fantasies",
-  "Practical, not theoretical — you'll have working AI tools, not just a strategy deck",
-  "Training included — your team will be self-sufficient, not dependent on consultants",
+  "Mission-first approach. technology should serve your purpose, not distract from it",
+  "Budget-conscious. we work within nonprofit realities, not enterprise fantasies",
+  "Practical, not theoretical. you'll have working AI tools, not just a strategy deck",
+  "Training included. your team will be self-sufficient, not dependent on consultants",
 ];
 
 export default function AssociationsPage() {
@@ -150,7 +150,7 @@ export default function AssociationsPage() {
               <span className="text-accent">Your Mission Impact</span>
             </h1>
             <p className="text-xl text-gray-300 mb-8 max-w-3xl">
-              Your team is stretched thin. Your members expect more. AI can help you do more with less — 
+              Your team is stretched thin. Your members expect more. AI can help you do more with less 
               without losing the human touch that makes your organization special.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -237,9 +237,8 @@ export default function AssociationsPage() {
                 We Understand Your World
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Most AI consultants come from Big Tech or enterprise. We understand that associations and nonprofits 
-                operate differently — tighter budgets, smaller teams, mission-driven cultures, and members who expect 
-                the personal touch.
+                We built our approach specifically for organizations like yours. Tighter budgets, smaller teams, 
+                mission-driven cultures, and members who expect the personal touch.
               </p>
               <ul className="space-y-4">
                 {whyJMCB.map((point, i) => (

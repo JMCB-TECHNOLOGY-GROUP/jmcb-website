@@ -1,45 +1,39 @@
-import { Quote, TrendingUp, Clock, Users } from "lucide-react";
+import { Quote, Stethoscope, Building2, Users } from "lucide-react";
 
-const caseStudies = [
+const engagementTypes = [
   {
-    icon: Clock,
-    industry: "Healthcare Practice Group",
-    size: "50+ staff across 3 locations",
-    challenge: "Inconsistent patient intake and scheduling causing revenue leakage across locations",
-    result: "Implemented AI triage workflow with appointment optimization and automated follow-ups",
-    metric: "3.2x faster lead response",
-    metricDetail: "From 4+ hours to under 75 minutes average first response",
+    icon: Stethoscope,
+    industry: "Healthcare Organizations",
+    challenge: "Clinical teams overwhelmed by documentation, care gaps slipping through the cracks, and patient follow-up falling behind.",
+    approach: "We map clinical workflows, identify where AI creates the most value for patient outcomes, and build governance-first implementations with human oversight at every step.",
+    focus: "Better outcomes, less burnout",
   },
   {
-    icon: TrendingUp,
-    industry: "Mid-Market Professional Services",
-    size: "200+ employees",
-    challenge: "Manual report generation consuming 40+ hours/week across compliance teams",
-    result: "Deployed AI-powered document processing with human-in-the-loop review",
-    metric: "62% reduction in processing time",
-    metricDetail: "Saving ~25 hours/week while maintaining quality standards",
+    icon: Building2,
+    industry: "Mid-Market Companies",
+    challenge: "Leadership knows AI matters but can't figure out where to start. Pilots stall. Vendors overpromise. Nothing reaches production.",
+    approach: "Our ASCEND assessment pinpoints the highest-impact workflows, then we build a 90-day plan to get your first AI workflow live with clear success metrics.",
+    focus: "From idea to production in 90 days",
   },
   {
     icon: Users,
-    industry: "Trade Association",
-    size: "15-person team, 2,000+ members",
-    challenge: "Member inquiries overwhelming small staff, knowledge scattered across hundreds of documents",
-    result: "Built internal knowledge assistant with source-cited answers and escalation workflows",
-    metric: "85% of routine inquiries automated",
-    metricDetail: "Staff redirected to high-value member engagement and retention",
+    industry: "Associations & Nonprofits",
+    challenge: "Small teams doing the work of organizations three times their size. Member engagement, content creation, and operations all competing for the same hours.",
+    approach: "We identify the repetitive work that's eating your team's time and build AI workflows that give you capacity back, without losing the personal touch your members expect.",
+    focus: "Multiply your impact without adding headcount",
   },
 ];
 
 const testimonials = [
   {
-    quote: "We went from 'AI sounds interesting' to having a production workflow in 8 weeks. The governance framework alone was worth the engagement.",
-    role: "COO",
-    org: "Mid-Market Professional Services Firm",
-  },
-  {
-    quote: "Jermaine brought a level of rigor we hadn't seen from other consultants. He understood our compliance requirements from day one and didn't try to sell us tools we didn't need.",
+    quote: "Jermaine brought a level of structure and rigor we hadn't experienced before. He understood our compliance requirements from day one and focused entirely on what would actually move the needle for us.",
     role: "Managing Partner",
     org: "Healthcare Practice Group",
+  },
+  {
+    quote: "We went from talking about AI to having a real plan in weeks. The governance framework alone changed how our leadership thinks about responsible technology adoption.",
+    role: "COO",
+    org: "Professional Services Firm",
   },
 ];
 
@@ -49,37 +43,33 @@ export default function SocialProof() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
-            Results That Matter
+            How We Help
           </p>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            From assessment to production in 90 days
+            AI strategy that connects to real outcomes
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Real outcomes from organizations that used the ASCEND™ framework
-            to deploy AI with confidence.
+            Every engagement starts with a clear understanding of what success looks like 
+            for your organization. Here's how we approach it.
           </p>
         </div>
 
-        {/* Case Studies */}
+        {/* How We Help by Vertical */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          {caseStudies.map((cs) => (
-            <div key={cs.industry} className="bg-white border border-gray-200 rounded-xl p-6">
+          {engagementTypes.map((et) => (
+            <div key={et.industry} className="bg-white border border-gray-200 rounded-xl p-6">
               <div className="flex items-center gap-2 mb-4">
-                <cs.icon className="w-5 h-5 text-accent" />
-                <div>
-                  <span className="text-sm font-semibold text-gray-900">{cs.industry}</span>
-                  <span className="text-xs text-gray-400 ml-2">{cs.size}</span>
-                </div>
+                <et.icon className="w-5 h-5 text-accent" />
+                <span className="text-sm font-semibold text-gray-900">{et.industry}</span>
               </div>
               <p className="text-sm text-gray-600 mb-3">
-                <span className="font-medium text-gray-700">Challenge:</span> {cs.challenge}
+                <span className="font-medium text-gray-700">The challenge:</span> {et.challenge}
               </p>
               <p className="text-sm text-gray-600 mb-4">
-                <span className="font-medium text-gray-700">Solution:</span> {cs.result}
+                <span className="font-medium text-gray-700">Our approach:</span> {et.approach}
               </p>
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                <div className="text-xl font-bold text-green-700">{cs.metric}</div>
-                <div className="text-xs text-green-600">{cs.metricDetail}</div>
+              <div className="bg-accent/10 border border-accent/20 rounded-lg p-3">
+                <div className="text-sm font-semibold text-accent">{et.focus}</div>
               </div>
             </div>
           ))}

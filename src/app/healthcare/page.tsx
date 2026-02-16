@@ -63,7 +63,7 @@ const outcomeAreas = [
     icon: FileCheck,
     title: "Reclaim Clinician Time from Documentation",
     problem: "Physicians spend 2 hours on documentation for every 1 hour of patient care. This drives burnout, reduces throughput, and directly impacts patient experience.",
-    approach: "Ambient clinical documentation and AI-assisted note generation that drafts SOAP notes, discharge summaries, and referral letters in real time, always with physician review and sign-off.",
+    approach: "Ambient clinical documentation and AI-assisted note generation that drafts SOAP notes, discharge summaries, and referral letters in real time. Physicians still review and sign off on everything.",
     outcome: "More face time with patients. Reduced clinician burnout. Higher patient satisfaction scores.",
     metric: "Hours returned to direct patient care",
   },
@@ -79,7 +79,7 @@ const outcomeAreas = [
     icon: Brain,
     title: "Accelerate Clinical Decision Support",
     problem: "Clinicians face information overload. Critical signals hide in thousands of data points across labs, imaging, vitals, and patient history.",
-    approach: "AI-assisted diagnostic support that surfaces relevant patterns, flags anomalies, and provides evidence-based recommendations. Always augmenting clinical judgment, never replacing it.",
+    approach: "AI-assisted diagnostic support that surfaces relevant patterns, flags anomalies, and provides evidence-based recommendations. The clinician makes the call. The AI makes sure nothing gets missed.",
     outcome: "Faster, more informed clinical decisions. Reduced diagnostic variability. Better patient outcomes.",
     metric: "Decision support with explainable AI",
   },
@@ -87,7 +87,7 @@ const outcomeAreas = [
     icon: Shield,
     title: "Strengthen Compliance and Audit Readiness",
     problem: "HIPAA violations cost $1.5M+ per incident. Regulatory complexity is growing with AI-specific guidance from HHS, ONC, and state-level requirements.",
-    approach: "Governance-first AI implementation with built-in audit trails, consent management, bias monitoring, and data lineage tracking. Not bolted on after the fact.",
+    approach: "Governance-first AI implementation with built-in audit trails, consent management, bias monitoring, and data lineage tracking. This gets designed in from the start, not added after something goes wrong.",
     outcome: "AI workflows that pass regulatory scrutiny. Reduced compliance risk. Board-level confidence.",
     metric: "Zero-finding audit readiness",
   },
@@ -174,12 +174,13 @@ export default function HealthcarePage() {
               <span className="text-accent">Patient Outcomes</span>
             </h1>
             <p className="text-xl text-gray-300 mb-4 max-w-3xl">
-              Not another technology initiative. A clinical outcomes strategy powered by AI, built with 
-              the governance, safety protocols, and human oversight your patients and clinicians deserve.
+              This isn't about adding AI to your tech stack. It's about using AI to measurably improve 
+              how patients are cared for, with the governance, safety protocols, and human oversight 
+              your organization actually needs.
             </p>
             <p className="text-sm text-gray-400 mb-8 max-w-2xl">
-              Led by a Johns Hopkins AI Safety Fellow with a molecular genetics background and deep 
-              experience in healthcare technology, including VitalGuardian AI, winner of the Ward Infinity 
+              Led by a Johns Hopkins AI Safety Fellow with a molecular genetics background and 15+ years 
+              in healthcare technology. Co-founded VitalGuardian AI, winner of the Ward Infinity 
               Pitch Competition and Community Impact Award.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -210,11 +211,11 @@ export default function HealthcarePage() {
               The Problem We Solve
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Healthcare doesn't need more AI tools. It needs better outcomes.
+              The problem isn't a lack of AI tools. It's a lack of better outcomes.
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              The industry is drowning in AI vendor pitches. Meanwhile, clinicians are burning out, 
-              patients are falling through cracks, and the system is spending more while delivering less.
+              Every vendor is pitching AI right now. Meanwhile, clinicians are burning out, 
+              patients are falling through cracks, and the system keeps spending more while delivering less.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -242,19 +243,19 @@ export default function HealthcarePage() {
                 I built healthcare AI because the system failed my family.
               </h2>
               <p className="text-lg text-gray-600 mb-6">
-                In 2024, I lost my father to complications from Type 2 Diabetes. As his caregiver, I saw 
-                firsthand how disconnected systems fail patients: missed appointments, medication confusion, 
-                gaps in care coordination that compounded into crises.
+                In 2024, I lost my father to complications from Type 2 Diabetes. I was his caregiver, and I 
+                watched disconnected systems fail him over and over. Missed appointments. Medication confusion. 
+                Gaps in care coordination that snowballed into crises nobody saw coming.
               </p>
               <p className="text-lg text-gray-600 mb-6">
-                That experience drove me to co-found VitalGuardian AI, a chronic disease management platform 
+                That's what drove me to co-found VitalGuardian AI, a chronic disease management platform 
                 that won the <strong className="text-gray-900">Johns Hopkins Ward Infinity Pitch Competition</strong> and 
-                the <strong className="text-gray-900">Community Impact Award</strong>. The work continues through 
-                Tendivo Health, focused on reaching patients where the healthcare system fails them.
+                the <strong className="text-gray-900">Community Impact Award</strong>. That work continues through 
+                Tendivo Health, focused on reaching patients where the healthcare system keeps failing them.
               </p>
               <p className="text-lg text-gray-600 mb-8">
-                I bring that same mission to every healthcare AI engagement: 
-                <strong className="text-gray-900"> technology should serve patients and the clinicians who care for them, not the other way around.</strong>
+                I bring that same drive to every healthcare AI engagement. 
+                <strong className="text-gray-900"> If the technology doesn't make patients healthier and clinicians' lives easier, it's not worth building.</strong>
               </p>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -290,7 +291,7 @@ export default function HealthcarePage() {
                 </div>
                 <div>
                   <p className="font-bold text-gray-900 text-lg">Our Healthcare AI Approach</p>
-                  <p className="text-sm text-gray-600">Outcomes first. Technology second.</p>
+                  <p className="text-sm text-gray-600">Outcomes first. Then we figure out the tech.</p>
                 </div>
               </div>
               <div className="space-y-4">

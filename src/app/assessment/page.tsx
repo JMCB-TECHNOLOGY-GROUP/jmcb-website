@@ -255,7 +255,7 @@ export default function AssessmentPage() {
                   {ASCEND_ITEMS.map(item => (
                     <div key={item.letter} className="flex gap-3">
                       <span className="font-bold text-accent w-6">{item.letter}</span>
-                      <div><strong>{item.word}</strong> — {item.desc}</div>
+                      <div><strong>{item.word}</strong> · {item.desc}</div>
                     </div>
                   ))}
                 </div>
@@ -347,7 +347,7 @@ export default function AssessmentPage() {
               {/* ASCEND Phase Description */}
               <div className="mb-5 px-4 py-3 rounded-lg border-l-4" style={{ borderColor: phaseColor, background: `${phaseColor}08` }}>
                 <p className="text-xs text-gray-600">
-                  <strong style={{ color: phaseColor }}>{currentQ.ascendPhase}</strong> — {ASCEND_ITEMS.find(a => a.word === currentQ.ascendPhase || a.word.toLowerCase() === currentQ.ascendPhase.toLowerCase())?.desc || "Evaluating this dimension of your AI readiness."}
+                  <strong style={{ color: phaseColor }}>{currentQ.ascendPhase}</strong> · {ASCEND_ITEMS.find(a => a.word === currentQ.ascendPhase || a.word.toLowerCase() === currentQ.ascendPhase.toLowerCase())?.desc || "Evaluating this dimension of your AI readiness."}
                 </p>
               </div>
 
