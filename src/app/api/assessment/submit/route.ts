@@ -46,8 +46,9 @@ export async function POST(request: NextRequest) {
 
   const dimensionScores: Record<string, number> = {};
   for (const q of questions) {
-    if (answers[q.id] !== undefined) {
-      dimensionScores[q.dimension] = answers[q.id];
+    const val = (answers as Record<string, number>)[String(q.id)];
+    if (val !== undefined) {
+      dimensionScores[q.dimension] = val;
     }
   }
 
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
   const legacyScore = scoreValues.reduce((a, b) => a + b, 0);
   const legacyBand = legacyScore <= 24 ? "early" : legacyScore <= 39 ? "developing" : "advanced";
   const legacyDimensions = questions.map((q) => ({
-    title: q.dimension, score: answers[q.id] || 0,
+    title: q.dimension, score: (answers as Record<string, number>)[String(q.id)] || 0,
     benchmark: q.benchmarks[body.companySize as CompanySize], phase: q.ascendPhase,
   }));
 
