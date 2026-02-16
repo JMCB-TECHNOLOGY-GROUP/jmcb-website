@@ -464,7 +464,63 @@ export default function AssessmentPage() {
                 <p className="text-sm text-gray-500">Prepared for {profile.organization || "Your Organization"} · {new Date().toLocaleDateString("en-US", {year:"numeric",month:"long",day:"numeric"})}</p>
               </div>
 
-              {/* Overall Level - Vizient style */}
+              {/* ===== TOP CTA: THIS IS THE POINT ===== */}
+              <div className="bg-gray-900 rounded-2xl p-8 mb-6">
+                <h3 className="text-xl font-bold text-white mb-2">
+                  {results.overallScore >= 60
+                    ? `${profile.firstName || "Great news"}, you scored ${results.overallScore}/100. You're in a strong position to deploy AI.`
+                    : `${profile.firstName || "Hey"}, you scored ${results.overallScore}/100. You've got clear opportunities to improve.`
+                  }
+                </h3>
+                <p className="text-sm text-gray-400 mb-5 leading-relaxed">
+                  {Object.values(results.dimensionScores).filter(s => s < 3).length >= 3
+                    ? `Your biggest gap is ${results.weakestDimension}. Your strongest area is ${results.strongestDimension}. Let's map out what to tackle first and build a 90-day plan together.`
+                    : Object.values(results.dimensionScores).filter(s => s < 3).length >= 1
+                    ? `You're solid in most areas, with ${results.weakestDimension} as your biggest opportunity. A quick strategy session will help us turn that into a win.`
+                    : `You're ahead of most organizations. The question now is how to move fast and get the most out of your AI investments.`
+                  }
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a href={CALENDLY_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-8 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition text-sm">
+                    Book Free 30-Min Strategy Call &rarr;
+                  </a>
+                  <a href="mailto:jermaine@jmcbtech.com" className="inline-flex items-center justify-center px-8 py-3 border border-gray-600 text-gray-400 font-semibold rounded-lg hover:bg-gray-800 transition text-sm">
+                    Email Jermaine Directly
+                  </a>
+                </div>
+                <p className="text-xs text-gray-500 mt-3">We'll review your results and build a focused action plan. No pitch. If you want help implementing, we can talk about that too.</p>
+              </div>
+
+              {/* Services - WHAT JMCB CAN DO FOR YOU */}
+              {results.serviceRecommendations.length > 0 && (
+                <div className="border border-gray-200 rounded-2xl p-6 mb-6">
+                  <h3 className="text-base font-bold text-gray-900 mb-1">What JMCB Can Do For You</h3>
+                  <p className="text-xs text-gray-500 mb-4">Based on your gaps, here's where we'd focus in a strategy session:</p>
+                  {results.serviceRecommendations.map(svc => (
+                    <div key={svc.dimension} className="bg-gray-50 rounded-lg p-4 mb-3 last:mb-0">
+                      <p className="text-xs font-bold text-red-600 uppercase mb-1">Gap: {svc.dimension}</p>
+                      <p className="text-sm font-bold text-gray-900">{svc.service}</p>
+                      <p className="text-xs text-gray-500 mt-1">{svc.description}</p>
+                      <p className="text-xs text-accent font-medium mt-1">Deliverable: {svc.deliverable}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Priority Action */}
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
+                <h3 className="text-base font-bold text-amber-900 mb-2">Your #1 Priority: {results.weakestDimension}</h3>
+                <p className="text-sm text-amber-700 mb-3">Here's what to focus on first:</p>
+                <div className="bg-white border border-amber-200 rounded-lg p-4 text-sm text-gray-800 leading-relaxed">{results.priorityActions[0]}</div>
+              </div>
+
+              {/* ===== ASSESSMENT RESULTS BELOW ===== */}
+              <div className="pt-4 mb-4 border-t border-gray-200">
+                <h3 className="text-base font-bold text-gray-900">Your Assessment Results</h3>
+                <p className="text-xs text-gray-500">Full breakdown of your AI readiness across all ASCEND dimensions.</p>
+              </div>
+
+              {/* Overall Level */}
               <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 mb-6">
                 <div className="flex flex-col sm:flex-row items-center gap-6">
                   <div className="flex-shrink-0">
@@ -477,7 +533,6 @@ export default function AssessmentPage() {
                         {results.overallScore >= 80 ? "AI Leader" : results.overallScore >= 60 ? "AI Ready" : results.overallScore >= 40 ? "AI Emerging" : "AI Exploring"}
                       </span>
                     </div>
-                    {/* Mini bars for all dimensions sorted */}
                     {Object.entries(results.dimensionScores).sort(([,a],[,b]) => b - a).map(([dim, score]) => (
                       <div key={dim} className="flex items-center gap-2 mb-1.5">
                         <span className="text-xs text-gray-500 w-32 truncate">{dim}</span>
@@ -505,58 +560,7 @@ export default function AssessmentPage() {
                 </div>
               </div>
 
-              {/* ===== TOP CTA: THIS IS THE POINT ===== */}
-              <div className="bg-gray-900 rounded-2xl p-8 mb-6">
-                <h3 className="text-xl font-bold text-white mb-2">
-                  {results.overallScore >= 60
-                    ? `${profile.firstName || "Great news"}, you're in a strong position to deploy AI.`
-                    : `${profile.firstName || "Hey"}, you've got clear opportunities to improve.`
-                  }
-                </h3>
-                <p className="text-sm text-gray-400 mb-5 leading-relaxed">
-                  {Object.values(results.dimensionScores).filter(s => s < 3).length >= 3
-                    ? "Your assessment shows several areas where focused effort would make a real difference. Let's map out what to tackle first and build a 90-day plan together."
-                    : Object.values(results.dimensionScores).filter(s => s < 3).length >= 1
-                    ? "You're solid in most areas with a few gaps worth addressing. A quick strategy session will help us turn those into wins."
-                    : "You're ahead of most organizations. The question now is how to move fast and get the most out of your AI investments."
-                  }
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <a href={CALENDLY_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-8 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition text-sm">
-                    Book Free 30-Min Strategy Call &rarr;
-                  </a>
-                  <a href="mailto:jermaine@jmcbtech.com" className="inline-flex items-center justify-center px-8 py-3 border border-gray-600 text-gray-400 font-semibold rounded-lg hover:bg-gray-800 transition text-sm">
-                    Email Jermaine Directly
-                  </a>
-                </div>
-                <p className="text-xs text-gray-500 mt-3">No sales pitch. We review your results and build a focused action plan.</p>
-              </div>
-
-              {/* Services - WHAT WE DO FOR YOU */}
-              {results.serviceRecommendations.length > 0 && (
-                <div className="border border-gray-200 rounded-2xl p-6 mb-6">
-                  <h3 className="text-base font-bold text-gray-900 mb-1">How JMCB Can Help</h3>
-                  <p className="text-xs text-gray-500 mb-4">Based on your gaps, here's where we'd focus in a strategy session:</p>
-                  {results.serviceRecommendations.map(svc => (
-                    <div key={svc.dimension} className="bg-gray-50 rounded-lg p-4 mb-3 last:mb-0">
-                      <p className="text-xs font-bold text-red-600 uppercase mb-1">Gap: {svc.dimension}</p>
-                      <p className="text-sm font-bold text-gray-900">{svc.service}</p>
-                      <p className="text-xs text-gray-500 mt-1">{svc.description}</p>
-                      <p className="text-xs text-accent font-medium mt-1">Deliverable: {svc.deliverable}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Priority Action */}
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
-                <h3 className="text-base font-bold text-amber-900 mb-2">Your #1 Priority: {results.weakestDimension}</h3>
-                <p className="text-sm text-amber-700 mb-3">Here's what to focus on first:</p>
-                <div className="bg-white border border-amber-200 rounded-lg p-4 text-sm text-gray-800 leading-relaxed">{results.priorityActions[0]}</div>
-              </div>
-
-              {/* Domain Breakdown - Vizient style grouped by ASCEND */}
-              <h3 className="text-base font-bold text-gray-900 mb-3">Your Full Score Breakdown</h3>
+              {/* Domain Breakdown */}
               {ASCEND_DOMAINS.map(domain => {
                 const dims = domain.dimensions.filter(d => results.dimensionScores[d] !== undefined);
                 if (dims.length === 0) return null;
