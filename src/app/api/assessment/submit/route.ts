@@ -54,8 +54,8 @@ export async function POST(request: NextRequest) {
     const strongestDimension = sorted[sorted.length - 1]?.[0] || "Strategic Alignment";
 
     // Legacy 0-50 for backward compat
-    const scoreValues = Object.values(body.answers);
-    const legacyScore = scoreValues.reduce((a: number, b: number) => a + b, 0);
+    const scoreValues = Object.values(body.answers) as number[];
+    const legacyScore = scoreValues.reduce((a, b) => a + b, 0);
     const legacyBand = legacyScore <= 24 ? "early" : legacyScore <= 39 ? "developing" : "advanced";
     const legacyDimensions = questions.map((q) => ({
       title: q.dimension, score: body.answers[q.id] || 0,
