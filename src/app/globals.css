@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --accent: #f59e0b;
+  --accent: #D97706;
 }
 
 .text-accent {

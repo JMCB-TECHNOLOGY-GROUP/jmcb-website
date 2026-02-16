@@ -150,7 +150,7 @@ export default function ServiceTiers() {
         </div>
 
         <p className="text-center text-sm text-gray-400 mt-6">
-          Q1 2026 Sprint cohort: limited spots remaining. All engagements are customized after an initial strategy briefing.
+          Q2 2026 Sprint cohort: limited spots remaining. All engagements are customized after an initial strategy briefing.
         </p>
       </div>
     </section>

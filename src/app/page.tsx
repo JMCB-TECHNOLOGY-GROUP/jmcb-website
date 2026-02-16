@@ -15,7 +15,7 @@ const verticals = [
   { name: "Healthcare", href: "/healthcare", icon: Brain, desc: "HIPAA-conscious AI workflows for providers and health systems" },
   { name: "Enterprise & Mid-Market", href: "/enterprise", icon: Target, desc: "Scalable AI strategy for companies with 50-500 employees" },
   { name: "Associations & Nonprofits", href: "/associations", icon: Users, desc: "Member-focused AI for trade associations and mission-driven orgs" },
-  { name: "Small Business & Startups", href: "/enterprise", icon: Sparkles, desc: "Right-sized AI that delivers ROI without enterprise complexity" },
+  { name: "Small Business & Startups", href: "/services", icon: Sparkles, desc: "Right-sized AI that delivers ROI without enterprise complexity" },
 ];
 
 const stats = [
@@ -64,6 +64,9 @@ export default function HomePage() {
           </div>
           <p className="text-sm text-gray-400">
             No spam. No sales pitch. Just clarity on where AI fits in your business.
+          </p>
+          <p className="text-xs text-accent font-semibold mt-3">
+            Limited Q2 2026 strategy slots available
           </p>
         </div>
       </section>
@@ -164,7 +167,7 @@ export default function HomePage() {
             {[
               { letter: "A", word: "Assess", desc: "Identify your highest-impact AI use cases and what's blocking them" },
               { letter: "S", word: "Strategize", desc: "Define priorities, ROI targets, and a 30/60/90-day roadmap" },
-              { letter: "C", word: "Capability", desc: "Confirm your tools, data access, and team readiness" },
+              { letter: "C", word: "Construct", desc: "Confirm your tools, data access, and team readiness" },
               { letter: "E", word: "Execute", desc: "Pilot one workflow with clear success metrics" },
               { letter: "N", word: "Navigate", desc: "Implement guardrails for responsible, governed AI" },
               { letter: "D", word: "Deploy", desc: "Roll out, measure, and continuously improve" },

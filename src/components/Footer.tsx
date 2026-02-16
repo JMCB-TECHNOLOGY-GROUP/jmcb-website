@@ -24,23 +24,23 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/#offers" className="text-sm text-gray-600 hover:text-accent transition-colors">
-                  Strategy Session
+                <Link href="/services" className="text-sm text-gray-600 hover:text-accent transition-colors">
+                  AI Readiness Scan
                 </Link>
               </li>
               <li>
-                <Link href="/#offers" className="text-sm text-gray-600 hover:text-accent transition-colors">
-                  Readiness Scan
+                <Link href="/services" className="text-sm text-gray-600 hover:text-accent transition-colors">
+                  AI Strategy Sprint
                 </Link>
               </li>
               <li>
-                <Link href="/#offers" className="text-sm text-gray-600 hover:text-accent transition-colors">
-                  Quick Win Sprint
+                <Link href="/services" className="text-sm text-gray-600 hover:text-accent transition-colors">
+                  AI Pilot Program
                 </Link>
               </li>
               <li>
-                <Link href="/#offers" className="text-sm text-gray-600 hover:text-accent transition-colors">
-                  Full Deployment
+                <Link href="/services" className="text-sm text-gray-600 hover:text-accent transition-colors">
+                  Advisory Retainer
                 </Link>
               </li>
             </ul>
@@ -58,13 +58,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/#how-it-works" className="text-sm text-gray-600 hover:text-accent transition-colors">
-                  ASCEND Framework
+                <Link href="/healthcare" className="text-sm text-gray-600 hover:text-accent transition-colors">
+                  Healthcare AI
                 </Link>
               </li>
               <li>
-                <Link href="/#results" className="text-sm text-gray-600 hover:text-accent transition-colors">
-                  Case Studies
+                <Link href="/enterprise" className="text-sm text-gray-600 hover:text-accent transition-colors">
+                  Enterprise AI
+                </Link>
+              </li>
+              <li>
+                <Link href="/associations" className="text-sm text-gray-600 hover:text-accent transition-colors">
+                  Associations & Nonprofits
                 </Link>
               </li>
             </ul>
@@ -86,7 +91,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://linkedin.com/in/jermainebarker"
+                  href="https://linkedin.com/in/jermaine-barker-9a74536"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-600 hover:text-accent transition-colors"
@@ -111,7 +116,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="pt-8 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-400">
-            © {new Date().getFullYear()} JMCB Technology Group. All rights reserved.
+            &copy; {new Date().getFullYear()} JMCB Technology Group. All rights reserved.
           </p>
           <p className="text-sm text-gray-400">
             Designed with purpose. Built with precision.

@@ -71,7 +71,7 @@ export default async function ReportPage({ params }: { params: { id: string } })
       <div className="no-print" style={{ position: "sticky", top: 0, zIndex: 50, background: "#0f172a", padding: "12px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ color: "#fff", fontSize: "14px", fontWeight: 600 }}>JMCB AI Readiness Report</span>
         <div style={{ display: "flex", gap: "12px" }}>
-          <button onClick={() => {}} style={{ background: "#d97706", color: "#fff", border: "none", padding: "8px 20px", borderRadius: "6px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
+          <button style={{ background: "#d97706", color: "#fff", border: "none", padding: "8px 20px", borderRadius: "6px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
             id="print-btn">
             Save as PDF
           </button>

@@ -122,18 +122,22 @@ export async function POST(request: NextRequest) {
 
     // ── 5. ASSESSMENT RESULTS TABLE ──
     if (lead) {
-      await supabase.from("assessment_results").insert({
-        lead_id: lead.id, assessment_type: "ai_readiness",
-        score: legacyScore, band: legacyBand,
-        answers: body.answers, dimensions: legacyDimensions,
-        recommendations: { priorityActions, serviceRecommendations },
-      }).catch(() => null);
+      try {
+        await supabase.from("assessment_results").insert({
+          lead_id: lead.id, assessment_type: "ai_readiness",
+          score: legacyScore, band: legacyBand,
+          answers: body.answers, dimensions: legacyDimensions,
+          recommendations: { priorityActions, serviceRecommendations },
+        });
+      } catch { /* table may not exist yet */ }
     }
 
     // ── 6. MARK PARTIAL COMPLETIONS CONVERTED ──
-    await supabase.from("partial_completions")
-      .update({ converted_to_lead: true, converted_at: new Date().toISOString() })
-      .eq("email", body.email.toLowerCase()).eq("converted_to_lead", false).catch(() => null);
+    try {
+      await supabase.from("partial_completions")
+        .update({ converted_to_lead: true, converted_at: new Date().toISOString() })
+        .eq("email", body.email.toLowerCase()).eq("converted_to_lead", false);
+    } catch { /* table may not exist yet */ }
 
     // ── 7. INCREMENT COUNTER ──
     try {
