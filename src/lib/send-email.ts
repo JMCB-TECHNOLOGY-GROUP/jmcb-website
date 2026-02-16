@@ -3,7 +3,7 @@
 // Uses verified domain if available, falls back to Resend test sender
 // ============================================================
 
-const RESEND_FROM = process.env.RESEND_FROM || "JMCB Technology Group <onboarding@resend.dev>";
+const RESEND_FROM = process.env.RESEND_FROM || "Jermaine Barker <jermaine@info.jmcbtech.com>";
 
 export async function sendEmail(
   to: string,
