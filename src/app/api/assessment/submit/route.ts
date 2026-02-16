@@ -1,7 +1,8 @@
 // ============================================================
-// /api/assessment/submit/route.ts
-// Full assessment submission: score lead, store, trigger webhooks
-// Uses existing createServerClient() from @/lib/supabase
+// /api/assessment/submit - Full autonomous pipeline
+// 1. Score lead  2. Save to Supabase  3. Send Day 0 email
+// 4. Alert Jermaine on hot leads  5. Fire Make.com webhook
+// 6. Return results to frontend
 // ============================================================
 
 import { NextRequest, NextResponse } from "next/server";
@@ -16,328 +17,184 @@ import {
   type CompanySize,
   type Role,
 } from "@/lib/assessment-content";
+import { emailDay0, emailHotLeadAlert } from "@/lib/email-renderer";
+import { sendEmail } from "@/lib/send-email";
 
 const MAKE_WEBHOOK_URL =
   process.env.MAKE_WEBHOOK_URL ||
   "https://hook.us2.make.com/wsneore7j9b7sy6smxpbs0al2mf8ef75";
-const MAKE_NURTURE_WEBHOOK_URL = process.env.MAKE_NURTURE_WEBHOOK_URL || "";
-const MAKE_NOTIFICATION_WEBHOOK_URL =
-  process.env.MAKE_NOTIFICATION_WEBHOOK_URL || "";
 const CALENDLY_LINK =
   process.env.NEXT_PUBLIC_CALENDLY_LINK ||
   "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
-
-interface SubmitPayload {
-  firstName: string;
-  lastName: string;
-  email: string;
-  organization: string;
-  companySize: CompanySize;
-  role: Role;
-  answers: Record<string, number>;
-  utmSource?: string;
-  utmMedium?: string;
-  utmCampaign?: string;
-}
+const JERMAINE_EMAIL = process.env.JERMAINE_EMAIL || "jermaine@jmcbtech.com";
 
 export async function POST(request: NextRequest) {
   try {
-    const body: SubmitPayload = await request.json();
+    const body = await request.json();
 
     if (!body.email || !body.answers || !body.companySize || !body.role) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
     const supabase = createServerClient();
 
-    // ── 1. SCORE THE LEAD ──
-    const leadScoring = scoreLeadQuality({
-      role: body.role,
-      companySize: body.companySize,
-      answers: body.answers,
-    });
+    // ── 1. CALCULATE SCORES ──
+    const questions = getQuestionsForSize(body.companySize as CompanySize);
+    const overallScore = calculateOverallScore(body.answers);
 
-    // ── 2. CALCULATE DIMENSION SCORES ──
-    const questions = getQuestionsForSize(body.companySize);
     const dimensionScores: Record<string, number> = {};
-
     for (const q of questions) {
       if (body.answers[q.id] !== undefined) {
         dimensionScores[q.dimension] = body.answers[q.id];
       }
     }
 
-    const overallScore = calculateOverallScore(body.answers);
+    const sorted = Object.entries(dimensionScores).sort(([, a], [, b]) => a - b);
+    const weakestDimension = sorted[0]?.[0] || "Data Foundation";
+    const strongestDimension = sorted[sorted.length - 1]?.[0] || "Strategic Alignment";
 
-    // Find weakest and strongest
-    const sortedDimensions = Object.entries(dimensionScores).sort(
-      ([, a], [, b]) => a - b
-    );
-    const weakestDimension = sortedDimensions[0]?.[0] || "Data Foundation";
-    const strongestDimension =
-      sortedDimensions[sortedDimensions.length - 1]?.[0] || "Data Foundation";
-
-    // Calculate legacy 0-50 score for backward compatibility
+    // Legacy 0-50 for backward compat
     const scoreValues = Object.values(body.answers);
-    const legacyScore = scoreValues.reduce((a, b) => a + b, 0);
-    const legacyBand =
-      legacyScore <= 24 ? "early" : legacyScore <= 39 ? "developing" : "advanced";
-
-    // Build legacy dimension format for existing table column
+    const legacyScore = scoreValues.reduce((a: number, b: number) => a + b, 0);
+    const legacyBand = legacyScore <= 24 ? "early" : legacyScore <= 39 ? "developing" : "advanced";
     const legacyDimensions = questions.map((q) => ({
-      title: q.dimension,
-      score: body.answers[q.id] || 0,
-      benchmark: q.benchmarks[body.companySize],
-      phase: q.ascendPhase,
+      title: q.dimension, score: body.answers[q.id] || 0,
+      benchmark: q.benchmarks[body.companySize as CompanySize], phase: q.ascendPhase,
     }));
 
-    // ── 3. CHECK IF LEAD EXISTS (upsert) ──
+    // ── 2. SCORE THE LEAD ──
+    const leadResult = scoreLeadQuality({
+      role: body.role as Role,
+      companySize: body.companySize as CompanySize,
+      answers: body.answers,
+    });
+
+    // ── 3. REPORT BRANDING ──
+    const reportBranding = REPORT_BRANDING[body.companySize as CompanySize] || REPORT_BRANDING["11-50"];
+    const priorityActions = PRIORITY_ACTIONS[weakestDimension] || ["Evaluate current capabilities in this area."];
+    const serviceRecommendations = sorted
+      .filter(([, s]) => s < 3).slice(0, 3)
+      .map(([dim]) => ({ dimension: dim, ...(DIMENSION_SERVICE_MAP[dim] || { service: "AI Strategy Session", description: "Personalized guidance.", deliverable: "Action plan" }) }));
+    const benchmarks = Object.fromEntries(questions.map((q) => [q.dimension, q.benchmarks[body.companySize as CompanySize]]));
+
+    // ── 4. UPSERT LEAD IN SUPABASE ──
     const { data: existingLead } = await supabase
-      .from("leads")
-      .select("id")
-      .eq("email", body.email.toLowerCase())
-      .single();
+      .from("leads").select("id").eq("email", body.email.toLowerCase()).single();
+
+    const leadData = {
+      email: body.email.toLowerCase(),
+      first_name: body.firstName || null,
+      last_name: body.lastName || null,
+      organization: body.organization || null,
+      role: body.role,
+      company_size: body.companySize,
+      assessment_score: legacyScore,
+      assessment_band: legacyBand,
+      assessment_answers: body.answers,
+      assessment_dimensions: legacyDimensions,
+      lead_score: leadResult.score,
+      lead_score_reason: leadResult.reason,
+      overall_score_v2: overallScore,
+      dimension_scores_v2: dimensionScores,
+      weakest_dimension: weakestDimension,
+      strongest_dimension: strongestDimension,
+      assessment_completed_at: new Date().toISOString(),
+      utm_source: body.utmSource || null,
+      utm_medium: body.utmMedium || null,
+      utm_campaign: body.utmCampaign || null,
+      // Nurture: mark Day 0 as sent
+      nurture_sequence_started: true,
+      nurture_emails_sent: 1,
+    };
 
     let lead;
-
     if (existingLead) {
-      const { data, error } = await supabase
-        .from("leads")
-        .update({
-          first_name: body.firstName,
-          last_name: body.lastName,
-          organization: body.organization || null,
-          role: body.role,
-          company_size: body.companySize,
-          // Legacy columns (backward compatible)
-          assessment_score: legacyScore,
-          assessment_band: legacyBand,
-          assessment_answers: body.answers,
-          assessment_dimensions: legacyDimensions,
-          // New v2 columns
-          lead_score: leadScoring.score,
-          lead_score_reason: leadScoring.reason,
-          overall_score_v2: overallScore,
-          dimension_scores_v2: dimensionScores,
-          weakest_dimension: weakestDimension,
-          strongest_dimension: strongestDimension,
-          assessment_completed_at: new Date().toISOString(),
-          // UTM
-          utm_source: body.utmSource || null,
-          utm_medium: body.utmMedium || null,
-          utm_campaign: body.utmCampaign || null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", existingLead.id)
-        .select()
-        .single();
-
-      if (error) throw error;
+      const { data } = await supabase.from("leads")
+        .update({ ...leadData, source: undefined, status: undefined, updated_at: new Date().toISOString() })
+        .eq("id", existingLead.id).select().single();
       lead = data;
     } else {
-      const { data, error } = await supabase
-        .from("leads")
-        .insert({
-          email: body.email.toLowerCase(),
-          first_name: body.firstName,
-          last_name: body.lastName,
-          organization: body.organization || null,
-          role: body.role,
-          company_size: body.companySize,
-          source: "ai_readiness_assessment_v2",
-          status: "new",
-          // Legacy columns
-          assessment_score: legacyScore,
-          assessment_band: legacyBand,
-          assessment_answers: body.answers,
-          assessment_dimensions: legacyDimensions,
-          // New v2 columns
-          lead_score: leadScoring.score,
-          lead_score_reason: leadScoring.reason,
-          overall_score_v2: overallScore,
-          dimension_scores_v2: dimensionScores,
-          weakest_dimension: weakestDimension,
-          strongest_dimension: strongestDimension,
-          assessment_completed_at: new Date().toISOString(),
-          // UTM
-          utm_source: body.utmSource || null,
-          utm_medium: body.utmMedium || null,
-          utm_campaign: body.utmCampaign || null,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
+      const { data } = await supabase.from("leads")
+        .insert({ ...leadData, source: "ai_readiness_assessment_v2", status: "new" })
+        .select().single();
       lead = data;
     }
 
-    // ── 4. ALSO SAVE TO assessment_results TABLE ──
-    try {
+    // ── 5. ASSESSMENT RESULTS TABLE ──
+    if (lead) {
       await supabase.from("assessment_results").insert({
-        lead_id: lead.id,
-        assessment_type: "ai_readiness",
-        score: legacyScore,
-        band: legacyBand,
-        answers: body.answers,
-        dimensions: legacyDimensions,
-      });
-    } catch (err) {
-      console.error("Assessment results insert error:", err);
+        lead_id: lead.id, assessment_type: "ai_readiness",
+        score: legacyScore, band: legacyBand,
+        answers: body.answers, dimensions: legacyDimensions,
+        recommendations: { priorityActions, serviceRecommendations },
+      }).catch(() => null);
     }
 
-    // ── 5. MARK PARTIAL COMPLETION AS CONVERTED ──
-    await supabase
-      .from("partial_completions")
-      .update({
-        converted_to_lead: true,
-        converted_at: new Date().toISOString(),
-      })
-      .eq("email", body.email.toLowerCase())
-      .eq("converted_to_lead", false);
+    // ── 6. MARK PARTIAL COMPLETIONS CONVERTED ──
+    await supabase.from("partial_completions")
+      .update({ converted_to_lead: true, converted_at: new Date().toISOString() })
+      .eq("email", body.email.toLowerCase()).eq("converted_to_lead", false).catch(() => null);
 
-    // ── 6. INCREMENT ASSESSMENT COUNTER ──
+    // ── 7. INCREMENT COUNTER ──
     try {
-      const { data: metadata } = await supabase
-        .from("assessment_metadata")
-        .select("value")
-        .eq("key", "total_assessments")
-        .single();
-
-      if (metadata) {
-        const currentCount = (metadata.value as { count: number }).count || 500;
-        await supabase
-          .from("assessment_metadata")
-          .update({
-            value: { count: currentCount + 1 },
-            updated_at: new Date().toISOString(),
-          })
+      const { data: meta } = await supabase.from("assessment_metadata")
+        .select("value").eq("key", "total_assessments").single();
+      if (meta) {
+        const cnt = (meta.value as { count: number }).count || 500;
+        await supabase.from("assessment_metadata")
+          .update({ value: { count: cnt + 1 }, updated_at: new Date().toISOString() })
           .eq("key", "total_assessments");
       }
-    } catch (err) {
-      console.error("Metadata update error:", err);
-    }
+    } catch {}
 
-    // ── 7. TRIGGER MAKE.COM WEBHOOK ──
-    const reportBranding = REPORT_BRANDING[body.companySize];
-    const priorityActions = PRIORITY_ACTIONS[weakestDimension] || [];
+    // ── 8. SEND DAY 0 EMAIL (immediate results) ──
+    const day0 = emailDay0({
+      firstName: body.firstName || "there",
+      organization: body.organization || "your organization",
+      overallScore, dimensionScores, weakestDimension, strongestDimension,
+      priorityAction: priorityActions[0] || "",
+    });
+    await sendEmail(body.email, day0.subject, day0.html);
 
-    const serviceRecommendations = sortedDimensions
-      .filter(([, score]) => score < 3)
-      .map(([dim]) => ({
-        dimension: dim,
-        ...DIMENSION_SERVICE_MAP[dim],
-      }));
-
-    try {
-      await fetch(MAKE_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          leadId: lead.id,
-          firstName: body.firstName,
-          lastName: body.lastName,
-          email: body.email,
-          organization: body.organization,
-          companySize: body.companySize,
-          role: body.role,
-          score: legacyScore,
-          band: legacyBand,
-          overallScore,
-          dimensions: legacyDimensions,
-          dimensionScores,
-          weakestDimension,
-          strongestDimension,
-          leadScore: leadScoring.score,
-          reportBranding,
-          priorityActions,
-          serviceRecommendations,
-          calendlyUrl: CALENDLY_LINK,
-          timestamp: new Date().toISOString(),
-        }),
+    // ── 9. HOT LEAD ALERT TO JERMAINE ──
+    if (shouldNotifyImmediately(leadResult)) {
+      const alert = emailHotLeadAlert({
+        firstName: body.firstName || "", lastName: body.lastName || "",
+        email: body.email, organization: body.organization || "",
+        role: body.role, companySize: body.companySize,
+        overallScore, leadScore: leadResult.score,
+        weakestDimension, strongestDimension,
+        reason: leadResult.reason,
       });
-    } catch (err) {
-      console.error("Make.com webhook error:", err);
+      await sendEmail(JERMAINE_EMAIL, alert.subject, alert.html);
     }
 
-    // ── 8. TRIGGER NURTURE SEQUENCE (if configured) ──
-    if (MAKE_NURTURE_WEBHOOK_URL) {
-      try {
-        await fetch(MAKE_NURTURE_WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            leadId: lead.id,
-            email: body.email,
-            firstName: body.firstName,
-            organization: body.organization,
-            companySize: body.companySize,
-            overallScore,
-            weakestDimension,
-            strongestDimension,
-            reportBranding: reportBranding.title,
-            priorityAction: priorityActions[0] || "",
-            calendlyLink: CALENDLY_LINK,
-          }),
-        });
+    // ── 10. MAKE.COM WEBHOOK (async, non-blocking) ──
+    fetch(MAKE_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        leadId: lead?.id, firstName: body.firstName, lastName: body.lastName,
+        email: body.email, organization: body.organization,
+        companySize: body.companySize, role: body.role,
+        score: legacyScore, band: legacyBand,
+        overallScore, dimensionScores, weakestDimension, strongestDimension,
+        leadScore: leadResult.score, reportBranding, priorityActions,
+        serviceRecommendations, calendlyUrl: CALENDLY_LINK,
+        timestamp: new Date().toISOString(),
+      }),
+    }).catch((err) => console.error("Make.com webhook error:", err));
 
-        await supabase
-          .from("leads")
-          .update({ nurture_sequence_started: true })
-          .eq("id", lead.id);
-      } catch (err) {
-        console.error("Nurture webhook error:", err);
-      }
-    }
-
-    // ── 9. HOT LEAD NOTIFICATION ──
-    if (shouldNotifyImmediately(leadScoring) && MAKE_NOTIFICATION_WEBHOOK_URL) {
-      try {
-        await fetch(MAKE_NOTIFICATION_WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            type: "HOT_LEAD",
-            leadId: lead.id,
-            name: `${body.firstName} ${body.lastName}`,
-            email: body.email,
-            organization: body.organization,
-            companySize: body.companySize,
-            role: body.role,
-            overallScore,
-            weakestDimension,
-            urgencySignals: leadScoring.urgencySignals,
-            reason: leadScoring.reason,
-          }),
-        });
-      } catch (err) {
-        console.error("Hot lead notification error:", err);
-      }
-    }
-
-    // ── 10. RETURN RESULTS TO FRONTEND ──
+    // ── 11. RETURN TO FRONTEND ──
     return NextResponse.json({
       success: true,
-      leadId: lead.id,
-      overallScore,
-      dimensionScores,
-      weakestDimension,
-      strongestDimension,
-      leadScore: leadScoring.score,
-      reportBranding,
-      priorityActions,
-      serviceRecommendations,
-      benchmarks: Object.fromEntries(
-        questions.map((q) => [q.dimension, q.benchmarks[body.companySize]])
-      ),
+      leadId: lead?.id,
+      overallScore, dimensionScores, weakestDimension, strongestDimension,
+      leadScore: leadResult.score, reportBranding, priorityActions,
+      serviceRecommendations, benchmarks,
     });
   } catch (error) {
     console.error("Assessment submit error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
   }
 }
