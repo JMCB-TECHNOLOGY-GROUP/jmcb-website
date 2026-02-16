@@ -505,7 +505,58 @@ export default function AssessmentPage() {
                 </div>
               </div>
 
+              {/* ===== TOP CTA: THIS IS THE POINT ===== */}
+              <div className="bg-gray-900 rounded-2xl p-8 mb-6">
+                <h3 className="text-xl font-bold text-white mb-2">
+                  {results.overallScore >= 60
+                    ? `${profile.firstName || "Great news"}, you're in a strong position to deploy AI.`
+                    : `${profile.firstName || "Hey"}, you've got clear opportunities to improve.`
+                  }
+                </h3>
+                <p className="text-sm text-gray-400 mb-5 leading-relaxed">
+                  {Object.values(results.dimensionScores).filter(s => s < 3).length >= 3
+                    ? "Your assessment shows several areas where focused effort would make a real difference. Let's map out what to tackle first and build a 90-day plan together."
+                    : Object.values(results.dimensionScores).filter(s => s < 3).length >= 1
+                    ? "You're solid in most areas with a few gaps worth addressing. A quick strategy session will help us turn those into wins."
+                    : "You're ahead of most organizations. The question now is how to move fast and get the most out of your AI investments."
+                  }
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a href={CALENDLY_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-8 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition text-sm">
+                    Book Free 30-Min Strategy Call &rarr;
+                  </a>
+                  <a href="mailto:jermaine@jmcbtech.com" className="inline-flex items-center justify-center px-8 py-3 border border-gray-600 text-gray-400 font-semibold rounded-lg hover:bg-gray-800 transition text-sm">
+                    Email Jermaine Directly
+                  </a>
+                </div>
+                <p className="text-xs text-gray-500 mt-3">No sales pitch. We review your results and build a focused action plan.</p>
+              </div>
+
+              {/* Services - WHAT WE DO FOR YOU */}
+              {results.serviceRecommendations.length > 0 && (
+                <div className="border border-gray-200 rounded-2xl p-6 mb-6">
+                  <h3 className="text-base font-bold text-gray-900 mb-1">How JMCB Can Help</h3>
+                  <p className="text-xs text-gray-500 mb-4">Based on your gaps, here's where we'd focus in a strategy session:</p>
+                  {results.serviceRecommendations.map(svc => (
+                    <div key={svc.dimension} className="bg-gray-50 rounded-lg p-4 mb-3 last:mb-0">
+                      <p className="text-xs font-bold text-red-600 uppercase mb-1">Gap: {svc.dimension}</p>
+                      <p className="text-sm font-bold text-gray-900">{svc.service}</p>
+                      <p className="text-xs text-gray-500 mt-1">{svc.description}</p>
+                      <p className="text-xs text-accent font-medium mt-1">Deliverable: {svc.deliverable}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Priority Action */}
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
+                <h3 className="text-base font-bold text-amber-900 mb-2">Your #1 Priority: {results.weakestDimension}</h3>
+                <p className="text-sm text-amber-700 mb-3">Here's what to focus on first:</p>
+                <div className="bg-white border border-amber-200 rounded-lg p-4 text-sm text-gray-800 leading-relaxed">{results.priorityActions[0]}</div>
+              </div>
+
               {/* Domain Breakdown - Vizient style grouped by ASCEND */}
+              <h3 className="text-base font-bold text-gray-900 mb-3">Your Full Score Breakdown</h3>
               {ASCEND_DOMAINS.map(domain => {
                 const dims = domain.dimensions.filter(d => results.dimensionScores[d] !== undefined);
                 if (dims.length === 0) return null;
@@ -526,45 +577,17 @@ export default function AssessmentPage() {
                 );
               })}
 
-              {/* Priority Action */}
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
-                <h3 className="text-base font-bold text-amber-900 mb-2">⚡ Your #1 Priority Action</h3>
-                <p className="text-sm text-amber-700 mb-3">Based on your <strong>{results.weakestDimension}</strong> score:</p>
-                <div className="bg-white border border-amber-200 rounded-lg p-4 text-sm text-gray-800 leading-relaxed">{results.priorityActions[0]}</div>
-              </div>
-
-              {/* CTA */}
+              {/* Bottom CTA */}
               <div className="bg-gray-900 rounded-2xl p-8 text-center mb-6">
-                <h3 className="text-xl font-bold text-white mb-2">Ready to close the gaps?</h3>
-                <p className="text-sm text-gray-400 mb-5">Book a free 30-minute AI Strategy Call. We'll review your results and build a concrete action plan.</p>
-                <a href={CALENDLY_LINK} target="_blank" rel="noopener noreferrer" className="inline-block px-8 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition">Book Your Free Strategy Call →</a>
+                <h3 className="text-xl font-bold text-white mb-2">Let's turn this score into a plan.</h3>
+                <p className="text-sm text-gray-400 mb-5">Book a free 30-minute call. We'll review your results together and map out what to tackle in the next 90 days.</p>
+                <a href={CALENDLY_LINK} target="_blank" rel="noopener noreferrer" className="inline-block px-8 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition">Book Your Free Strategy Call &rarr;</a>
               </div>
 
-              {/* PDF notice */}
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 text-center mb-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-1">Your Full ASCEND Report</h3>
-                {emailCaptured ? (
-                  <p className="text-sm text-green-600">Your detailed PDF report will arrive in your inbox within 5 minutes.</p>
-                ) : (
-                  <div className="flex gap-2 max-w-sm mx-auto mt-3">
-                    <input className={inputStyle + " flex-1"} type="email" placeholder="Your email" value={profile.email} onChange={e => setProfile({...profile, email: e.target.value})} />
-                    <button disabled={!profile.email} onClick={() => { setEmailCaptured(true); submitAssessment(answers); }} className="px-4 py-2 bg-accent text-white text-sm font-semibold rounded-lg disabled:opacity-50">Send</button>
-                  </div>
-                )}
-              </div>
-
-              {/* Services */}
-              {results.serviceRecommendations.length > 0 && (
-                <div className="border border-gray-200 rounded-2xl p-6 mb-6">
-                  <h3 className="text-base font-bold text-gray-900 mb-4">How JMCB Can Help</h3>
-                  {results.serviceRecommendations.map(svc => (
-                    <div key={svc.dimension} className="bg-gray-50 rounded-lg p-4 mb-3 last:mb-0">
-                      <p className="text-xs font-bold text-red-600 uppercase mb-1">Gap: {svc.dimension}</p>
-                      <p className="text-sm font-bold text-gray-900">{svc.service}</p>
-                      <p className="text-xs text-gray-500 mt-1">{svc.description}</p>
-                      <p className="text-xs text-accent font-medium mt-1">Deliverable: {svc.deliverable}</p>
-                    </div>
-                  ))}
+              {/* Report link */}
+              {emailCaptured && (
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 text-center mb-6">
+                  <p className="text-sm text-gray-700">Your full report and results have been sent to your email.</p>
                 </div>
               )}
 
