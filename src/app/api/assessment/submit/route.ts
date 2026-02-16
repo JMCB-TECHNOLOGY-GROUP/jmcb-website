@@ -7,7 +7,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
-import { scoreLeadQuality, shouldNotifyImmediately } from "@/lib/lead-scoring";
+import { scoreLeadQuality } from "@/lib/lead-scoring";
 import {
   calculateOverallScore,
   getQuestionsForSize,
@@ -17,7 +17,7 @@ import {
   type CompanySize,
   type Role,
 } from "@/lib/assessment-content";
-import { emailDay0, emailHotLeadAlert } from "@/lib/email-renderer";
+import { emailDay0, emailHotLeadAlert, emailLeadNotification } from "@/lib/email-renderer";
 import { sendEmail } from "@/lib/send-email";
 
 const MAKE_WEBHOOK_URL =
@@ -147,29 +147,31 @@ export async function POST(request: NextRequest) {
       }
     } catch {}
 
-    // ── 8. SEND DAY 0 EMAIL (immediate results) ──
+    // ── 8. BUILD REPORT URL ──
+    const reportUrl = lead?.id ? `https://jmcbtech.com/report/${lead.id}` : "";
+
+    // ── 9. SEND DAY 0 EMAIL (immediate results with report link) ──
     const day0 = emailDay0({
       firstName: body.firstName || "there",
       organization: body.organization || "your organization",
       overallScore, dimensionScores, weakestDimension, strongestDimension,
       priorityAction: priorityActions[0] || "",
+      reportUrl,
     });
     await sendEmail(body.email, day0.subject, day0.html);
 
-    // ── 9. HOT LEAD ALERT TO JERMAINE ──
-    if (shouldNotifyImmediately(leadResult)) {
-      const alert = emailHotLeadAlert({
-        firstName: body.firstName || "", lastName: body.lastName || "",
-        email: body.email, organization: body.organization || "",
-        role: body.role, companySize: body.companySize,
-        overallScore, leadScore: leadResult.score,
-        weakestDimension, strongestDimension,
-        reason: leadResult.reason,
-      });
-      await sendEmail(JERMAINE_EMAIL, alert.subject, alert.html);
-    }
+    // ── 10. NOTIFY JERMAINE ON EVERY SUBMISSION ──
+    const notification = emailLeadNotification({
+      firstName: body.firstName || "", lastName: body.lastName || "",
+      email: body.email, organization: body.organization || "",
+      role: body.role, companySize: body.companySize,
+      overallScore, leadScore: leadResult.score,
+      weakestDimension, strongestDimension,
+      reason: leadResult.reason, reportUrl, dimensionScores,
+    });
+    await sendEmail(JERMAINE_EMAIL, notification.subject, notification.html);
 
-    // ── 10. MAKE.COM WEBHOOK (async, non-blocking) ──
+    // ── 11. MAKE.COM WEBHOOK (async, non-blocking) ──
     fetch(MAKE_WEBHOOK_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -185,7 +187,7 @@ export async function POST(request: NextRequest) {
       }),
     }).catch((err) => console.error("Make.com webhook error:", err));
 
-    // ── 11. RETURN TO FRONTEND ──
+    // ── 12. RETURN TO FRONTEND ──
     return NextResponse.json({
       success: true,
       leadId: lead?.id,

@@ -68,9 +68,10 @@ function bars(scores: Record<string, number>, w: string, s: string): string {
 export function emailDay0(d: {
   firstName: string; organization: string; overallScore: number;
   dimensionScores: Record<string, number>; weakestDimension: string;
-  strongestDimension: string; priorityAction: string;
+  strongestDimension: string; priorityAction: string; reportUrl?: string;
 }): { subject: string; html: string } {
   const lvl = d.overallScore >= 80 ? "AI Leader" : d.overallScore >= 60 ? "AI Ready" : d.overallScore >= 40 ? "AI Emerging" : "AI Exploring";
+  const reportLink = d.reportUrl ? `<p style="text-align:center;margin:20px 0"><a href="${d.reportUrl}" class="btn2">View &amp; Download Your Full Report &rarr;</a></p>` : "";
   return {
     subject: `${d.firstName}, your AI Readiness Score: ${d.overallScore}/100`,
     html: wrap(`
@@ -80,6 +81,7 @@ export function emailDay0(d: {
       <h2>Dimension Scores</h2>
       ${bars(d.dimensionScores, d.weakestDimension, d.strongestDimension)}
       <div class="hl"><strong style="color:${B.accentDark}">Your #1 Priority: ${d.weakestDimension}</strong><p style="margin:8px 0 0;font-size:14px">${d.priorityAction}</p></div>
+      ${reportLink}
       <div class="dv"></div>
       <h2>What Happens Next</h2>
       <p>Over the next few days, I'll send you a deeper analysis of your biggest gap, what organizations like yours are doing differently, and a specific action plan you can start this week.</p>
@@ -169,6 +171,46 @@ export function emailPartialRecovery(d: {
       <p style="text-align:center;margin:28px 0"><a href="${B.site}/assessment?resume=${d.resumeToken}" class="btn">Finish Your Assessment &rarr;</a></p>
       <p style="font-size:13px;color:#64748b">Jermaine Barker<br>JMCB Technology Group</p>
     `, `You're ${d.questionsAnswered}/10 done with your AI Readiness Assessment. Pick up where you left off.`),
+  };
+}
+
+// ── ALL-SUBMISSION NOTIFICATION TO JERMAINE ──
+export function emailLeadNotification(d: {
+  firstName: string; lastName: string; email: string; organization: string;
+  role: string; companySize: string; overallScore: number;
+  leadScore: string; weakestDimension: string; strongestDimension: string;
+  reason: string; reportUrl: string; dimensionScores: Record<string, number>;
+}): { subject: string; html: string } {
+  const badge = d.leadScore === "hot"
+    ? `<span style="background:#dc2626;color:#fff;padding:2px 10px;border-radius:4px;font-weight:700;font-size:12px">HOT</span>`
+    : d.leadScore === "warm"
+    ? `<span style="background:#d97706;color:#fff;padding:2px 10px;border-radius:4px;font-weight:700;font-size:12px">WARM</span>`
+    : `<span style="background:#64748b;color:#fff;padding:2px 10px;border-radius:4px;font-weight:700;font-size:12px">COLD</span>`;
+  const emoji = d.leadScore === "hot" ? "&#128293;" : d.leadScore === "warm" ? "&#127793;" : "&#10052;";
+  return {
+    subject: `${d.leadScore === "hot" ? "🔥 HOT" : d.leadScore === "warm" ? "🌱 WARM" : "❄️ COLD"} Lead: ${d.firstName} ${d.lastName} (${d.organization}) ${d.overallScore}/100`,
+    html: wrap(`
+      <h2>${emoji} New Assessment Submission</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:14px">
+        <tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;font-weight:600;width:130px">Name</td><td style="padding:8px;border-bottom:1px solid #e2e8f0">${d.firstName} ${d.lastName}</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;font-weight:600">Email</td><td style="padding:8px;border-bottom:1px solid #e2e8f0"><a href="mailto:${d.email}">${d.email}</a></td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;font-weight:600">Organization</td><td style="padding:8px;border-bottom:1px solid #e2e8f0">${d.organization}</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;font-weight:600">Role</td><td style="padding:8px;border-bottom:1px solid #e2e8f0">${d.role}</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;font-weight:600">Size</td><td style="padding:8px;border-bottom:1px solid #e2e8f0">${d.companySize} employees</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;font-weight:600">Score</td><td style="padding:8px;border-bottom:1px solid #e2e8f0"><strong>${d.overallScore}/100</strong></td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;font-weight:600">Lead Score</td><td style="padding:8px;border-bottom:1px solid #e2e8f0">${badge}</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;font-weight:600">Weakest</td><td style="padding:8px;border-bottom:1px solid #e2e8f0">${d.weakestDimension}</td></tr>
+        <tr><td style="padding:8px;font-weight:600">Strongest</td><td style="padding:8px">${d.strongestDimension}</td></tr>
+      </table>
+      ${bars(d.dimensionScores, d.weakestDimension, d.strongestDimension)}
+      <div class="hl"><strong>Scoring rationale:</strong> ${d.reason}</div>
+      <p style="text-align:center;margin:20px 0">
+        <a href="${d.reportUrl}" class="btn">View Full Report &rarr;</a>
+      </p>
+      <p style="text-align:center;margin:12px 0">
+        <a href="mailto:${d.email}" class="btn2">Email ${d.firstName} &rarr;</a>
+      </p>
+    `, `New ${d.leadScore} lead: ${d.firstName} from ${d.organization}, score ${d.overallScore}/100`),
   };
 }
 
