@@ -180,6 +180,71 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ===== PRODUCTS PREVIEW ===== */}
+      <section className="py-20 md:py-28 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14 gap-4">
+            <div>
+              <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">
+                Our Products
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                Technology we <span className="italic text-accent">build and ship.</span>
+              </h2>
+            </div>
+            <Link href="/products" className="text-sm font-semibold text-accent hover:text-amber-700 transition-colors inline-flex items-center gap-1.5">
+              View all products
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: "ASCEND Content Manager",
+                tag: "SaaS Platform",
+                desc: "AI-powered content strategy and social media management for businesses that need consistent, on-brand output without the overhead of a full marketing team.",
+                href: "https://ascend.jmcbtech.com",
+                status: "Live",
+                color: "bg-green-500",
+              },
+              {
+                name: "Tendivo Health",
+                tag: "Healthcare AI",
+                desc: "Patient-facing AI layer for chronic disease management. Built to work on top of existing health records systems, reaching patients where traditional care falls short.",
+                href: "/products",
+                status: "In Development",
+                color: "bg-accent",
+              },
+              {
+                name: "LeapIQ",
+                tag: "Education AI",
+                desc: "Adaptive AI educational delivery platform that personalizes learning paths in real time, targeting knowledge gaps and accelerating student outcomes.",
+                href: "/products",
+                status: "In Development",
+                color: "bg-accent",
+              },
+            ].map((product) => (
+              <div key={product.name} className="group bg-white rounded-xl border border-gray-200 p-7 card-hover flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-semibold text-gray-400 tracking-wider uppercase">{product.tag}</span>
+                  <span className={`inline-flex items-center gap-1.5 text-xs font-semibold text-white px-2.5 py-0.5 rounded-full ${product.color}`}>
+                    <span className="w-1.5 h-1.5 bg-white rounded-full" />
+                    {product.status}
+                  </span>
+                </div>
+                <h3 className="font-display text-xl font-bold text-gray-900 mb-3">{product.name}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed mb-5 flex-1">{product.desc}</p>
+                <Link href={product.href} target={product.href.startsWith("http") ? "_blank" : undefined} rel={product.href.startsWith("http") ? "noopener noreferrer" : undefined} className="text-sm font-semibold text-accent hover:text-amber-700 transition-colors inline-flex items-center gap-1.5">
+                  {product.status === "Live" ? "Visit Platform" : "Learn More"}
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ===== ASCEND METHODOLOGY ===== */}
       <section className="relative py-20 md:py-28 px-4 overflow-hidden">
         <div className="absolute inset-0">
@@ -415,6 +480,71 @@ export default function HomePage() {
                   <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-accent transition-colors mt-1" />
                 </div>
               </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CLIENT WORK ===== */}
+      <section className="py-20 md:py-28 px-4 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">
+              Client Work
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              Companies we've <span className="italic text-accent">helped grow.</span>
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              From product development and platform builds to fractional CTO engagements and AI strategy, we partner with founders and teams to ship real technology.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-6">
+            {[
+              {
+                name: "Storc",
+                type: "Product Build + Fractional CTO + AI Strategy",
+                desc: "Built and advised the technology platform for this patented maternal health SaaS startup. Storc connects expecting mothers, healthcare providers, and first responders through a cloud-based patient tracking system for OB-GYN practices.",
+                url: "mystorc.com",
+                industry: "Healthcare / Maternal Health",
+              },
+              {
+                name: "Runwei",
+                type: "Product Build + Fractional CTO + AI Strategy",
+                desc: "Developed and provided strategic technology leadership for this AI-powered capital access platform. Runwei helps underrepresented entrepreneurs search, apply to, and track non-dilutive funding opportunities through a chat-based, multilingual interface.",
+                url: "runwei.io",
+                industry: "Fintech / Economic Mobility",
+              },
+              {
+                name: "Dove Youthology Aesthetic Institute",
+                type: "Fractional CTO",
+                desc: "Serving as Fractional CTO for this med spa practice. Implemented marketing automation flows, integrated scheduling and CRM systems, and rolling out ASCEND Content Manager as the first med spa client on the platform.",
+                url: "",
+                industry: "Healthcare / Aesthetics",
+              },
+              {
+                name: "QAPC Global",
+                type: "Product Build",
+                desc: "Designed and built the web presence for this global quality assurance and professional consulting firm, including scheduling integration and brand positioning for international audiences.",
+                url: "qapc-global.com",
+                industry: "Professional Services / Consulting",
+              },
+            ].map((client) => (
+              <div key={client.name} className="bg-white rounded-xl border border-gray-200 p-7 card-hover">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-gray-400 tracking-wider uppercase">{client.industry}</span>
+                </div>
+                <h3 className="font-display text-xl font-bold text-gray-900 mb-1">{client.name}</h3>
+                <p className="text-sm font-semibold text-accent mb-3">{client.type}</p>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">{client.desc}</p>
+                {client.url && (
+                  <a href={`https://${client.url}`} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-gray-400 hover:text-accent transition-colors inline-flex items-center gap-1.5">
+                    {client.url}
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                )}
+              </div>
             ))}
           </div>
         </div>

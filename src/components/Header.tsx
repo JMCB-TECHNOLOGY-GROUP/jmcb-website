@@ -9,9 +9,9 @@ const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agen
 
 const navLinks = [
   { href: "/services", label: "Services" },
+  { href: "/products", label: "Products" },
   { href: "/healthcare", label: "Healthcare" },
   { href: "/enterprise", label: "Enterprise" },
-  { href: "/associations", label: "Associations" },
   { href: "/leadership", label: "Leadership" },
 ];
 
