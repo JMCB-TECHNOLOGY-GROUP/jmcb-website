@@ -312,7 +312,7 @@ export default function HomePage() {
             {[
               {
                 name: "AI Readiness Scan",
-                price: "Starting at $3,500",
+                price: "",
                 duration: "2-week engagement",
                 desc: "Find out exactly where AI fits and what's blocking you.",
                 features: ["ASCEND\u2122 Assessment across 10 dimensions", "Executive AI Readiness Briefing", "Prioritized roadmap with quick wins", "Risk and governance gap analysis"],
@@ -321,7 +321,7 @@ export default function HomePage() {
               },
               {
                 name: "AI Strategy Sprint",
-                price: "Starting at $10,000",
+                price: "",
                 duration: "30-day engagement",
                 desc: "A complete AI playbook with a 90-day execution plan.",
                 features: ["Everything in Readiness Scan", "Detailed 30/60/90-day plan", "Vendor-agnostic tool recommendations", "Workforce enablement roadmap", "Governance framework template"],
@@ -330,7 +330,7 @@ export default function HomePage() {
               },
               {
                 name: "AI Pilot Program",
-                price: "Starting at $25,000",
+                price: "",
                 duration: "90-day engagement",
                 desc: "Strategy plus hands-on implementation of your first AI workflow.",
                 features: ["Everything in Strategy Sprint", "Production-ready AI agent workflow", "Human-in-the-loop oversight setup", "Team training and SOPs", "30-day post-launch support"],
@@ -345,7 +345,7 @@ export default function HomePage() {
                   </div>
                 )}
                 <h3 className="font-display text-lg font-bold text-gray-900 mb-1">{tier.name}</h3>
-                <p className="text-accent font-bold text-sm mb-0.5">{tier.price}</p>
+                {tier.price && <p className="text-accent font-bold text-sm mb-0.5">{tier.price}</p>}
                 <p className="text-xs text-gray-400 mb-4">{tier.duration}</p>
                 <p className="text-sm text-gray-600 mb-5 leading-relaxed">{tier.desc}</p>
                 <ul className="space-y-2.5 mb-6 flex-1">
@@ -367,7 +367,7 @@ export default function HomePage() {
           <div className="mt-8 p-6 bg-gray-50 rounded-xl border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <h4 className="font-display font-bold text-gray-900">AI Advisory Retainer</h4>
-              <p className="text-sm text-gray-500">Ongoing strategy sessions, governance oversight, and scaling support. From $5,000/month.</p>
+              <p className="text-sm text-gray-500">Ongoing strategy sessions, governance oversight, and scaling support. Custom-scoped to your needs.</p>
             </div>
             <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm whitespace-nowrap">
               Learn More

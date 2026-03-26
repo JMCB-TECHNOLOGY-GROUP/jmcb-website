@@ -252,7 +252,7 @@ export default function EnterprisePage() {
             {[
               {
                 name: "AI Readiness Scan",
-                price: "$5,000",
+                price: "",
                 duration: "1-2 weeks",
                 desc: "A focused diagnostic that tells you exactly where you're overspending and where AI can help.",
                 features: ["Executive interview and workflow analysis", "Tech stack audit with cost overlap report", "Top 3 AI opportunity identification", "Quick-win savings recommendation", "30-minute findings presentation"],
@@ -261,7 +261,7 @@ export default function EnterprisePage() {
               },
               {
                 name: "AI Strategy Sprint",
-                price: "$25,000",
+                price: "",
                 duration: "4-6 weeks",
                 desc: "A complete AI strategy with the business case and cost reduction plan to get executive buy-in.",
                 features: ["Full ASCEND Assessment (10 dimensions)", "Technology spend reduction roadmap", "Use case prioritization with ROI projections", "Implementation roadmap (30/60/90 day)", "Governance framework", "Executive presentation with financial model"],
@@ -270,7 +270,7 @@ export default function EnterprisePage() {
               },
               {
                 name: "AI Pilot Program",
-                price: "$50,000 - $100,000",
+                price: "",
                 duration: "8-12 weeks",
                 desc: "Go from strategy to production. We implement your first AI use case with full support.",
                 features: ["Everything in Strategy Sprint", "Pilot use case implementation", "Integration with existing systems", "Team training and enablement", "Success metrics and reporting", "90-day post-launch support"],
@@ -283,7 +283,7 @@ export default function EnterprisePage() {
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent text-white text-xs font-bold rounded-full tracking-wide">Most Popular</div>
                 )}
                 <h3 className="font-display text-lg font-bold text-gray-900 mb-1">{tier.name}</h3>
-                <p className="text-accent font-bold text-sm mb-0.5">{tier.price}</p>
+                {tier.price && <p className="text-accent font-bold text-sm mb-0.5">{tier.price}</p>}
                 <p className="text-xs text-gray-400 mb-4">{tier.duration}</p>
                 <p className="text-sm text-gray-600 mb-5 leading-relaxed">{tier.desc}</p>
                 <ul className="space-y-2.5 mb-6 flex-1">

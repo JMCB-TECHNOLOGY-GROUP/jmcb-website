@@ -205,16 +205,16 @@ export default function HealthcarePage() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { name: "Healthcare AI Assessment", price: "$15,000", duration: "3-4 weeks", desc: "Evaluate where AI can improve outcomes across clinical, operational, and compliance dimensions.", popular: false },
-              { name: "AI Strategy & Roadmap", price: "$35,000 - $75,000", duration: "6-10 weeks", desc: "Comprehensive AI strategy tied to quality metrics, clinical outcomes, and operational efficiency.", popular: true },
-              { name: "Implementation Advisory", price: "Custom", duration: "3-12 months", desc: "Hands-on support for AI pilot programs and production deployments in clinical settings.", popular: false },
+              { name: "Healthcare AI Assessment", price: "", duration: "3-4 weeks", desc: "Evaluate where AI can improve outcomes across clinical, operational, and compliance dimensions.", popular: false },
+              { name: "AI Strategy & Roadmap", price: "", duration: "6-10 weeks", desc: "Comprehensive AI strategy tied to quality metrics, clinical outcomes, and operational efficiency.", popular: true },
+              { name: "Implementation Advisory", price: "", duration: "3-12 months", desc: "Hands-on support for AI pilot programs and production deployments in clinical settings.", popular: false },
             ].map((tier) => (
               <div key={tier.name} className={`relative flex flex-col bg-white rounded-xl p-7 card-hover ${tier.popular ? "border-2 border-accent shadow-lg shadow-accent/10" : "border border-gray-200"}`}>
                 {tier.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent text-white text-xs font-bold rounded-full tracking-wide">Recommended</div>
                 )}
                 <h3 className="font-display text-lg font-bold text-gray-900 mb-1">{tier.name}</h3>
-                <p className="text-accent font-bold text-sm mb-0.5">{tier.price}</p>
+                {tier.price && <p className="text-accent font-bold text-sm mb-0.5">{tier.price}</p>}
                 <p className="text-xs text-gray-400 mb-4">{tier.duration}</p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-6 flex-1">{tier.desc}</p>
                 <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"}>

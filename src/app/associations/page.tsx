@@ -137,25 +137,25 @@ export default function AssociationsPage() {
           <div className="text-center mb-14">
             <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">Right-Sized Engagements</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
-              Priced for mission-driven <span className="italic text-accent">organizations.</span>
+              Scoped for mission-driven <span className="italic text-accent">organizations.</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              We know you're not working with enterprise budgets. Every engagement is scoped to deliver maximum impact within your resources.
+              Every engagement is custom-scoped to deliver maximum impact for your organization. We'll discuss investment during our strategy call.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { name: "AI Readiness Scan", price: "Starting at $3,500", duration: "2 weeks", desc: "Find out where AI can save your team the most time and which workflows to automate first.", popular: false },
-              { name: "AI Strategy Sprint", price: "Starting at $10,000", duration: "30 days", desc: "A complete AI playbook with prioritized workflows, tool recommendations, and a 90-day implementation plan.", popular: true },
-              { name: "AI Pilot Program", price: "Starting at $25,000", duration: "90 days", desc: "Strategy plus hands-on implementation of your first AI workflow with team training and ongoing support.", popular: false },
+              { name: "AI Readiness Scan", price: "", duration: "2 weeks", desc: "Find out where AI can save your team the most time and which workflows to automate first.", popular: false },
+              { name: "AI Strategy Sprint", price: "", duration: "30 days", desc: "A complete AI playbook with prioritized workflows, tool recommendations, and a 90-day implementation plan.", popular: true },
+              { name: "AI Pilot Program", price: "", duration: "90 days", desc: "Strategy plus hands-on implementation of your first AI workflow with team training and ongoing support.", popular: false },
             ].map((tier) => (
               <div key={tier.name} className={`relative flex flex-col bg-white rounded-xl p-7 card-hover ${tier.popular ? "border-2 border-accent shadow-lg shadow-accent/10" : "border border-gray-200"}`}>
                 {tier.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent text-white text-xs font-bold rounded-full tracking-wide">Most Popular</div>
                 )}
                 <h3 className="font-display text-lg font-bold text-gray-900 mb-1">{tier.name}</h3>
-                <p className="text-accent font-bold text-sm mb-0.5">{tier.price}</p>
+                {tier.price && <p className="text-accent font-bold text-sm mb-0.5">{tier.price}</p>}
                 <p className="text-xs text-gray-400 mb-4">{tier.duration}</p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-6 flex-1">{tier.desc}</p>
                 <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"}>
