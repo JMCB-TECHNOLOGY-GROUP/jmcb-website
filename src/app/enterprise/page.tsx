@@ -105,7 +105,7 @@ const engagements = [
 const differentiators = [
   {
     title: "Enterprise Experience, Mid-Market Focus",
-    description: "We bring the discipline of large-scale federal program management to companies your size. No bloated timelines or budgets.",
+    description: "We bring the discipline of large-scale enterprise program management to companies your size. No bloated timelines or budgets.",
   },
   {
     title: "Speed to Value",
@@ -122,7 +122,7 @@ const differentiators = [
 ];
 
 const results = [
-  { metric: "$2B", label: "Program Leadership", context: "USPS Technology" },
+  { metric: "$2B", label: "Program Leadership", context: "Enterprise Technology" },
   { metric: "15+", label: "Years Enterprise Tech", context: "Federal & Private" },
   { metric: "90", label: "Day Roadmaps", context: "Strategy to Action" },
 ];

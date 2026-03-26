@@ -276,7 +276,7 @@ export default function HealthcarePage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700">15+ years federal health IT experience</span>
+                  <span className="text-gray-700">15+ years enterprise health IT experience</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />

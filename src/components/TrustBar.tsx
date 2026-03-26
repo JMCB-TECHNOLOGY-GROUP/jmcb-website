@@ -14,7 +14,7 @@ export default function TrustBar() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {credentials.map((cred) => (
             <div key={cred.text} className="flex items-center gap-3">
-              <cred.icon className="w-8 h-8 text-gray-400 flex-shrink-0" />
+              <cred.icon className="w-7 h-7 text-gray-400 flex-shrink-0" />
               <div>
                 <div className="text-sm font-semibold text-gray-900 leading-tight">{cred.text}</div>
                 <div className="text-xs text-gray-500">{cred.sub}</div>

@@ -2,28 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Shield, Brain, Zap, ChevronRight, Clock, Target, Users, CheckCircle2, Building2, Sparkles } from "lucide-react";
+import { ArrowRight, Shield, Brain, Zap, ChevronRight, Clock, Target, Users, CheckCircle2, Building2, Sparkles, ArrowUpRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import TrustBar from "@/components/TrustBar";
-import ServiceTiers from "@/components/ServiceTiers";
-import SocialProof from "@/components/SocialProof";
 
 const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
-
-const verticals = [
-  { name: "Healthcare", href: "/healthcare", icon: Brain, desc: "HIPAA-conscious AI workflows for providers and health systems" },
-  { name: "Enterprise & Mid-Market", href: "/enterprise", icon: Target, desc: "Scalable AI strategy for companies with 50-500 employees" },
-  { name: "Associations & Nonprofits", href: "/associations", icon: Users, desc: "Member-focused AI for trade associations and mission-driven orgs" },
-  { name: "Small Business & Startups", href: "/services", icon: Sparkles, desc: "Right-sized AI that delivers ROI without enterprise complexity" },
-];
-
-const stats = [
-  { value: "$2B+", label: "Programs Managed" },
-  { value: "15+", label: "Years Tech Leadership" },
-  { value: "90", label: "Days to First AI Workflow" },
-  { value: "10", label: "ASCEND™ Dimensions Assessed" },
-];
 
 export default function HomePage() {
   return (
@@ -31,200 +14,192 @@ export default function HomePage() {
       <Header />
 
       {/* ===== HERO ===== */}
-      <section className="pt-28 pb-16 md:pt-36 md:pb-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-6">
-            AI Strategy & Implementation for Growing Businesses
+      <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80&auto=format"
+            alt=""
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-900/90 via-gray-900/80 to-gray-900/70" />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-32 pb-20">
+          <p className="text-accent font-body font-semibold text-sm tracking-widest uppercase mb-6 animate-fade-in-up opacity-0">
+            AI Strategy & Implementation
           </p>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
-            Deploy AI with confidence.{" "}
-            <span className="text-accent">See results in 90 days.</span>
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.08] mb-6 animate-fade-in-up-delay opacity-0">
+            Deploy AI with
+            <br />
+            <span className="text-accent italic">confidence.</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-300 max-w-xl leading-relaxed mb-10 animate-fade-in-up-delay-2 opacity-0">
             80% of AI projects fail before production. We bring the discipline
-            behind large-scale technology programs to help your team deploy AI safely
-            and profitably, with a clear plan and real accountability.
+            behind large-scale technology programs to help your team deploy AI
+            safely and profitably.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Link
-              href="/assessment"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition-all hover:-translate-y-0.5 hover:shadow-lg text-lg"
-            >
+          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up-delay-2 opacity-0">
+            <Link href="/assessment" className="btn-primary text-base">
               Take Free AI Assessment
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-gray-900 text-gray-900 font-semibold rounded-lg hover:bg-gray-900 hover:text-white transition-all text-lg"
-            >
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base">
               Book Strategy Briefing
             </Link>
           </div>
-          <p className="text-sm text-gray-400">
-            No spam. No sales pitch. Just clarity on where AI fits in your business.
-          </p>
-          <p className="text-xs text-accent font-semibold mt-3">
-            Limited Q2 2026 strategy slots available
-          </p>
         </div>
+
+        {/* Bottom gradient fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
       </section>
 
       {/* ===== TRUST BAR ===== */}
-      <TrustBar />
-
-      {/* ===== PROBLEM / AGITATION ===== */}
-      <section className="py-16 md:py-24 px-4 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Most AI initiatives stall. Yours won't.
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              The gap between AI ambition and AI execution is where businesses
-              lose time, money, and competitive advantage.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
+      <section className="py-10 px-4 border-b border-gray-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { stat: "80%", text: "of AI pilots never reach production", source: "Forbes" },
-              { stat: "48%", text: "of leaders cite governance as the top barrier to scaling AI", source: "Gartner" },
-              { stat: "67%", text: "of organizations say data quality is their #1 AI challenge", source: "Industry Research" },
+              { stat: "$2B+", label: "Programs Managed" },
+              { stat: "15+", label: "Years Enterprise Leadership" },
+              { stat: "90", label: "Days to First AI Workflow" },
+              { stat: "27+", label: "Years Maritime Operations" },
             ].map((item) => (
-              <div key={item.stat} className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-                <div className="text-4xl font-bold text-red-600 mb-2">{item.stat}</div>
-                <p className="text-gray-700 font-medium mb-2">{item.text}</p>
-                <p className="text-xs text-gray-400">{item.source}</p>
+              <div key={item.label} className="text-center">
+                <div className="text-2xl md:text-3xl font-display font-bold text-gray-900">{item.stat}</div>
+                <div className="text-xs font-body font-medium text-gray-500 mt-1 tracking-wide">{item.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== ABOUT / CREDIBILITY ===== */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
-              Why JMCB
+      {/* ===== PROBLEM / AGITATION ===== */}
+      <section className="py-20 md:py-28 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">
+                The Problem
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                Most AI initiatives stall.
+                <br />
+                <span className="italic text-accent">Yours won't.</span>
+              </h2>
+              <p className="text-gray-600 leading-relaxed mb-8">
+                The gap between AI ambition and AI execution is where businesses
+                lose time, money, and competitive advantage. Pilots that never
+                reach production. Vendors that overpromise. Governance gaps that
+                keep leadership awake at night.
+              </p>
+              <Link href="/assessment" className="btn-primary text-sm">
+                Find out where you stand
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              {[
+                { stat: "80%", text: "of AI pilots never reach production", source: "Forbes" },
+                { stat: "48%", text: "of leaders cite governance as the top barrier to scaling AI", source: "Gartner" },
+                { stat: "67%", text: "of organizations say data quality is their #1 AI challenge", source: "Industry Research" },
+              ].map((item) => (
+                <div key={item.stat} className="flex items-start gap-5 p-5 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className="text-3xl font-display font-bold text-accent shrink-0 w-20">{item.stat}</div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{item.text}</p>
+                    <p className="text-xs text-gray-400 mt-1">{item.source}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== LEADERSHIP ===== */}
+      <section className="py-20 md:py-28 px-4 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">
+              Leadership
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Enterprise discipline.{" "}
-              <span className="text-accent">Operational depth.</span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              Enterprise discipline. <span className="italic text-accent">Operational depth.</span>
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Our leadership combines AI strategy, large-scale program delivery,
               and 27+ years of maritime operations experience across the Caribbean.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Jermaine Barker */}
-            <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden group hover:border-accent transition-colors">
+            {/* Jermaine */}
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden group card-hover">
               <div className="aspect-[4/3] overflow-hidden bg-gray-100">
-                <Image
-                  src="/jermaine-barker.jpg"
-                  alt="Jermaine Barker, Founder and CEO of JMCB Technology Group"
-                  width={600}
-                  height={450}
-                  className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
-                />
+                <Image src="/jermaine-barker.jpg" alt="Jermaine Barker, Founder and CEO" width={600} height={450} className="w-full h-full object-cover object-top img-grayscale group-hover:scale-[1.02] transition-transform duration-500" />
               </div>
-              <div className="p-6 md:p-8">
-                <h3 className="text-xl font-bold text-gray-900 mb-1">Jermaine Barker</h3>
+              <div className="p-7">
+                <h3 className="text-xl font-display font-bold text-gray-900 mb-1">Jermaine Barker</h3>
                 <p className="text-sm font-semibold text-accent mb-4">Founder & Chief Executive Officer</p>
-                <p className="text-gray-600 text-sm leading-relaxed mb-3">
-                  Jermaine leads JMCB Technology Group with 15+ years of enterprise
-                  technology leadership, including oversight of large-scale programs
-                  exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused
-                  on Healthcare and AI Safety, he brings scientific rigor and
-                  governance-first thinking to every engagement.
+                <p className="text-sm text-gray-600 leading-relaxed mb-3">
+                  Jermaine leads JMCB Technology Group with 15+ years of enterprise technology leadership, including oversight of large-scale programs exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused on Healthcare and AI Safety, he brings scientific rigor and governance-first thinking to every engagement.
                 </p>
-                <p className="text-gray-600 text-sm leading-relaxed mb-5">
-                  He holds an M.S. in Molecular Genetics from Howard University and
-                  co-founded Vital Guardian AI, which won both the Johns Hopkins
-                  Ward Infinity Pitch Competition and Community Impact Award.
+                <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                  He holds an M.S. in Molecular Genetics from Howard University and co-founded Vital Guardian AI, which won both the Johns Hopkins Ward Infinity Pitch Competition and Community Impact Award.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {["Johns Hopkins Fellow", "Howard M.S.", "$2B+ Programs", "AI Safety"].map((tag) => (
-                    <span key={tag} className="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-full border border-gray-200">
-                      {tag}
-                    </span>
+                  {["Johns Hopkins Fellow", "Howard M.S.", "$2B+ Programs", "AI Safety"].map((t) => (
+                    <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
                   ))}
                 </div>
-                <a
-                  href="https://linkedin.com/in/jermaine-barker-9a74536"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold text-gray-400 hover:text-accent transition-colors"
-                >
-                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                  LinkedIn
-                </a>
               </div>
             </div>
 
-            {/* David Cheddie */}
-            <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden group hover:border-accent transition-colors">
+            {/* David */}
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden group card-hover">
               <div className="aspect-[4/3] overflow-hidden bg-gray-100">
-                <Image
-                  src="/david-cheddie.jpg"
-                  alt="David Cheddie, Chief Operating Officer of JMCB Technology Group"
-                  width={600}
-                  height={450}
-                  className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
-                />
+                <Image src="/david-cheddie.jpg" alt="David Cheddie, Chief Operating Officer" width={600} height={450} className="w-full h-full object-cover object-top img-grayscale group-hover:scale-[1.02] transition-transform duration-500" />
               </div>
-              <div className="p-6 md:p-8">
-                <h3 className="text-xl font-bold text-gray-900 mb-1">David Cheddie</h3>
+              <div className="p-7">
+                <h3 className="text-xl font-display font-bold text-gray-900 mb-1">David Cheddie</h3>
                 <p className="text-sm font-semibold text-accent mb-4">Chief Operating Officer</p>
-                <p className="text-gray-600 text-sm leading-relaxed mb-3">
-                  David brings 27+ years of maritime engineering and fleet operations
-                  leadership to JMCB Technology Group. He holds an unlimited Chief
-                  Engineer certification (3000KW+) with extensive experience managing
-                  DP Class 2 vessel operations across the Caribbean and offshore sectors.
+                <p className="text-sm text-gray-600 leading-relaxed mb-3">
+                  David brings 27+ years of maritime engineering and fleet operations leadership to JMCB Technology Group. He holds an unlimited Chief Engineer certification (3000KW+) with extensive experience managing DP Class 2 vessel operations across the Caribbean and offshore sectors.
                 </p>
-                <p className="text-gray-600 text-sm leading-relaxed mb-5">
-                  His career spans senior engineering roles with Edison Chouest Offshore,
-                  Hornbeck Offshore Services, and Svitzer Marine, where he oversaw vessel
-                  maintenance, compliance, crew operations, and technical superintendence
-                  for complex offshore fleets. David operates from Georgetown, Guyana
-                  with dual presence in the Washington D.C. metro area.
+                <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                  His career spans senior engineering roles with Edison Chouest Offshore, Hornbeck Offshore Services, and Svitzer Marine. David operates from Georgetown, Guyana with dual presence in the Washington D.C. metro area.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {["Unlimited Chief Engineer", "DP Class 2", "Edison Chouest", "Georgetown, GY"].map((tag) => (
-                    <span key={tag} className="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-full border border-gray-200">
-                      {tag}
-                    </span>
+                  {["Unlimited Chief Engineer", "DP Class 2", "Edison Chouest", "Georgetown, GY"].map((t) => (
+                    <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
                   ))}
                 </div>
-                <a
-                  href="https://www.linkedin.com/in/david-cheddie/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold text-gray-400 hover:text-accent transition-colors"
-                >
-                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                  LinkedIn
-                </a>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ===== ASCEND METHOD ===== */}
-      <section className="py-16 md:py-24 px-4 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
+      {/* ===== ASCEND METHODOLOGY ===== */}
+      <section className="relative py-20 md:py-28 px-4 overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80&auto=format"
+            alt=""
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gray-900/92" />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">
               Our Methodology
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              The JMCB ASCEND™ Framework
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
+              The JMCB ASCEND&#8482; Framework
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed">
               A proven methodology for deploying agentic AI, starting
               with the workflows that create measurable impact first.
             </p>
@@ -238,14 +213,14 @@ export default function HomePage() {
               { letter: "N", word: "Navigate", desc: "Implement guardrails for responsible, governed AI" },
               { letter: "D", word: "Deploy", desc: "Roll out, measure, and continuously improve" },
             ].map((step) => (
-              <div key={step.letter} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-accent transition-colors">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="w-10 h-10 bg-accent text-white rounded-lg flex items-center justify-center font-bold text-lg">
+              <div key={step.letter} className="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 hover:border-accent/40 transition-all duration-300">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-10 h-10 bg-accent text-white rounded-lg flex items-center justify-center font-display font-bold text-lg">
                     {step.letter}
                   </span>
-                  <span className="font-bold text-gray-900 text-lg">{step.word}</span>
+                  <span className="font-display font-bold text-white text-lg">{step.word}</span>
                 </div>
-                <p className="text-gray-600 text-sm">{step.desc}</p>
+                <p className="text-gray-400 text-sm leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -253,36 +228,191 @@ export default function HomePage() {
       </section>
 
       {/* ===== SERVICES PREVIEW ===== */}
-      <ServiceTiers />
+      <section className="py-20 md:py-28 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">
+              How We Work
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              Engagement models <span className="italic text-accent">built for results.</span>
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              Every engagement follows our ASCEND&#8482; methodology. Choose the depth
+              that matches where you are today.
+            </p>
+          </div>
 
-      {/* ===== SOCIAL PROOF ===== */}
-      <SocialProof />
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: "AI Readiness Scan",
+                price: "Starting at $3,500",
+                duration: "2-week engagement",
+                desc: "Find out exactly where AI fits and what's blocking you.",
+                features: ["ASCEND\u2122 Assessment across 10 dimensions", "Executive AI Readiness Briefing", "Prioritized roadmap with quick wins", "Risk and governance gap analysis"],
+                best: "Teams exploring AI for the first time",
+                popular: false,
+              },
+              {
+                name: "AI Strategy Sprint",
+                price: "Starting at $10,000",
+                duration: "30-day engagement",
+                desc: "A complete AI playbook with a 90-day execution plan.",
+                features: ["Everything in Readiness Scan", "Detailed 30/60/90-day plan", "Vendor-agnostic tool recommendations", "Workforce enablement roadmap", "Governance framework template"],
+                best: "Organizations that need a structured execution plan",
+                popular: true,
+              },
+              {
+                name: "AI Pilot Program",
+                price: "Starting at $25,000",
+                duration: "90-day engagement",
+                desc: "Strategy plus hands-on implementation of your first AI workflow.",
+                features: ["Everything in Strategy Sprint", "Production-ready AI agent workflow", "Human-in-the-loop oversight setup", "Team training and SOPs", "30-day post-launch support"],
+                best: "Teams that want AI running this quarter",
+                popular: false,
+              },
+            ].map((tier) => (
+              <div key={tier.name} className={`relative flex flex-col bg-white rounded-xl p-7 card-hover ${tier.popular ? "border-2 border-accent shadow-lg shadow-accent/10" : "border border-gray-200"}`}>
+                {tier.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent text-white text-xs font-bold rounded-full tracking-wide">
+                    Most Popular
+                  </div>
+                )}
+                <h3 className="font-display text-lg font-bold text-gray-900 mb-1">{tier.name}</h3>
+                <p className="text-accent font-bold text-sm mb-0.5">{tier.price}</p>
+                <p className="text-xs text-gray-400 mb-4">{tier.duration}</p>
+                <p className="text-sm text-gray-600 mb-5 leading-relaxed">{tier.desc}</p>
+                <ul className="space-y-2.5 mb-6 flex-1">
+                  {tier.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-xs text-gray-400 mb-4">Best for: {tier.best}</p>
+                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"}>
+                  Discuss This Option
+                </Link>
+              </div>
+            ))}
+          </div>
 
-      {/* ===== VERTICALS ===== */}
-      <section className="py-16 md:py-24 px-4 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
+          <div className="mt-8 p-6 bg-gray-50 rounded-xl border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 className="font-display font-bold text-gray-900">AI Advisory Retainer</h4>
+              <p className="text-sm text-gray-500">Ongoing strategy sessions, governance oversight, and scaling support. From $5,000/month.</p>
+            </div>
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm whitespace-nowrap">
+              Learn More
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== HOW WE HELP (with photo) ===== */}
+      <section className="py-20 md:py-28 px-4 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">
+              How We Help
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              AI strategy that connects to <span className="italic text-accent">real outcomes.</span>
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-14">
+            {[
+              {
+                icon: Brain,
+                industry: "Healthcare Organizations",
+                focus: "Better outcomes, less burnout",
+                desc: "We map clinical workflows, identify where AI creates the most value for patient outcomes, and build governance-first implementations.",
+                img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80&auto=format",
+              },
+              {
+                icon: Building2,
+                industry: "Mid-Market Companies",
+                focus: "From idea to production in 90 days",
+                desc: "Our ASCEND assessment pinpoints the highest-impact workflows, then we build a 90-day plan to get your first AI workflow live.",
+                img: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80&auto=format",
+              },
+              {
+                icon: Users,
+                industry: "Associations & Nonprofits",
+                focus: "Multiply impact without adding headcount",
+                desc: "We identify the repetitive work eating your team's time and build AI workflows that give you capacity back.",
+                img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80&auto=format",
+              },
+            ].map((v) => (
+              <div key={v.industry} className="bg-white rounded-xl border border-gray-200 overflow-hidden group card-hover">
+                <div className="aspect-[16/10] overflow-hidden">
+                  <img src={v.img} alt={v.industry} className="w-full h-full object-cover img-grayscale group-hover:scale-[1.03] transition-transform duration-500" />
+                </div>
+                <div className="p-6">
+                  <h3 className="font-display font-bold text-gray-900 mb-2">{v.industry}</h3>
+                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">{v.desc}</p>
+                  <div className="text-sm font-semibold text-accent">{v.focus}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Testimonials */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              {
+                quote: "Jermaine brought a level of structure and rigor we hadn't experienced before. He understood our compliance requirements from day one and focused entirely on what would actually move the needle for us.",
+                role: "Managing Partner",
+                org: "Healthcare Practice Group",
+              },
+              {
+                quote: "We went from talking about AI to having a real plan in weeks. The governance framework alone changed how our leadership thinks about responsible technology adoption.",
+                role: "COO",
+                org: "Professional Services Firm",
+              },
+            ].map((t, i) => (
+              <div key={i} className="bg-white border border-gray-200 rounded-xl p-7">
+                <div className="w-8 h-1 bg-accent rounded mb-5" />
+                <p className="text-gray-700 italic leading-relaxed mb-5">"{t.quote}"</p>
+                <div>
+                  <div className="text-sm font-semibold text-gray-900">{t.role}</div>
+                  <div className="text-xs text-gray-500">{t.org}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== INDUSTRIES ===== */}
+      <section className="py-20 md:py-28 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">
               Industries We Serve
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              AI strategy built for your sector
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+              AI strategy built for <span className="italic text-accent">your sector.</span>
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
-            {verticals.map((v) => (
-              <Link
-                key={v.name}
-                href={v.href}
-                className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-accent hover:shadow-md transition-all"
-              >
+            {[
+              { name: "Healthcare", href: "/healthcare", icon: Brain, desc: "HIPAA-conscious AI workflows for providers and health systems" },
+              { name: "Enterprise & Mid-Market", href: "/enterprise", icon: Target, desc: "Scalable AI strategy for companies with 50-500 employees" },
+              { name: "Associations & Nonprofits", href: "/associations", icon: Users, desc: "Member-focused AI for trade associations and mission-driven orgs" },
+              { name: "Small Business & Startups", href: "/services", icon: Sparkles, desc: "Right-sized AI that delivers ROI without enterprise complexity" },
+            ].map((v) => (
+              <Link key={v.name} href={v.href} className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-accent card-hover">
                 <div className="flex items-start justify-between">
                   <div>
-                    <v.icon className="w-8 h-8 text-accent mb-3" />
-                    <h3 className="font-bold text-gray-900 text-lg mb-1">{v.name}</h3>
+                    <v.icon className="w-7 h-7 text-accent mb-3" />
+                    <h3 className="font-display font-bold text-gray-900 text-lg mb-1">{v.name}</h3>
                     <p className="text-gray-600 text-sm">{v.desc}</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-accent transition-colors mt-1" />
+                  <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-accent transition-colors mt-1" />
                 </div>
               </Link>
             ))}
@@ -291,12 +421,25 @@ export default function HomePage() {
       </section>
 
       {/* ===== STATS BAR ===== */}
-      <section className="py-12 px-4 bg-gray-900">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative py-16 px-4 overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80&auto=format"
+            alt=""
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gray-900/88" />
+        </div>
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((s) => (
+            {[
+              { value: "$2B+", label: "Programs Managed" },
+              { value: "15+", label: "Years Tech Leadership" },
+              { value: "90", label: "Days to First AI Workflow" },
+              { value: "10", label: "ASCEND\u2122 Dimensions" },
+            ].map((s) => (
               <div key={s.label} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-accent mb-1">{s.value}</div>
+                <div className="text-3xl md:text-4xl font-display font-bold text-accent mb-1">{s.value}</div>
                 <div className="text-sm text-gray-400">{s.label}</div>
               </div>
             ))}
@@ -305,36 +448,28 @@ export default function HomePage() {
       </section>
 
       {/* ===== FINAL CTA ===== */}
-      <section className="py-16 md:py-24 px-4">
+      <section className="py-20 md:py-28 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Ready to deploy AI with confidence?
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
+            Ready to deploy AI <span className="italic text-accent">with confidence?</span>
           </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto">
+          <p className="text-lg text-gray-600 mb-10 max-w-lg mx-auto leading-relaxed">
             Take our free 5-minute assessment to find out exactly where AI
             can help, and what to do first.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/assessment"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-amber-600 transition-all hover:-translate-y-0.5 hover:shadow-lg text-lg"
-            >
+            <Link href="/assessment" className="btn-primary text-base">
               Start Free Assessment
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-gray-900 text-gray-900 font-semibold rounded-lg hover:bg-gray-900 hover:text-white transition-all text-lg"
-            >
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-base">
               Book Strategy Briefing
             </Link>
           </div>
           <div className="mt-8 flex items-center justify-center gap-6 text-sm text-gray-400">
-            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> 5 minutes</span>
-            <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4" /> Free report</span>
-            <span className="flex items-center gap-1"><Shield className="w-4 h-4" /> No spam</span>
+            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> 5 minutes</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" /> Free report</span>
+            <span className="flex items-center gap-1.5"><Shield className="w-4 h-4" /> No spam</span>
           </div>
         </div>
       </section>

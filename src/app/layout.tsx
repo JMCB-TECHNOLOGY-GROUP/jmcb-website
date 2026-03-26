@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Lora, DM_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const lora = Lora({ subsets: ["latin"], variable: "--font-display", display: "swap" });
+const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 
 export const metadata: Metadata = {
   title: {
@@ -33,10 +34,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 };
 
 const jsonLd = {
@@ -45,7 +43,7 @@ const jsonLd = {
   name: "JMCB Technology Group",
   url: "https://jmcbtech.com",
   logo: "https://jmcbtech.com/logo.png",
-  description: "AI Strategy & Implementation for growing businesses. Enterprise discipline, entrepreneurial speed.",
+  description: "AI Strategy & Implementation for growing businesses.",
   founder: {
     "@type": "Person",
     name: "Jermaine Barker",
@@ -53,27 +51,16 @@ const jsonLd = {
     sameAs: "https://linkedin.com/in/jermaine-barker-9a74536",
   },
   sameAs: ["https://linkedin.com/in/jermaine-barker-9a74536"],
-  contactPoint: {
-    "@type": "ContactPoint",
-    email: "jermaine@jmcbtech.com",
-    contactType: "sales",
-  },
+  contactPoint: { "@type": "ContactPoint", email: "jermaine@jmcbtech.com", contactType: "sales" },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
-      <body className={`${inter.variable} font-sans`}>{children}</body>
+      <body className={`${lora.variable} ${dmSans.variable} font-body`}>{children}</body>
     </html>
   );
 }

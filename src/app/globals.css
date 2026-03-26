@@ -4,41 +4,90 @@
 
 :root {
   --accent: #D97706;
+  --accent-hover: #B45309;
+  --navy: #0F172A;
+  --navy-dark: #080D19;
 }
 
-.text-accent {
-  color: var(--accent);
-}
-
-.bg-accent {
-  background-color: var(--accent);
-}
-
-.border-accent {
-  border-color: var(--accent);
-}
-
-.hover\:bg-amber-600:hover {
-  background-color: #d97706;
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Animation */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+/* ── Base Typography ── */
+@layer base {
+  body {
+    @apply text-gray-700 antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  h1, h2, h3, h4 {
+    @apply font-display text-gray-900;
   }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.5s ease-out;
+/* ── Utility Classes ── */
+.text-accent { color: var(--accent); }
+.bg-accent { background-color: var(--accent); }
+.border-accent { border-color: var(--accent); }
+
+/* ── Smooth Scrolling ── */
+html { scroll-behavior: smooth; }
+
+/* ── Photo Overlays ── */
+.photo-overlay {
+  position: relative;
+}
+.photo-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(8,13,25,0.5) 0%, rgba(8,13,25,0.85) 100%);
+  pointer-events: none;
+}
+
+.photo-overlay-light::after {
+  background: linear-gradient(to bottom, rgba(8,13,25,0.3) 0%, rgba(8,13,25,0.7) 100%);
+}
+
+/* ── Section Dividers ── */
+.section-rule {
+  @apply border-t border-gray-200;
+}
+
+/* ── Button Hover Effects ── */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-accent text-white font-body font-semibold rounded-lg transition-all duration-200;
+}
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(217,119,6,0.3);
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 border-2 border-gray-900 text-gray-900 font-body font-semibold rounded-lg transition-all duration-200;
+}
+.btn-outline:hover {
+  @apply bg-gray-900 text-white;
+}
+
+.btn-outline-white {
+  @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 border-2 border-white/30 text-white font-body font-semibold rounded-lg transition-all duration-200;
+}
+.btn-outline-white:hover {
+  @apply bg-white/10 border-white/60;
+}
+
+/* ── Card Hover ── */
+.card-hover {
+  @apply transition-all duration-300;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+/* ── Image Grayscale to Color on Hover ── */
+.img-grayscale {
+  filter: grayscale(20%) contrast(1.05);
+  transition: filter 0.5s ease;
+}
+.group:hover .img-grayscale,
+.img-grayscale:hover {
+  filter: grayscale(0%) contrast(1.08);
 }
