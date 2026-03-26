@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Lora, DM_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const lora = Lora({ subsets: ["latin"], variable: "--font-display", display: "swap" });
-const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-body", display: "swap" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 
 export const metadata: Metadata = {
   title: {
@@ -30,10 +29,7 @@ export const metadata: Metadata = {
     description: "Deploy AI with confidence. Free AI Readiness Assessment. Results in 90 days.",
     images: ["/og-image.png"],
   },
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
+  icons: { icon: "/favicon.ico", apple: "/apple-touch-icon.png" },
   robots: { index: true, follow: true },
 };
 
@@ -44,12 +40,7 @@ const jsonLd = {
   url: "https://jmcbtech.com",
   logo: "https://jmcbtech.com/logo.png",
   description: "AI Strategy & Implementation for growing businesses.",
-  founder: {
-    "@type": "Person",
-    name: "Jermaine Barker",
-    jobTitle: "Founder & CEO",
-    sameAs: "https://linkedin.com/in/jermaine-barker-9a74536",
-  },
+  founder: { "@type": "Person", name: "Jermaine Barker", jobTitle: "Founder & CEO", sameAs: "https://linkedin.com/in/jermaine-barker-9a74536" },
   sameAs: ["https://linkedin.com/in/jermaine-barker-9a74536"],
   contactPoint: { "@type": "ContactPoint", email: "jermaine@jmcbtech.com", contactType: "sales" },
 };
@@ -58,9 +49,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
-      <body className={`${lora.variable} ${dmSans.variable} font-body`}>{children}</body>
+      <body className={`${inter.variable} font-body`}>{children}</body>
     </html>
   );
 }
