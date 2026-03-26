@@ -105,45 +105,110 @@ export default function HomePage() {
       {/* ===== ABOUT / CREDIBILITY ===== */}
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
-                Why JMCB
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Enterprise discipline.{" "}
-                <span className="text-accent">Entrepreneurial speed.</span>
-              </h2>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                Led by Jermaine Barker, a Johns Hopkins AI Safety Fellow with
-                15+ years managing large-scale technology programs including a
-                $2B initiative for the U.S. Postal Service. His background in
-                molecular genetics brings scientific rigor to every engagement.
-              </p>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                At JMCB Technology Group, we apply the governance and discipline
-                of enterprise programs to help growing businesses deploy AI
-                with a structured plan, responsible oversight, and results you
-                can measure within 90 days.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {["Johns Hopkins Fellow", "Howard M.S.", "$2B Programs", "15+ Years Leadership"].map((tag) => (
-                  <span key={tag} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
-                    {tag}
-                  </span>
-                ))}
+          <div className="text-center mb-12">
+            <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
+              Why JMCB
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Enterprise discipline.{" "}
+              <span className="text-accent">Operational depth.</span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Our leadership combines AI strategy, large-scale program delivery,
+              and 27+ years of maritime operations experience across the Caribbean.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Jermaine Barker */}
+            <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden group hover:border-accent transition-colors">
+              <div className="aspect-[4/3] overflow-hidden bg-gray-100">
+                <Image
+                  src="/jermaine-barker.jpg"
+                  alt="Jermaine Barker, Founder and CEO of JMCB Technology Group"
+                  width={600}
+                  height={450}
+                  className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 md:p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-1">Jermaine Barker</h3>
+                <p className="text-sm font-semibold text-accent mb-4">Founder & Chief Executive Officer</p>
+                <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                  Jermaine leads JMCB Technology Group with 15+ years of enterprise
+                  technology leadership, including oversight of large-scale programs
+                  exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused
+                  on Healthcare and AI Safety, he brings scientific rigor and
+                  governance-first thinking to every engagement.
+                </p>
+                <p className="text-gray-600 text-sm leading-relaxed mb-5">
+                  He holds an M.S. in Molecular Genetics from Howard University and
+                  co-founded Vital Guardian AI, which won both the Johns Hopkins
+                  Ward Infinity Pitch Competition and Community Impact Award.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {["Johns Hopkins Fellow", "Howard M.S.", "$2B+ Programs", "AI Safety"].map((tag) => (
+                    <span key={tag} className="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-full border border-gray-200">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <a
+                  href="https://linkedin.com/in/jermaine-barker-9a74536"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold text-gray-400 hover:text-accent transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                  LinkedIn
+                </a>
               </div>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
-              <Image
-                src="/jermaine-barker.jpg"
-                alt="Jermaine Barker, Founder of JMCB Technology Group"
-                width={400}
-                height={400}
-                className="rounded-xl w-full h-auto mb-4"
-              />
-              <p className="text-sm font-semibold text-gray-900">Jermaine Barker</p>
-              <p className="text-xs text-gray-500">Founder & CEO, JMCB Technology Group</p>
+
+            {/* David Cheddie */}
+            <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden group hover:border-accent transition-colors">
+              <div className="aspect-[4/3] overflow-hidden bg-gray-100">
+                <Image
+                  src="/david-cheddie.jpg"
+                  alt="David Cheddie, Chief Operating Officer of JMCB Technology Group"
+                  width={600}
+                  height={450}
+                  className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 md:p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-1">David Cheddie</h3>
+                <p className="text-sm font-semibold text-accent mb-4">Chief Operating Officer</p>
+                <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                  David brings 27+ years of maritime engineering and fleet operations
+                  leadership to JMCB Technology Group. He holds an unlimited Chief
+                  Engineer certification (3000KW+) with extensive experience managing
+                  DP Class 2 vessel operations across the Caribbean and offshore sectors.
+                </p>
+                <p className="text-gray-600 text-sm leading-relaxed mb-5">
+                  His career spans senior engineering roles with Edison Chouest Offshore,
+                  Hornbeck Offshore Services, and Svitzer Marine, where he oversaw vessel
+                  maintenance, compliance, crew operations, and technical superintendence
+                  for complex offshore fleets. David operates from Georgetown, Guyana
+                  with dual presence in the Washington D.C. metro area.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {["Unlimited Chief Engineer", "DP Class 2", "Edison Chouest", "Georgetown, GY"].map((tag) => (
+                    <span key={tag} className="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-full border border-gray-200">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <a
+                  href="https://www.linkedin.com/in/david-cheddie/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold text-gray-400 hover:text-accent transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                  LinkedIn
+                </a>
+              </div>
             </div>
           </div>
         </div>
