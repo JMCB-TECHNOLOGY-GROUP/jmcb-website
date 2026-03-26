@@ -97,10 +97,10 @@ export default function LeadershipPage() {
               <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-6">David Cheddie</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  David Cheddie is the Chief Operating Officer of JMCB Technology Group and Managing Director of JMCB Group of Companies (Guyana). With 27+ years in maritime engineering and fleet operations, David is responsible for all operational execution across JMCB's Caribbean engagements, including government contract delivery, fleet technology implementation, and in-country team leadership.
+                  David Cheddie is the Chief Operating Officer of JMCB Technology Group. With 27+ years in maritime engineering and fleet operations, David is responsible for all operational execution across JMCB's Caribbean engagements, including government contract delivery, fleet technology implementation, and on-the-ground team leadership.
                 </p>
                 <p>
-                  David's career in maritime operations began in Guyana before expanding across the Caribbean corridor through Trinidad and Tobago, Grenada, St. Vincent, and St. Lucia. He progressed from engineering apprentice to Chief Engineer, earning his unlimited Chief Engineer certification (3000KW or more) with no limitations on vessel class.
+                  David's career in maritime operations spans the Caribbean corridor, including Trinidad and Tobago, Grenada, St. Vincent, and St. Lucia. He progressed from engineering apprentice to Chief Engineer, earning his unlimited Chief Engineer certification (3000KW or more) with no limitations on vessel class.
                 </p>
                 <p>
                   His technical expertise includes Dynamic Positioning (DP) Class 2 vessel maintenance, advanced firefighting, ship security, survival craft operations, and engine room management for complex offshore support vessels.
@@ -109,7 +109,7 @@ export default function LeadershipPage() {
                   Before joining JMCB, David held Chief Engineer and Technical Superintendent positions with Edison Chouest Offshore (2018-2025), one of the largest offshore marine transportation companies in the world. Prior to that, he served as Chief Engineer with Hornbeck Offshore Services (2015-2018). His earlier experience includes senior engineering roles with Svitzer Marine Trinidad and Tobago, Delta Logistics, and multiple offshore operators across the Caribbean basin.
                 </p>
                 <p>
-                  David operates from Georgetown, Guyana with dual presence in the Washington D.C. metropolitan area. He holds certifications from the Panama Maritime Training Services, the Caribbean Fisheries Training and Development Institute, and the Maritime Services Division of Trinidad and Tobago.
+                  David operates across the Caribbean with dual presence in the Washington D.C. metropolitan area. He holds certifications from the Panama Maritime Training Services, the Caribbean Fisheries Training and Development Institute, and the Maritime Services Division of Trinidad and Tobago.
                 </p>
               </div>
             </div>

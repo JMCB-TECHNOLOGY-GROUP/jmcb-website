@@ -65,7 +65,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} JMCB Technology Group. All rights reserved.
           </p>
           <p className="text-xs text-gray-600">
-            Washington, D.C. &middot; Georgetown, Guyana
+            Washington, D.C. &middot; Caribbean
           </p>
         </div>
       </div>

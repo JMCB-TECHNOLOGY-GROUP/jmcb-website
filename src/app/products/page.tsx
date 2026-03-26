@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, ExternalLink, Layers, Heart, GraduationCap, Ship, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ExternalLink, Layers, Heart, GraduationCap, CheckCircle2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -31,7 +31,7 @@ const products = [
     icon: Heart,
     name: "Tendivo Health",
     tagline: "Patient-facing AI for chronic disease management.",
-    status: "In Development",
+    status: "Pilot",
     statusColor: "bg-accent",
     url: "",
     img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80&auto=format",
@@ -50,7 +50,7 @@ const products = [
     icon: GraduationCap,
     name: "LeapIQ",
     tagline: "Adaptive AI educational delivery.",
-    status: "In Development",
+    status: "Pilot",
     statusColor: "bg-accent",
     url: "",
     img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80&auto=format",
@@ -64,25 +64,6 @@ const products = [
     ],
     stack: "React, AI/ML adaptive engine",
     audience: "K-12 students, parents, tutoring centers, school districts",
-  },
-  {
-    icon: Ship,
-    name: "MarineOps / GovOps",
-    tagline: "Maritime fleet ERP for government operations.",
-    status: "In Development",
-    statusColor: "bg-accent",
-    url: "",
-    img: "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=800&q=80&auto=format",
-    description: "MarineOps is a maritime operations ERP platform built specifically for government fleet management. Currently in development for the Maritime Administration of Guyana (MARAD), the platform digitizes vessel compliance tracking, crew scheduling, maintenance workflows, and regulatory reporting for national maritime fleets.",
-    features: [
-      "Vessel compliance scoreboard with real-time status tracking",
-      "Crew scheduling and certification management",
-      "Maintenance workflow digitization and alerts",
-      "Form digitization tracker for regulatory submissions",
-      "Fleet-wide analytics dashboard",
-    ],
-    stack: "Next.js 14, Supabase Pro, Vercel",
-    audience: "Government maritime agencies, port authorities, fleet operators",
   },
 ];
 

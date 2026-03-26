@@ -167,10 +167,10 @@ export default function HomePage() {
                   David brings 27+ years of maritime engineering and fleet operations leadership to JMCB Technology Group. He holds an unlimited Chief Engineer certification (3000KW+) with extensive experience managing DP Class 2 vessel operations across the Caribbean and offshore sectors.
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-5">
-                  His career spans senior engineering roles with Edison Chouest Offshore, Hornbeck Offshore Services, and Svitzer Marine. David operates from Georgetown, Guyana with dual presence in the Washington D.C. metro area.
+                  His career spans senior engineering roles with Edison Chouest Offshore, Hornbeck Offshore Services, and Svitzer Marine. David operates across the Caribbean with dual presence in the Washington D.C. metro area.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {["Unlimited Chief Engineer", "DP Class 2", "Edison Chouest", "Georgetown, GY"].map((t) => (
+                  {["Unlimited Chief Engineer", "DP Class 2", "Edison Chouest", "Caribbean Ops"].map((t) => (
                     <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
                   ))}
                 </div>
@@ -213,7 +213,7 @@ export default function HomePage() {
                 tag: "Healthcare AI",
                 desc: "Patient-facing AI layer for chronic disease management. Built to work on top of existing health records systems, reaching patients where traditional care falls short.",
                 href: "/products",
-                status: "In Development",
+                status: "Pilot",
                 color: "bg-accent",
               },
               {
@@ -221,7 +221,7 @@ export default function HomePage() {
                 tag: "Education AI",
                 desc: "Adaptive AI educational delivery platform that personalizes learning paths in real time, targeting knowledge gaps and accelerating student outcomes.",
                 href: "/products",
-                status: "In Development",
+                status: "Pilot",
                 color: "bg-accent",
               },
             ].map((product) => (
