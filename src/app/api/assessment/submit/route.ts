@@ -18,6 +18,7 @@ import {
 } from "@/lib/assessment-content";
 import { emailDay0, emailHotLeadAlert, emailLeadNotification } from "@/lib/email-renderer";
 import { sendEmail } from "@/lib/send-email";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const MAKE_WEBHOOK_URL =
   process.env.MAKE_WEBHOOK_URL ||
@@ -28,6 +29,15 @@ const CALENDLY_LINK =
 const JERMAINE_EMAIL = process.env.JERMAINE_EMAIL || "jermaine@jmcbtech.com";
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  const rl = checkRateLimit(`assessment-submit:${ip}`, 5, 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { success: false, error: "Too many requests, slow down" },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await request.json();
