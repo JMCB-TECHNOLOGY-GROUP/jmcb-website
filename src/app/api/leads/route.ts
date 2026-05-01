@@ -132,36 +132,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-// GET endpoint for admin to retrieve leads (protected)
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const status = searchParams.get("status");
-    const limit = parseInt(searchParams.get("limit") || "50");
-
-    const supabase = createServerClient();
-
-    let query = supabase
-      .from("leads")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(limit);
-
-    if (status) {
-      query = query.eq("status", status);
-    }
-
-    const { data, error } = await query;
-
-    if (error) throw error;
-
-    return NextResponse.json({ leads: data });
-  } catch (error) {
-    console.error("Lead fetch error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch leads" },
-      { status: 500 }
-    );
-  }
-}
