@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    const rl = checkRateLimit(`leads:${ip}`, 5, 60_000);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests, slow down" },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+      );
+    }
+
     const body = await request.json();
     const {
       firstName,
@@ -128,39 +138,6 @@ export async function POST(request: NextRequest) {
     console.error("Lead capture error:", error);
     return NextResponse.json(
       { error: "Failed to save lead" },
-      { status: 500 }
-    );
-  }
-}
-
-// GET endpoint for admin to retrieve leads (protected)
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const status = searchParams.get("status");
-    const limit = parseInt(searchParams.get("limit") || "50");
-
-    const supabase = createServerClient();
-
-    let query = supabase
-      .from("leads")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(limit);
-
-    if (status) {
-      query = query.eq("status", status);
-    }
-
-    const { data, error } = await query;
-
-    if (error) throw error;
-
-    return NextResponse.json({ leads: data });
-  } catch (error) {
-    console.error("Lead fetch error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch leads" },
       { status: 500 }
     );
   }

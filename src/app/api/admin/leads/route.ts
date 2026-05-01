@@ -5,14 +5,17 @@
 // ============================================================
 
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "node:crypto";
 import { createServerClient } from "@/lib/supabase";
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "jmcb-admin-2025";
-
 function checkAuth(request: NextRequest): boolean {
+  const expected = process.env.ADMIN_PASSWORD;
+  if (!expected) return false;
   const authHeader = request.headers.get("authorization");
   if (!authHeader) return false;
-  return authHeader.replace("Bearer ", "") === ADMIN_PASSWORD;
+  const provided = authHeader.replace("Bearer ", "");
+  if (provided.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(provided), Buffer.from(expected));
 }
 
 export async function GET(request: NextRequest) {
