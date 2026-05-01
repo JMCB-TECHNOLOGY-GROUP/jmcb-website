@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, TrendingDown, DollarSign, BarChart3, CheckCircle2, Clock, Shield, Zap, Target, Users, ChevronRight } from "lucide-react";
+import { ArrowRight, TrendingDown, DollarSign, BarChart3, CheckCircle2, Clock, Shield, Zap, Target } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 

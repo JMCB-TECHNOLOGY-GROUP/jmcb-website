@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Heart, Shield, Users, CheckCircle2, Activity, Stethoscope, AlertTriangle, Clock } from "lucide-react";
+import { ArrowRight, Shield, Users, CheckCircle2, Activity, Stethoscope, AlertTriangle, Clock } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 

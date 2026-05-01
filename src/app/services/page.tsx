@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Clock, Shield, FileSearch, Map, Rocket, RefreshCw } from "lucide-react";
+import { ArrowRight, CheckCircle2, FileSearch, Map, Rocket } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 

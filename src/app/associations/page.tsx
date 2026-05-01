@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Users, Megaphone, FileText, Calendar, CheckCircle2, Zap, BarChart3, Clock, MessageSquare } from "lucide-react";
+import { ArrowRight, Users, Megaphone, FileText, Calendar, BarChart3, MessageSquare } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 

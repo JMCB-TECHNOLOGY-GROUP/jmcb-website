@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Shield, Brain, Zap, ChevronRight, Clock, Target, Users, CheckCircle2, Building2, Sparkles, ArrowUpRight } from "lucide-react";
+import { ArrowRight, Shield, Brain, ChevronRight, Clock, Target, Users, CheckCircle2, Building2, Sparkles, ArrowUpRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 

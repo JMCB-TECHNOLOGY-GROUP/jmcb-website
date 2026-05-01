@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, ExternalLink, Layers, Heart, GraduationCap, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Layers, Heart, GraduationCap, CheckCircle2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
