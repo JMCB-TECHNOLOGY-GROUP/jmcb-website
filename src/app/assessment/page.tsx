@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { trackEvent } from "@/lib/analytics";
 import {
   getQuestionsForSize,
   calculateOverallScore,
@@ -205,6 +206,7 @@ export default function AssessmentPage() {
   };
 
   const submitAssessment = async (fa: Record<string, number>) => {
+    trackEvent("assessment_completed", { companySize: profile.companySize || null });
     setStage("analyzing"); setAnalyzingStep(0);
     const safety = setTimeout(() => { setResults(p => p || buildLocal(fa)); setStage("results"); }, 5000);
     try {

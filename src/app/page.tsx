@@ -5,8 +5,8 @@ import Image from "next/image";
 import { ArrowRight, Shield, Brain, ChevronRight, Clock, Target, Users, CheckCircle2, Building2, Sparkles, ArrowUpRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
+import { CALENDLY_URL } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
 
 export default function HomePage() {
   return (
@@ -44,7 +44,7 @@ export default function HomePage() {
               Take Free AI Assessment
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base" onClick={() => trackEvent("calendly_click", { location: "home_hero" })}>
               Book Strategy Briefing
             </Link>
           </div>
@@ -62,7 +62,7 @@ export default function HomePage() {
               { stat: "$2B+", label: "Programs Managed" },
               { stat: "15+", label: "Years Enterprise Leadership" },
               { stat: "90", label: "Days to First AI Workflow" },
-              { stat: "27+", label: "Years Maritime Operations" },
+              { stat: "Claude", label: "Partner Network Member" },
             ].map((item) => (
               <div key={item.label} className="text-center">
                 <div className="text-2xl md:text-3xl font-display font-bold text-gray-900">{item.stat}</div>
@@ -357,7 +357,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <p className="text-xs text-gray-400 mb-4">Best for: {tier.best}</p>
-                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"}>
+                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"} onClick={() => trackEvent("calendly_click", { location: "home_services", tier: tier.name })}>
                   Discuss This Option
                 </Link>
               </div>
@@ -369,7 +369,7 @@ export default function HomePage() {
               <h4 className="font-display font-bold text-gray-900">AI Advisory Retainer</h4>
               <p className="text-sm text-gray-500">Ongoing strategy sessions, governance oversight, and scaling support. Custom-scoped to your needs.</p>
             </div>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm whitespace-nowrap">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm whitespace-nowrap" onClick={() => trackEvent("calendly_click", { location: "home_retainer" })}>
               Learn More
             </Link>
           </div>
@@ -425,26 +425,32 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Testimonials */}
+          {/* Named results */}
           <div className="grid md:grid-cols-2 gap-6">
             {[
               {
-                quote: "Jermaine brought a level of structure and rigor we hadn't experienced before. He understood our compliance requirements from day one and focused entirely on what would actually move the needle for us.",
-                role: "Managing Partner",
-                org: "Healthcare Practice Group",
+                client: "Storc",
+                result: "Built and shipped the technology platform behind this patented maternal health SaaS — connecting expecting mothers, providers, and first responders through cloud-based patient tracking.",
+                type: "Product Build + Fractional CTO",
+                url: "mystorc.com",
               },
               {
-                quote: "We went from talking about AI to having a real plan in weeks. The governance framework alone changed how our leadership thinks about responsible technology adoption.",
-                role: "COO",
-                org: "Professional Services Firm",
+                client: "Runwei",
+                result: "Delivered an AI-powered capital access platform helping underrepresented entrepreneurs find and win non-dilutive funding through a chat-based, multilingual interface.",
+                type: "Product Build + AI Strategy",
+                url: "runwei.io",
               },
-            ].map((t, i) => (
-              <div key={i} className="bg-white border border-gray-200 rounded-xl p-7">
+            ].map((t) => (
+              <div key={t.client} className="bg-white border border-gray-200 rounded-xl p-7">
                 <div className="w-8 h-1 bg-accent rounded mb-5" />
-                <p className="text-gray-700 italic leading-relaxed mb-5">"{t.quote}"</p>
-                <div>
-                  <div className="text-sm font-semibold text-gray-900">{t.role}</div>
-                  <div className="text-xs text-gray-500">{t.org}</div>
+                <div className="text-lg font-display font-bold text-gray-900 mb-2">{t.client}</div>
+                <p className="text-gray-700 leading-relaxed mb-5">{t.result}</p>
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-semibold text-accent">{t.type}</div>
+                  <a href={`https://${t.url}`} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-gray-400 hover:text-accent transition-colors inline-flex items-center gap-1">
+                    {t.url}
+                    <ArrowUpRight className="w-3 h-3" />
+                  </a>
                 </div>
               </div>
             ))}
@@ -592,7 +598,7 @@ export default function HomePage() {
               Start Free Assessment
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-base">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-base" onClick={() => trackEvent("calendly_click", { location: "home_final_cta" })}>
               Book Strategy Briefing
             </Link>
           </div>

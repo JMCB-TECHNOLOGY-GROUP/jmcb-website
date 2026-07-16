@@ -4,15 +4,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-
-const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
+import { CALENDLY_URL } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
 
 const navLinks = [
   { href: "/services", label: "Services" },
   { href: "/products", label: "Products" },
   { href: "/healthcare", label: "Healthcare" },
   { href: "/enterprise", label: "Enterprise" },
-  { href: "/leadership", label: "Leadership" },
+  { href: "/blog", label: "Insights" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Header() {
@@ -35,7 +36,7 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm !py-2.5 !px-5">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm !py-2.5 !px-5" onClick={() => trackEvent("calendly_click", { location: "header" })}>
               Book a Call
             </Link>
           </nav>
@@ -53,7 +54,7 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
-              <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm !py-2.5" onClick={() => setMobileMenuOpen(false)}>
+              <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm !py-2.5" onClick={() => { trackEvent("calendly_click", { location: "header_mobile" }); setMobileMenuOpen(false); }}>
                 Book a Call
               </Link>
             </nav>

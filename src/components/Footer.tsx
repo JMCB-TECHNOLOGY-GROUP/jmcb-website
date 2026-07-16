@@ -36,6 +36,8 @@ export default function Footer() {
                 { label: "Enterprise AI", href: "/enterprise" },
                 { label: "Associations", href: "/associations" },
                 { label: "AI Assessment", href: "/assessment" },
+                { label: "Insights", href: "/blog" },
+                { label: "Contact", href: "/contact" },
               ].map((l) => (
                 <li key={l.label}>
                   <Link href={l.href} className="text-sm text-gray-400 hover:text-white transition-colors">{l.label}</Link>
@@ -65,7 +67,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} JMCB Technology Group. All rights reserved.
           </p>
           <p className="text-xs text-gray-600">
-            Washington, D.C. &middot; Caribbean
+            Claude Partner Network Member &middot; Washington, D.C. &middot; Caribbean
           </p>
         </div>
       </div>

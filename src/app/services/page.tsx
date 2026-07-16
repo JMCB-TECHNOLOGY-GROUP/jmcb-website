@@ -5,7 +5,8 @@ import { ArrowRight, CheckCircle2, FileSearch, Map, Rocket } from "lucide-react"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
+import { CALENDLY_URL } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
 
 export default function ServicesPage() {
   return (
@@ -33,7 +34,7 @@ export default function ServicesPage() {
               Take Free AI Assessment
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base" onClick={() => trackEvent("calendly_click", { location: "services_hero" })}>
               Book Strategy Briefing
             </Link>
           </div>
@@ -132,7 +133,7 @@ export default function ServicesPage() {
                   ))}
                 </ul>
                 <p className="text-xs text-gray-400 mb-4">Best for: {tier.best}</p>
-                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"}>
+                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"} onClick={() => trackEvent("calendly_click", { location: "services_tiers", tier: tier.name })}>
                   Discuss This Option
                 </Link>
               </div>
@@ -144,7 +145,7 @@ export default function ServicesPage() {
               <h4 className="font-display font-bold text-gray-900">AI Advisory Retainer</h4>
               <p className="text-sm text-gray-500">Ongoing strategy sessions, governance oversight, and scaling support. Custom-scoped to your needs.</p>
             </div>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm whitespace-nowrap">Learn More</Link>
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm whitespace-nowrap" onClick={() => trackEvent("calendly_click", { location: "services_retainer" })}>Learn More</Link>
           </div>
         </div>
       </section>
@@ -207,7 +208,7 @@ export default function ServicesPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/assessment" className="btn-primary text-base">Take Free Assessment <ArrowRight className="w-5 h-5" /></Link>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-base">Book Strategy Briefing</Link>
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-base" onClick={() => trackEvent("calendly_click", { location: "services_final_cta" })}>Book Strategy Briefing</Link>
           </div>
         </div>
       </section>

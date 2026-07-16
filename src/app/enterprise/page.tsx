@@ -5,7 +5,8 @@ import { ArrowRight, TrendingDown, DollarSign, BarChart3, CheckCircle2, Clock, S
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/enterprise-ai-strategy";
+import { CALENDLY_ENTERPRISE_URL as CALENDLY_URL } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
 
 export default function EnterprisePage() {
   return (
@@ -33,7 +34,7 @@ export default function EnterprisePage() {
               Take Free AI Assessment
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base" onClick={() => trackEvent("calendly_click", { location: "enterprise_hero" })}>
               Book Strategy Call
             </Link>
           </div>
@@ -294,7 +295,7 @@ export default function EnterprisePage() {
                   ))}
                 </ul>
                 <p className="text-xs text-gray-400 mb-4">Best for: {tier.best}</p>
-                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"}>
+                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"} onClick={() => trackEvent("calendly_click", { location: "enterprise_tiers", tier: tier.name })}>
                   {tier.popular ? "Start Strategy Sprint" : "Discuss This Option"}
                 </Link>
               </div>
@@ -313,7 +314,7 @@ export default function EnterprisePage() {
             Schedule a free strategy call. We'll discuss your tech stack, your goals, and where the savings are hiding. No obligation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-base">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-base" onClick={() => trackEvent("calendly_click", { location: "enterprise_final_cta" })}>
               Schedule Strategy Call
               <ArrowRight className="w-5 h-5" />
             </Link>
