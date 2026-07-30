@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Code2, ShieldCheck, GraduationCap } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -40,7 +40,7 @@ export default function LeadershipPage() {
                 <Image src="/jermaine-barker.jpg" alt="Jermaine Barker" width={600} height={700} className="w-full h-auto object-cover" />
               </div>
               <div className="mt-6 flex flex-wrap gap-2">
-                {["Johns Hopkins Fellow", "Howard M.S.", "$2B+ Programs", "AI Safety", "Vital Guardian AI"].map((t) => (
+                {["Johns Hopkins Fellow", "Howard M.S.", "$2B+ Programs", "AI Safety", "Anthropic Certified", "Vital Guardian AI"].map((t) => (
                   <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
                 ))}
               </div>
@@ -54,7 +54,10 @@ export default function LeadershipPage() {
               <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-6">Jermaine Barker</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  Jermaine leads JMCB Technology Group with 15+ years of enterprise technology leadership, including oversight of large-scale programs exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused on Healthcare and AI Safety, he brings scientific rigor and governance-first thinking to every engagement.
+                  Jermaine leads JMCB Technology Group with 15+ years in federal health technology, including oversight of large-scale programs exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused on Healthcare and AI Safety, he brings scientific rigor and governance-first thinking to every engagement.
+                </p>
+                <p>
+                  He holds multiple Anthropic certifications and leads the firm as a member of the Claude Partner Network.
                 </p>
                 <p>
                   He holds an M.S. in Molecular Genetics from Howard University and co-founded Vital Guardian AI, a chronic disease management platform that won both the Johns Hopkins Ward Infinity Pitch Competition and Community Impact Award. That work drove the development of Tendivo Health, a health record platform that puts patients' complete medical records in their hands.
@@ -74,45 +77,66 @@ export default function LeadershipPage() {
       {/* Divider */}
       <div className="max-w-5xl mx-auto px-4"><div className="border-t border-gray-200" /></div>
 
-      {/* David Full Bio */}
+      {/* David Profile */}
       <section className="py-20 md:py-28 px-4">
         <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-5 gap-12 items-start">
-            <div className="md:col-span-2">
-              <div className="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50">
-                <Image src="/david-cheddie.jpg" alt="David Cheddie" width={600} height={700} className="w-full h-auto object-cover" />
+          <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-3">Director, Caribbean Operations</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-6">David Cheddie</h2>
+          <div className="max-w-3xl space-y-4 text-gray-600 leading-relaxed">
+            <p>
+              David leads JMCB Technology Group's Caribbean operations and government delivery, with deep operational expertise in the region's maritime sector. His background spans 27+ years in maritime engineering and fleet operations across the Caribbean.
+            </p>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {["Unlimited Chief Engineer", "DP Class 2", "Caribbean Ops"].map((t) => (
+              <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
+            ))}
+          </div>
+          <a href="https://www.linkedin.com/in/david-cheddie/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-accent hover:text-amber-700 transition-colors">
+            View LinkedIn Profile
+            <ArrowRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      </section>
+
+      {/* The Practice */}
+      <section className="py-20 md:py-28 px-4 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">The Practice</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              The team behind <span className="italic text-accent">the products.</span>
+            </h2>
+            <p className="text-gray-600 leading-relaxed">
+              JMCB Technology Group is an Anthropic-certified engineering team building AI products
+              across healthcare, maritime, civic, and education. We're based in Washington, D.C.
+              and serve clients across the US and the Caribbean.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Code2,
+                title: "AI Engineering",
+                body: "Anthropic-certified engineers who take AI products from first prototype to production, with human review built in where the domain demands it.",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Regulated Domain Delivery",
+                body: "Product work in fields where mistakes carry real cost: health records, maritime safety, civic services, and education.",
+              },
+              {
+                icon: GraduationCap,
+                title: "Talent Development",
+                body: "A structured summer internship program with D.C. workforce partners trains early-career technologists toward professional AI certifications.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="bg-white rounded-xl border border-gray-200 p-7">
+                <item.icon className="w-6 h-6 text-accent mb-4" />
+                <h3 className="font-display text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{item.body}</p>
               </div>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {["Unlimited Chief Engineer", "DP Class 2", "Edison Chouest Offshore", "Hornbeck Offshore", "Ship Security Officer"].map((t) => (
-                  <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
-                ))}
-              </div>
-              <a href="https://www.linkedin.com/in/david-cheddie/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-accent hover:text-amber-700 transition-colors">
-                View LinkedIn Profile
-                <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
-            <div className="md:col-span-3">
-              <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-3">Chief Operating Officer</p>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-6">David Cheddie</h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed">
-                <p>
-                  David Cheddie is the Chief Operating Officer of JMCB Technology Group. With 27+ years in maritime engineering and fleet operations, David is responsible for all operational execution across JMCB's Caribbean engagements, including government contract delivery, fleet technology implementation, and on-the-ground team leadership.
-                </p>
-                <p>
-                  David's career in maritime operations spans the Caribbean corridor, including Trinidad and Tobago, Grenada, St. Vincent, and St. Lucia. He progressed from engineering apprentice to Chief Engineer, earning his unlimited Chief Engineer certification (3000KW or more) with no limitations on vessel class.
-                </p>
-                <p>
-                  His technical expertise includes Dynamic Positioning (DP) Class 2 vessel maintenance, advanced firefighting, ship security, survival craft operations, and engine room management for complex offshore support vessels.
-                </p>
-                <p>
-                  Before joining JMCB, David held Chief Engineer and Technical Superintendent positions with Edison Chouest Offshore (2018-2025), one of the largest offshore marine transportation companies in the world. Prior to that, he served as Chief Engineer with Hornbeck Offshore Services (2015-2018). His earlier experience includes senior engineering roles with Svitzer Marine Trinidad and Tobago, Delta Logistics, and multiple offshore operators across the Caribbean basin.
-                </p>
-                <p>
-                  David operates across the Caribbean with dual presence in the Washington D.C. metropolitan area. He holds certifications from the Panama Maritime Training Services, the Caribbean Fisheries Training and Development Institute, and the Maritime Services Division of Trinidad and Tobago.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
