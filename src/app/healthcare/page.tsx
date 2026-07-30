@@ -74,7 +74,7 @@ export default function HealthcarePage() {
                   In 2024, I lost my father to complications from Type 2 Diabetes. I was his caregiver, and I watched disconnected systems fail him over and over. Missed appointments. Medication confusion. Gaps in care coordination that snowballed into crises nobody saw coming.
                 </p>
                 <p>
-                  That's what drove me to co-found VitalGuardian AI, a chronic disease management platform that won the Johns Hopkins Ward Infinity Pitch Competition and the Community Impact Award. That work continues through Tendivo Health, focused on reaching patients where the healthcare system keeps failing them.
+                  That's what drove me to co-found VitalGuardian AI, a chronic disease management platform that won the Johns Hopkins Ward Infinity Pitch Competition and the Community Impact Award. That work continues through Tendivo Health, a health record platform that puts patients' complete medical records in their hands, with a clinician verifying every AI suggestion before it touches the record.
                 </p>
                 <p className="font-semibold text-gray-800">
                   I bring that same drive to every healthcare AI engagement. If the technology doesn't make patients healthier and clinicians' lives easier, it's not worth building.

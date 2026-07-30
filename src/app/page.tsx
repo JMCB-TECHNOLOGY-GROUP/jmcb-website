@@ -210,11 +210,11 @@ export default function HomePage() {
               },
               {
                 name: "Tendivo Health",
-                tag: "Healthcare AI",
-                desc: "Patient-facing AI layer for chronic disease management. Built to work on top of existing health records systems, reaching patients where traditional care falls short.",
-                href: "/products",
-                status: "Pilot",
-                color: "bg-accent",
+                tag: "Health Records Platform",
+                desc: "Turns the messy medical records patients actually get into one complete, clinician-verified health picture. Nothing dropped, everything understood.",
+                href: "https://tendivohealth.com",
+                status: "Live",
+                color: "bg-green-500",
               },
               {
                 name: "LeapIQ",

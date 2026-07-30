@@ -57,7 +57,7 @@ export default function LeadershipPage() {
                   Jermaine leads JMCB Technology Group with 15+ years of enterprise technology leadership, including oversight of large-scale programs exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused on Healthcare and AI Safety, he brings scientific rigor and governance-first thinking to every engagement.
                 </p>
                 <p>
-                  He holds an M.S. in Molecular Genetics from Howard University and co-founded Vital Guardian AI, a chronic disease management platform that won both the Johns Hopkins Ward Infinity Pitch Competition and Community Impact Award. That work drove the development of Tendivo Health, focused on reaching patients where the healthcare system keeps failing them.
+                  He holds an M.S. in Molecular Genetics from Howard University and co-founded Vital Guardian AI, a chronic disease management platform that won both the Johns Hopkins Ward Infinity Pitch Competition and Community Impact Award. That work drove the development of Tendivo Health, a health record platform that puts patients' complete medical records in their hands.
                 </p>
                 <p>
                   At JMCB Technology Group, Jermaine applies the governance and discipline of enterprise programs to help growing businesses deploy AI with a structured plan, responsible oversight, and results you can measure within 90 days. His methodology, the ASCEND Framework, has been refined across engagements spanning healthcare, mid-market enterprise, and associations.

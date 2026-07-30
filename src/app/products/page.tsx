@@ -30,21 +30,21 @@ const products = [
   {
     icon: Heart,
     name: "Tendivo Health",
-    tagline: "Patient-facing AI for chronic disease management.",
-    status: "Pilot",
-    statusColor: "bg-accent",
-    url: "",
+    tagline: "Your Medical Records, In Your Hands.",
+    status: "Live",
+    statusColor: "bg-green-500",
+    url: "https://tendivohealth.com",
     img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80&auto=format",
-    description: "Tendivo Health is a patient-facing AI layer built to work on top of existing health records systems like RioMed and Cellma NEHRS. Rather than replacing clinical infrastructure, Tendivo adds an intelligent engagement layer that reaches patients where traditional healthcare systems fail them. Born from the Vital Guardian AI platform (Johns Hopkins Ward Infinity winner), Tendivo focuses on chronic disease populations in underserved markets.",
+    description: "Tendivo Health is a health record platform for patients and clinics. It takes the messy record exports patients actually receive, FHIR files, C-CDA documents, PDFs of lab results, and turns them into one complete health picture. Anything it can't parse is kept, never dropped, and AI proposes real clinical codes for the leftovers, with a clinician confirming every suggestion before it touches the record. For small clinics, Tendivo adds remote patient monitoring for hypertension and diabetes, starting with community practices in New York City.",
     features: [
-      "FHIR R4 mapping for interoperability with existing EHR systems",
-      "Offline-capable sync engine for low-connectivity environments",
-      "Community Health Worker (CHW) portal for field-based care",
-      "AI-driven patient engagement and medication adherence workflows",
-      "Population health analytics for care gap identification",
+      "Imports the record exports patients actually receive: FHIR, C-CDA, and PDFs of labs",
+      "Nothing dropped: anything unparsed is kept and surfaced, never silently discarded",
+      "AI proposes real clinical codes for the leftovers, a clinician confirms every suggestion",
+      "Remote patient monitoring for hypertension and diabetes",
+      "Built for patients and small community practices",
     ],
-    stack: "Next.js, PostgreSQL, FHIR R4, Offline Sync Engine",
-    audience: "Health systems, FQHCs, international health ministries, IDB health projects",
+    stack: "",
+    audience: "Patients, small clinics, community practices",
   },
   {
     icon: GraduationCap,
@@ -125,9 +125,11 @@ export default function ProductsPage() {
                   ))}
                 </ul>
 
-                <div className="flex items-center gap-6 text-xs text-gray-400 mb-5">
-                  <span><span className="font-semibold text-gray-500">Stack:</span> {product.stack}</span>
-                </div>
+                {product.stack && (
+                  <div className="flex items-center gap-6 text-xs text-gray-400 mb-5">
+                    <span><span className="font-semibold text-gray-500">Stack:</span> {product.stack}</span>
+                  </div>
+                )}
                 <p className="text-xs text-gray-400 mb-5">
                   <span className="font-semibold text-gray-500">Built for:</span> {product.audience}
                 </p>
