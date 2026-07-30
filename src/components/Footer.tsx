@@ -66,9 +66,10 @@ export default function Footer() {
           <p className="text-xs text-gray-600">
             &copy; {new Date().getFullYear()} JMCB Technology Group. All rights reserved.
           </p>
-          <p className="text-xs text-gray-600">
-            Claude Partner Network Member &middot; Washington, D.C. &middot; Caribbean
-          </p>
+          <div className="text-xs text-gray-600 text-center sm:text-right space-y-1">
+            <p>Member of the Claude Partner Network &middot; Anthropic-certified team</p>
+            <p>Washington, D.C. &middot; Caribbean</p>
+          </div>
         </div>
       </div>
     </footer>
