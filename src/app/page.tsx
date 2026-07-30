@@ -129,6 +129,9 @@ export default function HomePage() {
             <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Our leadership combines AI strategy, large-scale program delivery,
               and 27+ years of maritime operations experience across the Caribbean.
+              Behind them is an Anthropic-certified engineering team building AI products
+              across healthcare, maritime, civic, and education, based in Washington, D.C.
+              and serving the US and the Caribbean.
             </p>
           </div>
 
@@ -142,13 +145,13 @@ export default function HomePage() {
                 <h3 className="text-xl font-display font-bold text-gray-900 mb-1">Jermaine Barker</h3>
                 <p className="text-sm font-semibold text-accent mb-4">Founder & Chief Executive Officer</p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-3">
-                  Jermaine leads JMCB Technology Group with 15+ years of enterprise technology leadership, including oversight of large-scale programs exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused on Healthcare and AI Safety, he brings scientific rigor and governance-first thinking to every engagement.
+                  Jermaine leads JMCB Technology Group with 15+ years in federal health technology, including oversight of large-scale programs exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused on Healthcare and AI Safety, he brings scientific rigor and governance-first thinking to every engagement.
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-5">
-                  He holds an M.S. in Molecular Genetics from Howard University and co-founded Vital Guardian AI, which won both the Johns Hopkins Ward Infinity Pitch Competition and Community Impact Award.
+                  He holds an M.S. in Molecular Genetics from Howard University, multiple Anthropic certifications, and membership in the Claude Partner Network. He co-founded Vital Guardian AI, which won both the Johns Hopkins Ward Infinity Pitch Competition and Community Impact Award.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {["Johns Hopkins Fellow", "Howard M.S.", "$2B+ Programs", "AI Safety"].map((t) => (
+                  {["Johns Hopkins Fellow", "Howard M.S.", "$2B+ Programs", "AI Safety", "Anthropic Certified"].map((t) => (
                     <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
                   ))}
                 </div>
@@ -157,20 +160,14 @@ export default function HomePage() {
 
             {/* David */}
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden group card-hover">
-              <div className="aspect-[4/3] overflow-hidden bg-gray-100">
-                <Image src="/david-cheddie.jpg" alt="David Cheddie, Chief Operating Officer" width={600} height={450} className="w-full h-full object-cover object-top img-grayscale group-hover:scale-[1.02] transition-transform duration-500" />
-              </div>
               <div className="p-7">
                 <h3 className="text-xl font-display font-bold text-gray-900 mb-1">David Cheddie</h3>
-                <p className="text-sm font-semibold text-accent mb-4">Chief Operating Officer</p>
-                <p className="text-sm text-gray-600 leading-relaxed mb-3">
-                  David brings 27+ years of maritime engineering and fleet operations leadership to JMCB Technology Group. He holds an unlimited Chief Engineer certification (3000KW+) with extensive experience managing DP Class 2 vessel operations across the Caribbean and offshore sectors.
-                </p>
+                <p className="text-sm font-semibold text-accent mb-4">Director, Caribbean Operations</p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-5">
-                  His career spans senior engineering roles with Edison Chouest Offshore, Hornbeck Offshore Services, and Svitzer Marine. David operates across the Caribbean with dual presence in the Washington D.C. metro area.
+                  David leads JMCB Technology Group's Caribbean operations and government delivery, with deep operational expertise in the region's maritime sector. His background spans 27+ years in maritime engineering and fleet operations across the Caribbean.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {["Unlimited Chief Engineer", "DP Class 2", "Edison Chouest", "Caribbean Ops"].map((t) => (
+                  {["Unlimited Chief Engineer", "DP Class 2", "Caribbean Ops"].map((t) => (
                     <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
                   ))}
                 </div>
@@ -198,7 +195,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {[
               {
                 name: "ASCEND Content Manager",
@@ -207,6 +204,7 @@ export default function HomePage() {
                 href: "https://ascend.jmcbtech.com",
                 status: "Live",
                 color: "bg-green-500",
+                cta: "Visit Platform",
               },
               {
                 name: "Tendivo Health",
@@ -215,6 +213,16 @@ export default function HomePage() {
                 href: "https://tendivohealth.com",
                 status: "Live",
                 color: "bg-green-500",
+                cta: "Visit Platform",
+              },
+              {
+                name: "MarineOps",
+                tag: "Maritime GovTech",
+                desc: "Maritime operations platform for small-state maritime administrations and port operators, the ones least equipped to meet the IMO Maritime Single Window mandate. Built with and for Guyana and the wider Caribbean first.",
+                href: "/contact",
+                status: "In Development",
+                color: "bg-accent",
+                cta: "Demo on request",
               },
               {
                 name: "LeapIQ",
@@ -223,6 +231,7 @@ export default function HomePage() {
                 href: "/products",
                 status: "Pilot",
                 color: "bg-accent",
+                cta: "Learn More",
               },
             ].map((product) => (
               <div key={product.name} className="group bg-white rounded-xl border border-gray-200 p-7 card-hover flex flex-col">
@@ -236,7 +245,7 @@ export default function HomePage() {
                 <h3 className="font-display text-xl font-bold text-gray-900 mb-3">{product.name}</h3>
                 <p className="text-sm text-gray-600 leading-relaxed mb-5 flex-1">{product.desc}</p>
                 <Link href={product.href} target={product.href.startsWith("http") ? "_blank" : undefined} rel={product.href.startsWith("http") ? "noopener noreferrer" : undefined} className="text-sm font-semibold text-accent hover:text-amber-700 transition-colors inline-flex items-center gap-1.5">
-                  {product.status === "Live" ? "Visit Platform" : "Learn More"}
+                  {product.cta}
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
