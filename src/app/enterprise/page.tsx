@@ -296,7 +296,7 @@ export default function EnterprisePage() {
                 </ul>
                 <p className="text-xs text-gray-400 mb-4">Best for: {tier.best}</p>
                 <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"} onClick={() => trackEvent("calendly_click", { location: "enterprise_tiers", tier: tier.name })}>
-                  {tier.popular ? "Start Strategy Sprint" : "Discuss This Option"}
+                  {tier.popular ? "Start Strategy Sprint" : "Book a Demo"}
                 </Link>
               </div>
             ))}

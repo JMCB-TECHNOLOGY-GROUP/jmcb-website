@@ -159,7 +159,7 @@ export default function AssociationsPage() {
                 <p className="text-xs text-gray-400 mb-4">{tier.duration}</p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-6 flex-1">{tier.desc}</p>
                 <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"}>
-                  Discuss This Option
+                  Book a Demo
                 </Link>
               </div>
             ))}

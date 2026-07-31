@@ -134,7 +134,7 @@ export default function ServicesPage() {
                 </ul>
                 <p className="text-xs text-gray-400 mb-4">Best for: {tier.best}</p>
                 <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"} onClick={() => trackEvent("calendly_click", { location: "services_tiers", tier: tier.name })}>
-                  Discuss This Option
+                  Book a Demo
                 </Link>
               </div>
             ))}
