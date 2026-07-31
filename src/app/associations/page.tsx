@@ -147,7 +147,7 @@ export default function AssociationsPage() {
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { name: "AI Readiness Scan", price: "", duration: "2 weeks", desc: "Find out where AI can save your team the most time and which workflows to automate first.", popular: false },
-              { name: "AI Strategy Sprint", price: "", duration: "30 days", desc: "A complete AI playbook with prioritized workflows, tool recommendations, and a 90-day implementation plan.", popular: true },
+              { name: "AI Strategy Sprint", price: "", duration: "30 days", desc: "A complete AI playbook with prioritized workflows, tool recommendations, and a 30/90 implementation plan: working AI in 30 days, governed production in 90.", popular: true },
               { name: "AI Pilot Program", price: "", duration: "90 days", desc: "Strategy plus hands-on implementation of your first AI workflow with team training and ongoing support.", popular: false },
             ].map((tier) => (
               <div key={tier.name} className={`relative flex flex-col bg-white rounded-xl p-7 card-hover ${tier.popular ? "border-2 border-accent shadow-lg shadow-accent/10" : "border border-gray-200"}`}>

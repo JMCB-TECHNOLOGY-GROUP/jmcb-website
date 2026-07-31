@@ -85,7 +85,7 @@ export function emailDay0(d: {
       <div class="dv"></div>
       <h2>What Happens Next</h2>
       <p>Over the next few days, I'll send you a deeper analysis of your biggest gap, what organizations like yours are doing differently, and a specific action plan you can start this week.</p>
-      <p>But if you want to move fast, let's talk. I've helped organizations go from assessment to first AI deployment in 90 days.</p>
+      <p>But if you want to move fast, let's talk. I help organizations get working AI live in 30 days and take it to governed production in 90.</p>
       <p style="text-align:center;margin:28px 0"><a href="${B.calendly}" class="btn">Book Your Free Strategy Call &rarr;</a></p>
       <p style="font-size:13px;color:#64748b">Talk soon,<br><strong>Jermaine Barker</strong><br>Founder, JMCB Technology Group</p>
     `, `You scored ${d.overallScore}/100 on AI readiness. Full breakdown inside.`),

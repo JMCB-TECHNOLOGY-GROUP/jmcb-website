@@ -104,7 +104,7 @@ export default function EnterprisePage() {
               { num: "02", title: "Workflow Analysis", desc: "Where your team loses hours to manual processes and handoffs" },
               { num: "03", title: "AI Opportunity Map", desc: "Specific use cases ranked by ROI impact and implementation ease" },
               { num: "04", title: "Cost Reduction Plan", desc: "Concrete savings from eliminating overlap, waste, and shelfware" },
-              { num: "05", title: "90-Day Roadmap", desc: "Prioritized action plan with quick wins in the first 30 days" },
+              { num: "05", title: "30/90 Roadmap", desc: "Prioritized action plan: working AI in 30 days, governed production in 90" },
             ].map((step) => (
               <div key={step.num} className="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 hover:border-accent/40 transition-all duration-300">
                 <span className="text-accent font-display font-bold text-sm">{step.num}</span>
@@ -265,7 +265,7 @@ export default function EnterprisePage() {
                 price: "",
                 duration: "4-6 weeks",
                 desc: "A complete AI strategy with the business case and cost reduction plan to get executive buy-in.",
-                features: ["Full ASCEND Assessment (10 dimensions)", "Technology spend reduction roadmap", "Use case prioritization with ROI projections", "Implementation roadmap (30/60/90 day)", "Governance framework", "Executive presentation with financial model"],
+                features: ["Full ASCEND Assessment (10 dimensions)", "Technology spend reduction roadmap", "Use case prioritization with ROI projections", "Implementation roadmap (30/90)", "Governance framework", "Executive presentation with financial model"],
                 best: "Companies ready to build their AI roadmap",
                 popular: true,
               },

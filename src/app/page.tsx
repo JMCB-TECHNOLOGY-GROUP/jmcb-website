@@ -61,7 +61,7 @@ export default function HomePage() {
             {[
               { stat: "$2B+", label: "Programs Managed" },
               { stat: "15+", label: "Years Enterprise Leadership" },
-              { stat: "90", label: "Days to First AI Workflow" },
+              { stat: "30", label: "Days to Working AI" },
               { stat: "Claude", label: "Partner Network Member" },
             ].map((item) => (
               <div key={item.label} className="text-center">
@@ -284,7 +284,7 @@ export default function HomePage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               { letter: "A", word: "Assess", desc: "Identify your highest-impact AI use cases and what's blocking them" },
-              { letter: "S", word: "Strategize", desc: "Define priorities, ROI targets, and a 30/60/90-day roadmap" },
+              { letter: "S", word: "Strategize", desc: "Define priorities, ROI targets, and a 30/90 execution plan" },
               { letter: "C", word: "Construct", desc: "Confirm your tools, data access, and team readiness" },
               { letter: "E", word: "Execute", desc: "Pilot one workflow with clear success metrics" },
               { letter: "N", word: "Navigate", desc: "Implement guardrails for responsible, governed AI" },
@@ -335,8 +335,8 @@ export default function HomePage() {
                 name: "AI Strategy Sprint",
                 price: "",
                 duration: "30-day engagement",
-                desc: "A complete AI playbook with a 90-day execution plan.",
-                features: ["Everything in Readiness Scan", "Detailed 30/60/90-day plan", "Vendor-agnostic tool recommendations", "Workforce enablement roadmap", "Governance framework template"],
+                desc: "A complete AI playbook with a 30/90 execution plan.",
+                features: ["Everything in Readiness Scan", "Detailed 30/90 execution plan", "Vendor-agnostic tool recommendations", "Workforce enablement roadmap", "Governance framework template"],
                 best: "Organizations that need a structured execution plan",
                 popular: true,
               },
@@ -412,8 +412,8 @@ export default function HomePage() {
               {
                 icon: Building2,
                 industry: "Mid-Market Companies",
-                focus: "From idea to production in 90 days",
-                desc: "Our ASCEND assessment pinpoints the highest-impact workflows, then we build a 90-day plan to get your first AI workflow live.",
+                focus: "Working AI in 30 days, governed production in 90",
+                desc: "Our ASCEND assessment pinpoints the highest-impact workflows, then we get your first AI workflow live in 30 days and take it to governed production in 90.",
                 img: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80&auto=format",
               },
               {
@@ -442,7 +442,7 @@ export default function HomePage() {
             {[
               {
                 client: "Storc",
-                result: "Built and shipped the technology platform behind this patented maternal health SaaS — connecting expecting mothers, providers, and first responders through cloud-based patient tracking.",
+                result: "Built and shipped the technology platform behind this patented maternal health SaaS, connecting expecting mothers, providers, and first responders through cloud-based patient tracking.",
                 type: "Product Build + Fractional CTO",
                 url: "mystorc.com",
               },
@@ -583,7 +583,7 @@ export default function HomePage() {
             {[
               { value: "$2B+", label: "Programs Managed" },
               { value: "15+", label: "Years Tech Leadership" },
-              { value: "90", label: "Days to First AI Workflow" },
+              { value: "30", label: "Days to Working AI" },
               { value: "10", label: "ASCEND\u2122 Dimensions" },
             ].map((s) => (
               <div key={s.label} className="text-center">

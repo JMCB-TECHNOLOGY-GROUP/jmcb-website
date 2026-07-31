@@ -63,7 +63,7 @@ const ROLES: { value: Role; label: string }[] = [
 
 const ASCEND_ITEMS = [
   { letter: "A", word: "Assess", desc: "Identify your best AI use cases + what's blocking them" },
-  { letter: "S", word: "Strategize", desc: "Pick priorities and define ROI with a 30/60/90-day roadmap" },
+  { letter: "S", word: "Strategize", desc: "Pick priorities and define ROI with a 30/90 execution plan" },
   { letter: "C", word: "Construct", desc: "Confirm your tools, skills, and data access" },
   { letter: "E", word: "Execute", desc: "Pilot one workflow with clear success metrics" },
   { letter: "N", word: "Navigate", desc: "Put guardrails in place for responsible AI" },
@@ -476,7 +476,7 @@ export default function AssessmentPage() {
                 </h3>
                 <p className="text-sm text-gray-400 mb-5 leading-relaxed">
                   {Object.values(results.dimensionScores).filter(s => s < 3).length >= 3
-                    ? `Your biggest gap is ${results.weakestDimension}. Your strongest area is ${results.strongestDimension}. Let's map out what to tackle first and build a 90-day plan together.`
+                    ? `Your biggest gap is ${results.weakestDimension}. Your strongest area is ${results.strongestDimension}. Let's map out what to tackle first and build a 30/90 plan together.`
                     : Object.values(results.dimensionScores).filter(s => s < 3).length >= 1
                     ? `You're solid in most areas, with ${results.weakestDimension} as your biggest opportunity. A quick strategy session will help us turn that into a win.`
                     : `You're ahead of most organizations. The question now is how to move fast and get the most out of your AI investments.`

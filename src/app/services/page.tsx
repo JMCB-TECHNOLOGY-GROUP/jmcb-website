@@ -27,7 +27,7 @@ export default function ServicesPage() {
             <span className="text-accent italic">Not shelf-ware.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-xl leading-relaxed mb-10">
-            From assessment to production in 90 days. Every engagement follows our ASCEND framework and delivers measurable outcomes. No 200-page decks that collect dust.
+            Working AI in 30 days. Governed production in 90. Every engagement follows our ASCEND framework and delivers measurable outcomes. No 200-page decks that collect dust.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/assessment" className="btn-primary text-base">
@@ -55,9 +55,9 @@ export default function ServicesPage() {
           <div className="grid md:grid-cols-4 gap-6">
             {[
               { step: "01", title: "Strategy Briefing", desc: "30-minute call to understand your goals, current state, and where AI can create impact. No sales pitch, just clarity.", time: "Day 0" },
-              { step: "02", title: "Assessment", desc: "We evaluate your data, workflows, tech stack, governance, and team readiness across 10 ASCEND dimensions.", time: "Week 1-2" },
-              { step: "03", title: "Roadmap Delivery", desc: "Prioritized AI roadmap with specific workflows, cost savings, KPIs, risk mitigations, and a 30/60/90-day plan.", time: "Week 2-3" },
-              { step: "04", title: "Pilot & Deploy", desc: "For Sprint and Pilot clients: we build and launch your first AI workflow with full governance and human oversight.", time: "Week 3-12" },
+              { step: "02", title: "Assessment", desc: "Discovery and data readiness. We evaluate your data, workflows, tech stack, governance, and team readiness across 10 ASCEND dimensions.", time: "Days 1-10" },
+              { step: "03", title: "Roadmap Delivery", desc: "Prioritized AI roadmap with specific workflows, cost savings, KPIs, risk mitigations, and a 30/90 execution plan.", time: "By Day 10" },
+              { step: "04", title: "Pilot & Deploy", desc: "For Sprint and Pilot clients: your first scoped use case is built on your own data and live in users' hands by day 30. Days 30-60 add workflow integration, human-in-the-loop controls, and team training. Days 60-90 cover monitoring, governance practices aligned to the NIST AI Risk Management Framework, and the scale decision.", time: "Days 10-90" },
             ].map((item) => (
               <div key={item.step} className="relative">
                 <span className="text-5xl font-display font-bold text-gray-100">{item.step}</span>
@@ -100,8 +100,8 @@ export default function ServicesPage() {
                 name: "AI Strategy Sprint",
                 price: "",
                 duration: "30-day engagement",
-                desc: "A complete AI playbook with a 90-day execution plan.",
-                features: ["Everything in Readiness Scan", "Detailed 30/60/90-day plan", "Vendor-agnostic tool recommendations", "Workforce enablement roadmap", "Governance framework template"],
+                desc: "A complete AI playbook with a 30/90 execution plan.",
+                features: ["Everything in Readiness Scan", "Detailed 30/90 execution plan", "Vendor-agnostic tool recommendations", "Workforce enablement roadmap", "Governance framework template"],
                 best: "Organizations that need a structured execution plan",
                 popular: true,
               },
@@ -159,7 +159,7 @@ export default function ServicesPage() {
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="grid grid-cols-3 gap-8 text-center">
             {[
-              { stat: "90 days", label: "Average time from kickoff to first production AI workflow" },
+              { stat: "30/90", label: "Working AI in 30 days, governed production in 90" },
               { stat: "~50%", label: "Average technology cost reduction identified in assessments" },
               { stat: "100%", label: "Of engagements include governance and risk framework" },
             ].map((s) => (
@@ -168,6 +168,23 @@ export default function ServicesPage() {
                 <div className="text-sm text-gray-400">{s.label}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What the windows cover */}
+      <section className="py-16 md:py-20 px-4 bg-gray-50">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-5 text-center">
+            What 30 and 90 <span className="italic text-accent">actually cover.</span>
+          </h2>
+          <div className="space-y-4 text-gray-600 leading-relaxed">
+            <p>
+              The 30-day window covers one scoped use case: built on your own data and live in users' hands. The 90-day window covers taking that use case to governed production, meaning workflow redesign, human-in-the-loop controls, monitoring, and governance practices aligned to the NIST AI Risk Management Framework.
+            </p>
+            <p>
+              Formal certifications, like ISO 42001 or SOC 2, and your own procurement timeline sit outside these windows and are planned separately. For context, the industry average from prototype to production is eight months (Gartner). Scoping tightly is how we beat it.
+            </p>
           </div>
         </div>
       </section>
