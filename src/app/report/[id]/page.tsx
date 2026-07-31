@@ -84,7 +84,7 @@ export default async function ReportPage({ params }: { params: { id: string } })
                 ? `${org} has ${gapCount} dimensions scoring below industry benchmarks. That's not unusual, but it means there's a clear path to improvement. Let's map it out together.`
                 : gapCount >= 1
                 ? `${org} is showing solid AI readiness in several areas, with ${gapCount > 1 ? `${gapCount} dimensions` : "one dimension"} that could use focused attention. A quick strategy session can turn those into wins.`
-                : `${org} is in a strong position. The question now isn't whether to use AI, it's how to deploy it for maximum impact. Let's talk about your 90-day plan.`
+                : `${org} is in a strong position. The question now isn't whether to use AI, it's how to deploy it for maximum impact. Let's talk about your 30/90 plan.`
               }
             </p>
 

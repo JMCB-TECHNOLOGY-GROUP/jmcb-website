@@ -71,7 +71,7 @@ No judgment either way. I know how it goes -- you take an assessment, the result
 
 Here's why I'm following up: the gap between knowing what to do and actually doing it is where most AI initiatives die. I've seen it happen hundreds of times. The assessment tells you the what. The hard part is the how and the when.
 
-That's literally what I do. I help organizations like yours build a practical AI adoption plan and actually execute it. Not a 50-page strategy doc that sits on a shelf -- a focused 90-day plan with clear milestones.
+That's literally what I do. I help organizations like yours build a practical AI adoption plan and actually execute it. Not a 50-page strategy doc that sits on a shelf -- a focused 30/90 plan with clear milestones: working AI in 30 days, governed production in 90.
 
 I have a few openings for free strategy calls this month. 30 minutes, we'll map out your top 3 priorities and I'll give you a specific action plan you can start on immediately.
 
