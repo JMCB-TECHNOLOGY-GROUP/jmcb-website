@@ -129,9 +129,9 @@ export default function HomePage() {
             <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Our leadership combines AI strategy, large-scale program delivery,
               and 27+ years of maritime operations experience across the Caribbean.
-              Behind them is an Anthropic-certified engineering team building AI products
-              across healthcare, maritime, civic, and education, based in Washington, D.C.
-              and serving the US and the Caribbean.
+              Behind them is a dedicated team of engineers, consultants, and certified
+              professionals building AI products across healthcare, maritime, civic, and
+              education, based in Washington, D.C. and serving the US and the Caribbean.
             </p>
           </div>
 
@@ -160,9 +160,12 @@ export default function HomePage() {
 
             {/* David */}
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden group card-hover">
+              <div className="aspect-[4/3] overflow-hidden bg-gray-100">
+                <Image src="/david-cheddie.jpg" alt="David Cheddie, Chief Operating Officer" width={600} height={450} className="w-full h-full object-cover object-top img-grayscale group-hover:scale-[1.02] transition-transform duration-500" />
+              </div>
               <div className="p-7">
                 <h3 className="text-xl font-display font-bold text-gray-900 mb-1">David Cheddie</h3>
-                <p className="text-sm font-semibold text-accent mb-4">Director, Caribbean Operations</p>
+                <p className="text-sm font-semibold text-accent mb-4">Chief Operating Officer</p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-5">
                   David leads JMCB Technology Group's Caribbean operations and government delivery, with deep operational expertise in the region's maritime sector. His background spans 27+ years in maritime engineering and fleet operations across the Caribbean.
                 </p>

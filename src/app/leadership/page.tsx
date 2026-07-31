@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Code2, ShieldCheck, GraduationCap } from "lucide-react";
+import { ArrowRight, Code2, Compass, BadgeCheck, GraduationCap } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -77,25 +77,34 @@ export default function LeadershipPage() {
       {/* Divider */}
       <div className="max-w-5xl mx-auto px-4"><div className="border-t border-gray-200" /></div>
 
-      {/* David Profile */}
+      {/* David Full Bio */}
       <section className="py-20 md:py-28 px-4">
         <div className="max-w-5xl mx-auto">
-          <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-3">Director, Caribbean Operations</p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-6">David Cheddie</h2>
-          <div className="max-w-3xl space-y-4 text-gray-600 leading-relaxed">
-            <p>
-              David leads JMCB Technology Group's Caribbean operations and government delivery, with deep operational expertise in the region's maritime sector. His background spans 27+ years in maritime engineering and fleet operations across the Caribbean.
-            </p>
+          <div className="grid md:grid-cols-5 gap-12 items-start">
+            <div className="md:col-span-2">
+              <div className="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50">
+                <Image src="/david-cheddie.jpg" alt="David Cheddie" width={600} height={700} className="w-full h-auto object-cover" />
+              </div>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["Unlimited Chief Engineer", "DP Class 2", "Caribbean Ops"].map((t) => (
+                  <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
+                ))}
+              </div>
+              <a href="https://www.linkedin.com/in/david-cheddie/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-accent hover:text-amber-700 transition-colors">
+                View LinkedIn Profile
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+            <div className="md:col-span-3">
+              <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-3">Chief Operating Officer</p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-6">David Cheddie</h2>
+              <div className="space-y-4 text-gray-600 leading-relaxed">
+                <p>
+                  David leads JMCB Technology Group's Caribbean operations and government delivery, with deep operational expertise in the region's maritime sector. His background spans 27+ years in maritime engineering and fleet operations across the Caribbean.
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {["Unlimited Chief Engineer", "DP Class 2", "Caribbean Ops"].map((t) => (
-              <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
-            ))}
-          </div>
-          <a href="https://www.linkedin.com/in/david-cheddie/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-accent hover:text-amber-700 transition-colors">
-            View LinkedIn Profile
-            <ArrowRight className="w-3.5 h-3.5" />
-          </a>
         </div>
       </section>
 
@@ -108,22 +117,28 @@ export default function LeadershipPage() {
               The team behind <span className="italic text-accent">the products.</span>
             </h2>
             <p className="text-gray-600 leading-relaxed">
-              JMCB Technology Group is an Anthropic-certified engineering team building AI products
-              across healthcare, maritime, civic, and education. We're based in Washington, D.C.
-              and serve clients across the US and the Caribbean.
+              JMCB delivers with a dedicated team of engineers, consultants, and certified
+              professionals, building AI products across healthcare, maritime, civic, and
+              education. We're based in Washington, D.C. and serve clients across the US
+              and the Caribbean.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {[
               {
                 icon: Code2,
                 title: "AI Engineering",
-                body: "Anthropic-certified engineers who take AI products from first prototype to production, with human review built in where the domain demands it.",
+                body: "Anthropic-certified engineers building production AI systems, with human review built in where the domain demands it.",
               },
               {
-                icon: ShieldCheck,
-                title: "Regulated Domain Delivery",
-                body: "Product work in fields where mistakes carry real cost: health records, maritime safety, civic services, and education.",
+                icon: Compass,
+                title: "Strategy and Consulting",
+                body: "Consultants covering AI strategy, implementation, and government delivery, from first roadmap to running system.",
+              },
+              {
+                icon: BadgeCheck,
+                title: "Certified Professionals",
+                body: "The bench includes Anthropic certifications, a Johns Hopkins AI safety fellowship, maritime credentials including Unlimited Chief Engineer and DP Class 2, and experience delivering in HIPAA-regulated settings.",
               },
               {
                 icon: GraduationCap,
