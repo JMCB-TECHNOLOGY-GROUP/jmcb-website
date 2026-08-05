@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { sendEmail } from "@/lib/send-email";
+import { isLikelyBot } from "@/lib/bot-check";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,6 +16,15 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+
+    // Silently drop bot submissions — success shape, no persistence, so
+    // scripts can't tell they were filtered.
+    const botReason = isLikelyBot(body);
+    if (botReason) {
+      console.log(`Contact form: dropped bot submission (${botReason}) ip=${ip}`);
+      return NextResponse.json({ success: true });
+    }
+
     const { name, email, organization, message } = body;
 
     if (!name || !email || !message) {

@@ -11,6 +11,9 @@ import { trackEvent } from "@/lib/analytics";
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", organization: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  // Bot screening: hidden honeypot field + form-load timestamp (see lib/bot-check)
+  const [website, setWebsite] = useState("");
+  const [formStartedAt] = useState(() => Date.now());
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -19,7 +22,7 @@ export default function ContactPage() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, website, formStartedAt }),
       });
       if (!res.ok) throw new Error();
       trackEvent("contact_submitted");
@@ -60,6 +63,11 @@ export default function ContactPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Honeypot — hidden from real users; bots auto-fill it */}
+              <div style={{ position: "absolute", left: "-9999px", top: "auto" }} aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+              </div>
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">Name *</label>

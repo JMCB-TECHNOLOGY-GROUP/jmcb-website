@@ -19,6 +19,7 @@ import {
 import { emailDay0, emailHotLeadAlert, emailLeadNotification } from "@/lib/email-renderer";
 import { sendEmail } from "@/lib/send-email";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { isLikelyBot } from "@/lib/bot-check";
 
 const MAKE_WEBHOOK_URL =
   process.env.MAKE_WEBHOOK_URL ||
@@ -47,6 +48,15 @@ export async function POST(request: NextRequest) {
 
   if (!body.email || !body.answers || !body.companySize || !body.role) {
     return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+  }
+
+  // Drop bot submissions before emails/webhooks fire. Generic failure shape —
+  // the assessment client falls back to local scoring, so a real user caught
+  // by a false positive still sees their results.
+  const botReason = isLikelyBot(body);
+  if (botReason) {
+    console.log(`Assessment submit: dropped bot submission (${botReason}) ip=${ip}`);
+    return NextResponse.json({ success: false, error: "Unable to process submission" }, { status: 400 });
   }
 
   // ── 1. CALCULATE SCORES (pure computation, no DB needed) ──
