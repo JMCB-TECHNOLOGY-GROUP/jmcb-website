@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { isLikelyBot } from "@/lib/bot-check";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,6 +15,14 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+
+    // Silently drop bot submissions — success shape, no persistence.
+    const botReason = isLikelyBot(body);
+    if (botReason) {
+      console.log(`Leads API: dropped bot submission (${botReason}) ip=${ip}`);
+      return NextResponse.json({ success: true });
+    }
+
     const {
       firstName,
       lastName,
