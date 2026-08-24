@@ -17,6 +17,14 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  // The paid edition of The Laboratory Method is read from disk by
+  // /api/book/download after Stripe verification. It lives under src/content
+  // (never public/), so the serverless function needs it traced in explicitly.
+  experimental: {
+    outputFileTracingIncludes: {
+      "/api/book/download": ["./src/content/book/**/*"],
+    },
+  },
   images: {
     unoptimized: true,
     remotePatterns: [
