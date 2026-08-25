@@ -139,6 +139,8 @@ function HBar({ label, score, benchmark, color }: { label: string; score: number
 
 export default function AssessmentPage() {
   const [stage, setStage] = useState<Stage>("intro");
+  // Bot screening timestamp — a real assessment takes minutes, scripts post instantly
+  const [formStartedAt] = useState(() => Date.now());
   const [profile, setProfile] = useState<UserProfile>({ companySize: null, role: null, organization: "", firstName: "", lastName: "", email: "" });
   const [questions, setQuestions] = useState<AssessmentQuestion[]>([]);
   const [qIndex, setQIndex] = useState(0);
@@ -210,7 +212,7 @@ export default function AssessmentPage() {
     setStage("analyzing"); setAnalyzingStep(0);
     const safety = setTimeout(() => { setResults(p => p || buildLocal(fa)); setStage("results"); }, 5000);
     try {
-      const res = await fetch("/api/assessment/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ firstName: profile.firstName, lastName: profile.lastName, email: profile.email, organization: profile.organization, companySize: profile.companySize, role: profile.role, answers: fa, ...utmParams }) });
+      const res = await fetch("/api/assessment/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ firstName: profile.firstName, lastName: profile.lastName, email: profile.email, organization: profile.organization, companySize: profile.companySize, role: profile.role, answers: fa, formStartedAt, ...utmParams }) });
       if (!res.ok) throw new Error(`${res.status}`);
       const d = await res.json();
       if (d.success) { clearTimeout(safety); setResults({ overallScore: d.overallScore, dimensionScores: d.dimensionScores, weakestDimension: d.weakestDimension, strongestDimension: d.strongestDimension, leadScore: d.leadScore, reportBranding: d.reportBranding, priorityActions: d.priorityActions, serviceRecommendations: d.serviceRecommendations, benchmarks: d.benchmarks }); setTimeout(() => setStage("results"), 4000); }
