@@ -18,6 +18,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/contact`, changeFrequency: "yearly", priority: 0.7 },
     { url: `${SITE_URL}/blog`, changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/insights`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${SITE_URL}/book`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${SITE_URL}/free-chapter.html`, changeFrequency: "yearly", priority: 0.6 },
   ];
 
   // Insights posts live in git (src/content/insights), so these entries are
