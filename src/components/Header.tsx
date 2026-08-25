@@ -13,6 +13,7 @@ const navLinks = [
   { href: "/healthcare", label: "Healthcare" },
   { href: "/enterprise", label: "Enterprise" },
   { href: "/insights", label: "Insights" },
+  { href: "/book", label: "Book" },
   { href: "/contact", label: "Contact" },
 ];
 

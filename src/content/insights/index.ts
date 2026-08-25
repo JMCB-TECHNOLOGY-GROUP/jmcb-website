@@ -9,6 +9,7 @@ import MedicareRpm2026, { meta as medicareRpm2026Meta } from "./medicare-rpm-202
 import AiWroteMostOfMyCodeThisYear, {
   meta as aiWroteMostOfMyCodeThisYearMeta,
 } from "./ai-wrote-most-of-my-code-this-year";
+import OfflineFirstIsAWorldview, { meta as offlineFirstIsAWorldviewMeta } from "./offline-first-is-a-worldview";
 
 export type { PostMeta } from "./types";
 
@@ -21,6 +22,7 @@ export const insightsPosts: InsightsPost[] = [
   { meta: whyAiPilotsDieMeta, Component: WhyAiPilotsDie },
   { meta: medicareRpm2026Meta, Component: MedicareRpm2026 },
   { meta: aiWroteMostOfMyCodeThisYearMeta, Component: AiWroteMostOfMyCodeThisYear },
+  { meta: offlineFirstIsAWorldviewMeta, Component: OfflineFirstIsAWorldview },
 ].sort((a, b) => (a.meta.date < b.meta.date ? 1 : -1));
 
 export function getInsightPost(slug: string): InsightsPost | undefined {
