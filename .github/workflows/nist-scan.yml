@@ -1,0 +1,31 @@
+name: NIST compliance scorecard
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+  schedule:
+    - cron: '17 9 * * 1'   # Mondays 09:17 UTC — weekly drift check
+permissions:
+  contents: read
+  security-events: read
+jobs:
+  nist-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install deps (for npm audit)
+        run: npm ci --ignore-scripts || true
+      - name: Run NIST scorecard
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node compliance/nist-scan/bin/nist-scan.js . --md compliance/SCORECARD.md --json compliance/scorecard.json
+      - name: Scorecard summary
+        run: |
+          echo "## NIST Scorecard" >> $GITHUB_STEP_SUMMARY
+          sed -n '1,40p' compliance/SCORECARD.md >> $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nist-scorecard
+          path: compliance/SCORECARD.md
