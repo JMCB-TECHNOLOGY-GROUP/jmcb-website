@@ -6,7 +6,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { partialCompletionSchema, resumeTokenSchema, formatIssues } from "@/lib/validation";
 
+// public endpoint: saves anonymous assessment progress keyed by email and hands
+// back an opaque resume token — public by design (no account exists yet).
+// Guarded by per-IP rate limit and zod validation; service client only.
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIp(request);
@@ -19,6 +23,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    const parsed = partialCompletionSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatIssues(parsed.error) }, { status: 400 });
+    }
     const {
       email,
       firstName,
@@ -31,11 +39,7 @@ export async function POST(request: NextRequest) {
       utmSource,
       utmMedium,
       utmCampaign,
-    } = body;
-
-    if (!email) {
-      return NextResponse.json({ error: "Email required" }, { status: 400 });
-    }
+    } = parsed.data;
 
     const supabase = createServerClient();
 
@@ -112,10 +116,11 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.nextUrl.searchParams.get("token");
-    if (!token) {
+    const tokenParsed = resumeTokenSchema.safeParse(request.nextUrl.searchParams.get("token"));
+    if (!tokenParsed.success) {
       return NextResponse.json({ error: "Token required" }, { status: 400 });
     }
+    const token = tokenParsed.data;
 
     const supabase = createServerClient();
 

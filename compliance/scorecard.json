@@ -1,0 +1,1779 @@
+{
+  "soc2": {
+    "categories": [
+      "Security",
+      "Availability",
+      "Confidentiality",
+      "Processing integrity",
+      "Privacy"
+    ],
+    "criteria": [
+      {
+        "id": "CC1.1",
+        "cat": "Security",
+        "area": "CC1 Control environment",
+        "title": "Commitment to integrity and ethical values (code of conduct)",
+        "kind": "org",
+        "status": "PASS",
+        "evidence": "document: compliance/policies/code-of-conduct-acceptable-use.md",
+        "findings": []
+      },
+      {
+        "id": "CC1.2",
+        "cat": "Security",
+        "area": "CC1 Control environment",
+        "title": "Board / owner oversight of internal control",
+        "kind": "org",
+        "status": "WARN",
+        "evidence": "document exists (compliance/policies/governance-charter.md) with 2 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": []
+      },
+      {
+        "id": "CC1.3",
+        "cat": "Security",
+        "area": "CC1 Control environment",
+        "title": "Organizational structure, reporting lines, authorities",
+        "kind": "org",
+        "status": "PASS",
+        "evidence": "ownership documented (CODEOWNERS / roles section)",
+        "findings": []
+      },
+      {
+        "id": "CC1.4",
+        "cat": "Security",
+        "area": "CC1 Control environment",
+        "title": "Competence: hiring, onboarding, security training",
+        "kind": "org",
+        "status": "WARN",
+        "evidence": "document exists (compliance/policies/onboarding-offboarding-training.md) with 2 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": []
+      },
+      {
+        "id": "CC1.5",
+        "cat": "Security",
+        "area": "CC1 Control environment",
+        "title": "Accountability for internal-control responsibilities",
+        "kind": "org",
+        "status": "PASS",
+        "evidence": "document: compliance/policies/information-security-policy.md",
+        "findings": []
+      },
+      {
+        "id": "CC2.1",
+        "cat": "Security",
+        "area": "CC2 Communication",
+        "title": "Relevant, quality information to support internal control",
+        "kind": "tech",
+        "map": [
+          "ID-01",
+          "ID-04"
+        ],
+        "status": "WARN",
+        "evidence": "ID-01 PASS: architecture docs: docs/architecture.md · ID-04 WARN: 5 personal-data column(s) detected; no written data inventory",
+        "findings": [
+          {
+            "file": "supabase/migrations/0001_baseline.sql",
+            "line": 0,
+            "text": "emails"
+          },
+          {
+            "file": "supabase-schema.sql",
+            "line": 0,
+            "text": "email"
+          },
+          {
+            "file": "supabase-schema.sql",
+            "line": 0,
+            "text": "first_name"
+          },
+          {
+            "file": "supabase-schema.sql",
+            "line": 0,
+            "text": "last_name"
+          },
+          {
+            "file": "supabase/migrations/0001_baseline.sql",
+            "line": 0,
+            "text": "phone"
+          }
+        ]
+      },
+      {
+        "id": "CC2.2",
+        "cat": "Security",
+        "area": "CC2 Communication",
+        "title": "Internal communication of objectives and responsibilities",
+        "kind": "org",
+        "status": "PASS",
+        "evidence": "CONTRIBUTING / SECURITY communicate expectations to contributors",
+        "findings": []
+      },
+      {
+        "id": "CC2.3",
+        "cat": "Security",
+        "area": "CC2 Communication",
+        "title": "External communication (privacy notice, disclosure channel, commitments)",
+        "kind": "tech",
+        "map": [
+          "GV-04",
+          "PV-01"
+        ],
+        "status": "PASS",
+        "evidence": "GV-04 PASS: disclosure instructions found in docs · PV-01 PASS: privacy page: compliance/policies/privacy-dsar-procedure.md",
+        "findings": []
+      },
+      {
+        "id": "CC3.1",
+        "cat": "Security",
+        "area": "CC3 Risk assessment",
+        "title": "Objectives specified clearly enough to identify risks",
+        "kind": "org",
+        "status": "WARN",
+        "evidence": "document exists (compliance/policies/risk-management-policy.md) with 1 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": []
+      },
+      {
+        "id": "CC3.2",
+        "cat": "Security",
+        "area": "CC3 Risk assessment",
+        "title": "Risks identified and analyzed (risk register)",
+        "kind": "org",
+        "status": "WARN",
+        "evidence": "document exists (compliance/policies/risk-register.md) with 2 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": []
+      },
+      {
+        "id": "CC3.3",
+        "cat": "Security",
+        "area": "CC3 Risk assessment",
+        "title": "Fraud risk considered",
+        "kind": "org",
+        "status": "PASS",
+        "evidence": "covered by a section in existing docs",
+        "findings": []
+      },
+      {
+        "id": "CC3.4",
+        "cat": "Security",
+        "area": "CC3 Risk assessment",
+        "title": "Changes that could affect internal control are identified",
+        "kind": "tech",
+        "map": [
+          "GV-03",
+          "PR-16"
+        ],
+        "status": "PASS",
+        "evidence": "GV-03 PASS: Dependabot alerts enabled, 0 open (+ dependabot.yml) · PR-16 PASS: versioned migrations: supabase/migrations",
+        "findings": []
+      },
+      {
+        "id": "CC4.1",
+        "cat": "Security",
+        "area": "CC4 Monitoring",
+        "title": "Ongoing / separate evaluations of controls",
+        "kind": "tech",
+        "map": [
+          "GV-03",
+          "ID-03",
+          "PR-17"
+        ],
+        "note": "this scan in CI is itself the evidence",
+        "status": "WARN",
+        "evidence": "GV-03 PASS: Dependabot alerts enabled, 0 open (+ dependabot.yml) · ID-03 WARN: npm audit produced no parseable output (offline?) · PR-17 PASS: SAST / secret scanning in CI",
+        "findings": []
+      },
+      {
+        "id": "CC4.2",
+        "cat": "Security",
+        "area": "CC4 Monitoring",
+        "title": "Deficiencies evaluated and communicated / tracked",
+        "kind": "org",
+        "status": "WARN",
+        "evidence": "no security-labelled issues — track scan findings as GitHub issues with a `security` label",
+        "findings": []
+      },
+      {
+        "id": "CC5.1",
+        "cat": "Security",
+        "area": "CC5 Control activities",
+        "title": "Control activities selected to mitigate risk",
+        "kind": "org",
+        "status": "PASS",
+        "evidence": "control set declared in compliance/nist-scan.config.json",
+        "findings": []
+      },
+      {
+        "id": "CC5.2",
+        "cat": "Security",
+        "area": "CC5 Control activities",
+        "title": "General controls over technology",
+        "kind": "tech",
+        "map": [
+          "PR-10",
+          "PR-11",
+          "PR-14"
+        ],
+        "status": "WARN",
+        "evidence": "PR-10 WARN: headers present: X-Frame-Options / frame-ancestors, X-Content-Type-Options, Referrer-Policy, Permissions-Policy; missing: Content-Security-Policy · PR-11 PASS: zod used in 5+ server file(s) · PR-14 PASS: CI gates: lint, typecheck, test, build (3 workflow(s))",
+        "findings": []
+      },
+      {
+        "id": "CC5.3",
+        "cat": "Security",
+        "area": "CC5 Control activities",
+        "title": "Controls deployed through policies and procedures",
+        "kind": "org",
+        "status": "PASS",
+        "evidence": "21 policy/procedure docs",
+        "findings": []
+      },
+      {
+        "id": "CC6.1",
+        "cat": "Security",
+        "area": "CC6 Logical & physical access",
+        "title": "Logical access security software, infrastructure, architectures",
+        "kind": "tech",
+        "map": [
+          "PR-01",
+          "PR-04",
+          "PR-06",
+          "PR-07"
+        ],
+        "status": "WARN",
+        "evidence": "PR-01 WARN: Supabase Auth, Clerk installed but no server-side session verification found · PR-04 PASS: 7 table(s), RLS enabled on all · PR-06 PASS: no credential literals detected in source",
+        "findings": []
+      },
+      {
+        "id": "CC6.2",
+        "cat": "Security",
+        "area": "CC6 Logical & physical access",
+        "title": "User registration, authorization, and de-provisioning",
+        "kind": "tech",
+        "map": [
+          "PR-01",
+          "PV-03"
+        ],
+        "status": "WARN",
+        "evidence": "PR-01 WARN: Supabase Auth, Clerk installed but no server-side session verification found · PV-03 WARN: retention/deletion mentioned in docs only · policy: document exists (compliance/policies/access-control-policy.md) with 5 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": [
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 1,
+            "text": "# Data Retention and Disposal Policy"
+          },
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 6,
+            "text": "Keep data only as long as it serves the purpose it was collected for or as long as law requires; dispose of it securely and verifiably afterwards. Retention per"
+          },
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 8,
+            "text": "## Retention schedule"
+          }
+        ]
+      },
+      {
+        "id": "CC6.3",
+        "cat": "Security",
+        "area": "CC6 Logical & physical access",
+        "title": "Role-based access, least privilege, periodic review",
+        "kind": "tech",
+        "map": [
+          "PR-03",
+          "PR-05"
+        ],
+        "status": "PASS",
+        "evidence": "PR-03 PASS: 11 guarded server file(s); 0 unguarded mutating handlers · PR-05 PASS: no privileged keys in client code",
+        "findings": []
+      },
+      {
+        "id": "CC6.4",
+        "cat": "Security",
+        "area": "CC6 Logical & physical access",
+        "title": "Physical access (inherited from cloud provider)",
+        "kind": "org",
+        "status": "WARN",
+        "evidence": "document exists (compliance/policies/subprocessor-register.md) with 16 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": []
+      },
+      {
+        "id": "CC6.5",
+        "cat": "Security",
+        "area": "CC6 Logical & physical access",
+        "title": "Disposal of data and assets",
+        "kind": "tech",
+        "map": [
+          "PV-03"
+        ],
+        "status": "WARN",
+        "evidence": "PV-03 WARN: retention/deletion mentioned in docs only",
+        "findings": [
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 1,
+            "text": "# Data Retention and Disposal Policy"
+          },
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 6,
+            "text": "Keep data only as long as it serves the purpose it was collected for or as long as law requires; dispose of it securely and verifiably afterwards. Retention per"
+          },
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 8,
+            "text": "## Retention schedule"
+          }
+        ]
+      },
+      {
+        "id": "CC6.6",
+        "cat": "Security",
+        "area": "CC6 Logical & physical access",
+        "title": "Boundary protection against external threats",
+        "kind": "tech",
+        "map": [
+          "PR-08",
+          "PR-12",
+          "PR-13"
+        ],
+        "status": "PASS",
+        "evidence": "PR-08 PASS: HSTS header set · PR-12 PASS: rate limiting implemented · PR-13 PASS: same-origin only (no CORS headers emitted)",
+        "findings": [
+          {
+            "file": "next.config.mjs",
+            "line": 8,
+            "text": "{ key: \"Strict-Transport-Security\", value: \"max-age=63072000; includeSubDomains; preload\" },"
+          },
+          {
+            "file": "src/app/api/assessment/partial/route.ts",
+            "line": 8,
+            "text": "import { checkRateLimit, getClientIp } from \"@/lib/rate-limit\";"
+          },
+          {
+            "file": "src/app/api/assessment/partial/route.ts",
+            "line": 13,
+            "text": "// Guarded by per-IP rate limit and zod validation; service client only."
+          },
+          {
+            "file": "src/app/api/assessment/partial/route.ts",
+            "line": 17,
+            "text": "const rl = checkRateLimit(`assessment-partial:${ip}`, 10, 60_000);"
+          }
+        ]
+      },
+      {
+        "id": "CC6.7",
+        "cat": "Security",
+        "area": "CC6 Logical & physical access",
+        "title": "Restrict transmission / movement of data",
+        "kind": "tech",
+        "map": [
+          "PR-08",
+          "PR-09"
+        ],
+        "status": "PASS",
+        "evidence": "PR-08 PASS: HSTS header set · PR-09 PASS: Supabase Postgres (AES-256 at rest, managed)",
+        "findings": [
+          {
+            "file": "next.config.mjs",
+            "line": 8,
+            "text": "{ key: \"Strict-Transport-Security\", value: \"max-age=63072000; includeSubDomains; preload\" },"
+          }
+        ]
+      },
+      {
+        "id": "CC6.8",
+        "cat": "Security",
+        "area": "CC6 Logical & physical access",
+        "title": "Prevent / detect unauthorized or malicious software",
+        "kind": "tech",
+        "map": [
+          "ID-02",
+          "PR-17"
+        ],
+        "status": "PASS",
+        "evidence": "ID-02 PASS: package-lock.json committed · PR-17 PASS: SAST / secret scanning in CI",
+        "findings": []
+      },
+      {
+        "id": "CC7.1",
+        "cat": "Security",
+        "area": "CC7 System operations",
+        "title": "Detect configuration changes and new vulnerabilities",
+        "kind": "tech",
+        "map": [
+          "GV-03",
+          "ID-03"
+        ],
+        "status": "WARN",
+        "evidence": "GV-03 PASS: Dependabot alerts enabled, 0 open (+ dependabot.yml) · ID-03 WARN: npm audit produced no parseable output (offline?)",
+        "findings": []
+      },
+      {
+        "id": "CC7.2",
+        "cat": "Security",
+        "area": "CC7 System operations",
+        "title": "Monitor for anomalies and security events",
+        "kind": "tech",
+        "map": [
+          "DE-01",
+          "DE-02"
+        ],
+        "status": "WARN",
+        "evidence": "DE-01 PASS: Sentry, Vercel Analytics, Vercel Speed Insights · DE-02 WARN: partial audit trail (table or writer, not both)",
+        "findings": [
+          {
+            "file": "src/lib/supabase-schema.sql",
+            "line": 149,
+            "text": "CREATE TABLE IF NOT EXISTS admin_activity_log ("
+          },
+          {
+            "file": "supabase/migrations/0001_baseline.sql",
+            "line": 245,
+            "text": "CREATE TABLE IF NOT EXISTS admin_activity_log ("
+          }
+        ]
+      },
+      {
+        "id": "CC7.3",
+        "cat": "Security",
+        "area": "CC7 System operations",
+        "title": "Evaluate security events to determine incidents",
+        "kind": "tech",
+        "map": [
+          "DE-02",
+          "RS-01"
+        ],
+        "status": "WARN",
+        "evidence": "DE-02 WARN: partial audit trail (table or writer, not both) · RS-01 PASS: incident-response procedure documented",
+        "findings": [
+          {
+            "file": "src/lib/supabase-schema.sql",
+            "line": 149,
+            "text": "CREATE TABLE IF NOT EXISTS admin_activity_log ("
+          },
+          {
+            "file": "supabase/migrations/0001_baseline.sql",
+            "line": 245,
+            "text": "CREATE TABLE IF NOT EXISTS admin_activity_log ("
+          }
+        ]
+      },
+      {
+        "id": "CC7.4",
+        "cat": "Security",
+        "area": "CC7 System operations",
+        "title": "Respond to identified incidents",
+        "kind": "tech",
+        "map": [
+          "RS-01",
+          "RS-02"
+        ],
+        "status": "PASS",
+        "evidence": "RS-01 PASS: incident-response procedure documented · RS-02 PASS: breach-notification obligations documented",
+        "findings": []
+      },
+      {
+        "id": "CC7.5",
+        "cat": "Security",
+        "area": "CC7 System operations",
+        "title": "Recover from incidents",
+        "kind": "tech",
+        "map": [
+          "RC-01"
+        ],
+        "status": "PASS",
+        "evidence": "RC-01 PASS: backup / restore posture documented",
+        "findings": []
+      },
+      {
+        "id": "CC8.1",
+        "cat": "Security",
+        "area": "CC8 Change management",
+        "title": "Authorize, design, test, approve, and implement changes",
+        "kind": "tech",
+        "map": [
+          "PR-14",
+          "PR-15",
+          "PR-16"
+        ],
+        "status": "WARN",
+        "evidence": "PR-14 PASS: CI gates: lint, typecheck, test, build (3 workflow(s)) · PR-15 PASS: main protected: PR reviews, status checks · PR-16 PASS: versioned migrations: supabase/migrations · policy: document exists (compliance/policies/change-management-sdlc-policy.md) with 1 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": []
+      },
+      {
+        "id": "CC9.1",
+        "cat": "Security",
+        "area": "CC9 Risk mitigation",
+        "title": "Mitigate risk of business disruption",
+        "kind": "tech",
+        "map": [
+          "RC-01",
+          "RC-02"
+        ],
+        "status": "WARN",
+        "evidence": "RC-01 PASS: backup / restore posture documented · RC-02 PASS: deploy config: vercel.json · policy: document exists (compliance/policies/business-continuity-dr-plan.md) with 6 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": []
+      },
+      {
+        "id": "CC9.2",
+        "cat": "Security",
+        "area": "CC9 Risk mitigation",
+        "title": "Vendor and business-partner risk management",
+        "kind": "org",
+        "status": "WARN",
+        "evidence": "document exists (compliance/policies/subprocessor-register.md) with 16 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": []
+      },
+      {
+        "id": "A1.1",
+        "cat": "Availability",
+        "area": "A1 Availability",
+        "title": "Capacity monitoring and management",
+        "kind": "tech",
+        "map": [
+          "DE-01"
+        ],
+        "status": "PASS",
+        "evidence": "DE-01 PASS: Sentry, Vercel Analytics, Vercel Speed Insights",
+        "findings": []
+      },
+      {
+        "id": "A1.2",
+        "cat": "Availability",
+        "area": "A1 Availability",
+        "title": "Environmental protections, backups, recovery infrastructure",
+        "kind": "tech",
+        "map": [
+          "RC-01",
+          "RC-02"
+        ],
+        "status": "PASS",
+        "evidence": "RC-01 PASS: backup / restore posture documented · RC-02 PASS: deploy config: vercel.json",
+        "findings": []
+      },
+      {
+        "id": "A1.3",
+        "cat": "Availability",
+        "area": "A1 Availability",
+        "title": "Recovery plan testing",
+        "kind": "org",
+        "status": "FAIL",
+        "evidence": "document exists but the test has not been performed: compliance/policies/restore-test-log.md",
+        "findings": []
+      },
+      {
+        "id": "C1.1",
+        "cat": "Confidentiality",
+        "area": "C1 Confidentiality",
+        "title": "Identify and maintain confidential information",
+        "kind": "tech",
+        "map": [
+          "ID-04",
+          "PR-04"
+        ],
+        "status": "WARN",
+        "evidence": "ID-04 WARN: 5 personal-data column(s) detected; no written data inventory · PR-04 PASS: 7 table(s), RLS enabled on all · policy: document: compliance/policies/data-classification-policy.md",
+        "findings": [
+          {
+            "file": "supabase/migrations/0001_baseline.sql",
+            "line": 0,
+            "text": "emails"
+          },
+          {
+            "file": "supabase-schema.sql",
+            "line": 0,
+            "text": "email"
+          },
+          {
+            "file": "supabase-schema.sql",
+            "line": 0,
+            "text": "first_name"
+          },
+          {
+            "file": "supabase-schema.sql",
+            "line": 0,
+            "text": "last_name"
+          },
+          {
+            "file": "supabase/migrations/0001_baseline.sql",
+            "line": 0,
+            "text": "phone"
+          }
+        ]
+      },
+      {
+        "id": "C1.2",
+        "cat": "Confidentiality",
+        "area": "C1 Confidentiality",
+        "title": "Dispose of confidential information",
+        "kind": "tech",
+        "map": [
+          "PV-03"
+        ],
+        "status": "WARN",
+        "evidence": "PV-03 WARN: retention/deletion mentioned in docs only · policy: document exists (compliance/policies/data-retention-disposal-policy.md) with 3 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": [
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 1,
+            "text": "# Data Retention and Disposal Policy"
+          },
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 6,
+            "text": "Keep data only as long as it serves the purpose it was collected for or as long as law requires; dispose of it securely and verifiably afterwards. Retention per"
+          },
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 8,
+            "text": "## Retention schedule"
+          }
+        ]
+      },
+      {
+        "id": "PI1.1",
+        "cat": "Processing integrity",
+        "area": "PI1 Processing integrity",
+        "title": "Definitions of data and processing are documented",
+        "kind": "tech",
+        "map": [
+          "ID-01",
+          "PR-16"
+        ],
+        "status": "PASS",
+        "evidence": "ID-01 PASS: architecture docs: docs/architecture.md · PR-16 PASS: versioned migrations: supabase/migrations",
+        "findings": []
+      },
+      {
+        "id": "PI1.2",
+        "cat": "Processing integrity",
+        "area": "PI1 Processing integrity",
+        "title": "Inputs are complete, accurate, timely (validation)",
+        "kind": "tech",
+        "map": [
+          "PR-11"
+        ],
+        "status": "PASS",
+        "evidence": "PR-11 PASS: zod used in 5+ server file(s)",
+        "findings": []
+      },
+      {
+        "id": "PI1.3",
+        "cat": "Processing integrity",
+        "area": "PI1 Processing integrity",
+        "title": "Processing is complete and accurate (tests)",
+        "kind": "tech",
+        "map": [
+          "PR-14"
+        ],
+        "status": "PASS",
+        "evidence": "PR-14 PASS: CI gates: lint, typecheck, test, build (3 workflow(s))",
+        "findings": []
+      },
+      {
+        "id": "PI1.4",
+        "cat": "Processing integrity",
+        "area": "PI1 Processing integrity",
+        "title": "Outputs are complete, accurate, and protected",
+        "kind": "tech",
+        "map": [
+          "DE-03",
+          "PR-05"
+        ],
+        "status": "PASS",
+        "evidence": "DE-03 PASS: no sensitive identifiers passed to console logging · PR-05 PASS: no privileged keys in client code",
+        "findings": []
+      },
+      {
+        "id": "PI1.5",
+        "cat": "Processing integrity",
+        "area": "PI1 Processing integrity",
+        "title": "Stored data is complete and accurate (migrations, backups)",
+        "kind": "tech",
+        "map": [
+          "PR-16",
+          "RC-01"
+        ],
+        "status": "PASS",
+        "evidence": "PR-16 PASS: versioned migrations: supabase/migrations · RC-01 PASS: backup / restore posture documented",
+        "findings": []
+      },
+      {
+        "id": "P1.1",
+        "cat": "Privacy",
+        "area": "P1 Notice",
+        "title": "Privacy notice provided",
+        "kind": "tech",
+        "map": [
+          "PV-01"
+        ],
+        "status": "PASS",
+        "evidence": "PV-01 PASS: privacy page: compliance/policies/privacy-dsar-procedure.md",
+        "findings": []
+      },
+      {
+        "id": "P2.1",
+        "cat": "Privacy",
+        "area": "P2 Choice & consent",
+        "title": "Choice and consent obtained",
+        "kind": "tech",
+        "map": [
+          "PV-02"
+        ],
+        "status": "PASS",
+        "evidence": "PV-02 PASS: consent / opt-out handled",
+        "findings": [
+          {
+            "file": "src/app/book/page.tsx",
+            "line": 21,
+            "text": "{ title: \"Careers are experiments, not ladders\", body: \"Every move is a hypothesis with a measurable result. You stop guessing and start running tests.\" },"
+          },
+          {
+            "file": "src/app/enterprise/page.tsx",
+            "line": 311,
+            "text": "Stop overpaying for technology <span className=\"italic text-accent\">that underdelivers.</span>"
+          },
+          {
+            "file": "src/app/healthcare/page.tsx",
+            "line": 150,
+            "text": "desc: \"Governance-first AI with built-in audit trails, consent management, bias monitoring, and data lineage tracking. Designed in from the start, not added aft"
+          }
+        ]
+      },
+      {
+        "id": "P3.1",
+        "cat": "Privacy",
+        "area": "P3 Collection",
+        "title": "Collection limited to what the notice states",
+        "kind": "tech",
+        "map": [
+          "ID-04",
+          "PV-04"
+        ],
+        "status": "WARN",
+        "evidence": "ID-04 WARN: 5 personal-data column(s) detected; no written data inventory · PV-04 PASS: no third-party trackers",
+        "findings": [
+          {
+            "file": "supabase/migrations/0001_baseline.sql",
+            "line": 0,
+            "text": "emails"
+          },
+          {
+            "file": "supabase-schema.sql",
+            "line": 0,
+            "text": "email"
+          },
+          {
+            "file": "supabase-schema.sql",
+            "line": 0,
+            "text": "first_name"
+          },
+          {
+            "file": "supabase-schema.sql",
+            "line": 0,
+            "text": "last_name"
+          },
+          {
+            "file": "supabase/migrations/0001_baseline.sql",
+            "line": 0,
+            "text": "phone"
+          }
+        ]
+      },
+      {
+        "id": "P4.1",
+        "cat": "Privacy",
+        "area": "P4 Use, retention, disposal",
+        "title": "Use limited to identified purposes; retention; disposal",
+        "kind": "tech",
+        "map": [
+          "PV-03"
+        ],
+        "status": "WARN",
+        "evidence": "PV-03 WARN: retention/deletion mentioned in docs only",
+        "findings": [
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 1,
+            "text": "# Data Retention and Disposal Policy"
+          },
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 6,
+            "text": "Keep data only as long as it serves the purpose it was collected for or as long as law requires; dispose of it securely and verifiably afterwards. Retention per"
+          },
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 8,
+            "text": "## Retention schedule"
+          }
+        ]
+      },
+      {
+        "id": "P5.1",
+        "cat": "Privacy",
+        "area": "P5 Access",
+        "title": "Data-subject access and correction",
+        "kind": "org",
+        "status": "PASS",
+        "evidence": "data export / DSAR path",
+        "findings": [
+          {
+            "file": "compliance/policies/data-retention-disposal-policy.md",
+            "line": 34,
+            "text": "Every platform with accounts provides account deletion (Privacy & DSAR Procedure §4). Tier-1 platforms complete it within 30 days and confirm by email."
+          },
+          {
+            "file": "compliance/policies/privacy-dsar-procedure.md",
+            "line": 1,
+            "text": "# Privacy Program and Data-Subject Request (DSAR) Procedure"
+          },
+          {
+            "file": "compliance/policies/privacy-dsar-procedure.md",
+            "line": 20,
+            "text": "| Access / export | in-app \"Download my data\" where built; else email privacy@ `[CONFIRM alias]` / jermaine@jmcbtech.com | logged-in session, or email loop to t"
+          }
+        ]
+      },
+      {
+        "id": "P6.1",
+        "cat": "Privacy",
+        "area": "P6 Disclosure",
+        "title": "Disclosure to third parties limited and tracked (subprocessors)",
+        "kind": "org",
+        "status": "WARN",
+        "evidence": "document exists (compliance/policies/subprocessor-register.md) with 16 [CONFIRM] item(s) awaiting owner decision — not audit-ready until resolved",
+        "findings": []
+      },
+      {
+        "id": "P7.1",
+        "cat": "Privacy",
+        "area": "P7 Quality",
+        "title": "Personal data accurate and complete",
+        "kind": "tech",
+        "map": [
+          "PR-11"
+        ],
+        "status": "PASS",
+        "evidence": "PR-11 PASS: zod used in 5+ server file(s)",
+        "findings": []
+      },
+      {
+        "id": "P8.1",
+        "cat": "Privacy",
+        "area": "P8 Monitoring",
+        "title": "Privacy complaints and breach notification",
+        "kind": "tech",
+        "map": [
+          "RS-02",
+          "GV-04"
+        ],
+        "status": "PASS",
+        "evidence": "RS-02 PASS: breach-notification obligations documented · GV-04 PASS: disclosure instructions found in docs",
+        "findings": []
+      }
+    ],
+    "overall": {
+      "applicable": 51,
+      "pass": 27,
+      "warn": 23,
+      "fail": 1,
+      "pct": 75
+    },
+    "byCategory": {
+      "Security": {
+        "applicable": 33,
+        "pass": 15,
+        "warn": 18,
+        "fail": 0,
+        "pct": 73
+      },
+      "Availability": {
+        "applicable": 3,
+        "pass": 2,
+        "warn": 0,
+        "fail": 1,
+        "pct": 67
+      },
+      "Confidentiality": {
+        "applicable": 2,
+        "pass": 0,
+        "warn": 2,
+        "fail": 0,
+        "pct": 50
+      },
+      "Processing integrity": {
+        "applicable": 5,
+        "pass": 5,
+        "warn": 0,
+        "fail": 0,
+        "pct": 100
+      },
+      "Privacy": {
+        "applicable": 8,
+        "pass": 5,
+        "warn": 3,
+        "fail": 0,
+        "pct": 81
+      }
+    },
+    "orgGaps": [
+      "document exists but the test has not been performed: compliance/policies/restore-test-log.md"
+    ],
+    "readiness": "remediation phase (close FAILs, then readiness assessment)"
+  },
+  "platform": "JMCB-Website",
+  "repo": "jmcb-website",
+  "root": "C:\\Users\\JMCB 1\\dev\\jmcb-website",
+  "stack": [
+    "next",
+    "supabase",
+    "vercel"
+  ],
+  "remote": {
+    "owner": "JMCB-TECHNOLOGY-GROUP",
+    "repo": "jmcb-website"
+  },
+  "scannedAt": "2026-08-26T21:27:19.390Z",
+  "frameworks": [
+    "NIST CSF 2.0",
+    "NIST SP 800-53 Rev 5",
+    "NIST SP 800-171 Rev 2",
+    "NIST Privacy Framework 1.0"
+  ],
+  "overall": {
+    "applicable": 35,
+    "na": 1,
+    "pass": 27,
+    "warn": 8,
+    "fail": 0,
+    "pct": 87
+  },
+  "base": {
+    "applicable": 35,
+    "na": 1,
+    "pass": 27,
+    "warn": 8,
+    "fail": 0,
+    "pct": 87
+  },
+  "byFunction": {
+    "GOVERN": {
+      "applicable": 4,
+      "na": 0,
+      "pass": 3,
+      "warn": 1,
+      "fail": 0,
+      "pct": 92
+    },
+    "IDENTIFY": {
+      "applicable": 4,
+      "na": 0,
+      "pass": 2,
+      "warn": 2,
+      "fail": 0,
+      "pct": 69
+    },
+    "PROTECT": {
+      "applicable": 16,
+      "na": 1,
+      "pass": 13,
+      "warn": 3,
+      "fail": 0,
+      "pct": 90
+    },
+    "DETECT": {
+      "applicable": 3,
+      "na": 0,
+      "pass": 2,
+      "warn": 1,
+      "fail": 0,
+      "pct": 81
+    },
+    "RESPOND": {
+      "applicable": 2,
+      "na": 0,
+      "pass": 2,
+      "warn": 0,
+      "fail": 0,
+      "pct": 100
+    },
+    "RECOVER": {
+      "applicable": 2,
+      "na": 0,
+      "pass": 2,
+      "warn": 0,
+      "fail": 0,
+      "pct": 100
+    },
+    "PRIVACY": {
+      "applicable": 4,
+      "na": 0,
+      "pass": 3,
+      "warn": 1,
+      "fail": 0,
+      "pct": 83
+    }
+  },
+  "controls": [
+    {
+      "id": "GV-01",
+      "fn": "GOVERN",
+      "title": "Security policy is documented and published",
+      "csf": "GV.PO-01",
+      "sp80053": [
+        "PL-1",
+        "PM-1"
+      ],
+      "sp800171": [
+        "3.12.4"
+      ],
+      "probe": "securityPolicy",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "policy doc(s): SECURITY.md",
+      "findings": []
+    },
+    {
+      "id": "GV-02",
+      "fn": "GOVERN",
+      "title": "Ownership / accountability for code review is assigned",
+      "csf": "GV.RR-02",
+      "sp80053": [
+        "PM-2",
+        "CM-3"
+      ],
+      "sp800171": [
+        "3.4.3"
+      ],
+      "probe": "codeowners",
+      "weight": 1,
+      "status": "WARN",
+      "evidence": "PR template but no CODEOWNERS",
+      "findings": []
+    },
+    {
+      "id": "GV-03",
+      "fn": "GOVERN",
+      "title": "Third-party dependency risk is managed (automated supply-chain monitoring)",
+      "csf": "GV.SC-07",
+      "sp80053": [
+        "SR-3",
+        "SA-9",
+        "RA-5"
+      ],
+      "sp800171": [
+        "3.11.2"
+      ],
+      "probe": "dependabot",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "Dependabot alerts enabled, 0 open (+ dependabot.yml)",
+      "findings": []
+    },
+    {
+      "id": "GV-04",
+      "fn": "GOVERN",
+      "title": "Vulnerability disclosure channel exists",
+      "csf": "GV.PO-02",
+      "sp80053": [
+        "SI-5",
+        "IR-6"
+      ],
+      "sp800171": [
+        "3.6.2"
+      ],
+      "probe": "disclosureChannel",
+      "weight": 1,
+      "status": "PASS",
+      "evidence": "disclosure instructions found in docs",
+      "findings": []
+    },
+    {
+      "id": "ID-01",
+      "fn": "IDENTIFY",
+      "title": "System / architecture is documented (asset inventory)",
+      "csf": "ID.AM-01",
+      "sp80053": [
+        "CM-8",
+        "PL-2"
+      ],
+      "sp800171": [
+        "3.4.1"
+      ],
+      "probe": "architectureDoc",
+      "weight": 1,
+      "status": "PASS",
+      "evidence": "architecture docs: docs/architecture.md",
+      "findings": []
+    },
+    {
+      "id": "ID-02",
+      "fn": "IDENTIFY",
+      "title": "Software inventory is pinned (lockfile committed)",
+      "csf": "ID.AM-02",
+      "sp80053": [
+        "CM-8",
+        "CM-2"
+      ],
+      "sp800171": [
+        "3.4.1"
+      ],
+      "probe": "lockfile",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "package-lock.json committed",
+      "findings": []
+    },
+    {
+      "id": "ID-03",
+      "fn": "IDENTIFY",
+      "title": "Known vulnerabilities in dependencies are identified (npm audit)",
+      "csf": "ID.RA-01",
+      "sp80053": [
+        "RA-5",
+        "SI-2"
+      ],
+      "sp800171": [
+        "3.11.2",
+        "3.14.1"
+      ],
+      "probe": "npmAudit",
+      "weight": 3,
+      "status": "WARN",
+      "evidence": "npm audit produced no parseable output (offline?)",
+      "findings": []
+    },
+    {
+      "id": "ID-04",
+      "fn": "IDENTIFY",
+      "title": "Data inventory: personal / sensitive data columns are identified",
+      "csf": "ID.AM-07",
+      "sp80053": [
+        "PM-5(1)",
+        "PT-2"
+      ],
+      "privacy": "ID.IM-P8",
+      "probe": "piiInventory",
+      "weight": 2,
+      "status": "WARN",
+      "evidence": "5 personal-data column(s) detected; no written data inventory",
+      "findings": [
+        {
+          "file": "supabase/migrations/0001_baseline.sql",
+          "line": 0,
+          "text": "emails"
+        },
+        {
+          "file": "supabase-schema.sql",
+          "line": 0,
+          "text": "email"
+        },
+        {
+          "file": "supabase-schema.sql",
+          "line": 0,
+          "text": "first_name"
+        },
+        {
+          "file": "supabase-schema.sql",
+          "line": 0,
+          "text": "last_name"
+        },
+        {
+          "file": "supabase/migrations/0001_baseline.sql",
+          "line": 0,
+          "text": "phone"
+        }
+      ]
+    },
+    {
+      "id": "PR-01",
+      "fn": "PROTECT",
+      "title": "Identity management: an authentication provider is integrated",
+      "csf": "PR.AA-01",
+      "sp80053": [
+        "IA-2",
+        "IA-8"
+      ],
+      "sp800171": [
+        "3.5.1",
+        "3.5.2"
+      ],
+      "probe": "authProvider",
+      "weight": 3,
+      "status": "WARN",
+      "evidence": "Supabase Auth, Clerk installed but no server-side session verification found",
+      "findings": []
+    },
+    {
+      "id": "PR-02",
+      "fn": "PROTECT",
+      "title": "Multi-factor authentication is available / enforced",
+      "csf": "PR.AA-03",
+      "sp80053": [
+        "IA-2(1)",
+        "IA-2(2)"
+      ],
+      "sp800171": [
+        "3.5.3"
+      ],
+      "probe": "mfa",
+      "weight": 2,
+      "status": "WARN",
+      "evidence": "MFA referenced only in docs; not implemented",
+      "findings": [
+        {
+          "file": "compliance/policies/access-control-policy.md",
+          "line": 6,
+          "text": "Least privilege, need-to-know, named accounts, MFA everywhere it is offered, and periodic review. Applies to every system in the Subprocessor Register and to ev"
+        },
+        {
+          "file": "compliance/policies/access-control-policy.md",
+          "line": 14,
+          "text": "- MFA is mandatory on GitHub, Supabase, Vercel, Netlify, Stripe, Twilio, Google Workspace, Microsoft 365."
+        },
+        {
+          "file": "compliance/policies/access-control-policy.md",
+          "line": 15,
+          "text": "- Platform end-users: Supabase Auth (or the platform's provider) with email verification; TOTP MFA is **required** for CaughtUp once server-side storage ships ("
+        },
+        {
+          "file": "compliance/policies/code-of-conduct-acceptable-use.md",
+          "line": 12,
+          "text": "4. Use your own named account; never share credentials; MFA is mandatory."
+        },
+        {
+          "file": "compliance/policies/data-classification-policy.md",
+          "line": 8,
+          "text": "| **Restricted** | Regulated personal data; exposure triggers statutory duties | PHI (TendivoHealth patients, observations, meds); taxpayer returns/transcripts "
+        }
+      ]
+    },
+    {
+      "id": "PR-03",
+      "fn": "PROTECT",
+      "title": "Access is enforced server-side (middleware / route guards)",
+      "csf": "PR.AA-05",
+      "sp80053": [
+        "AC-3",
+        "AC-6"
+      ],
+      "sp800171": [
+        "3.1.1",
+        "3.1.2"
+      ],
+      "probe": "serverSideAuthz",
+      "weight": 3,
+      "status": "PASS",
+      "evidence": "11 guarded server file(s); 0 unguarded mutating handlers",
+      "findings": []
+    },
+    {
+      "id": "PR-04",
+      "fn": "PROTECT",
+      "title": "Row-level security enabled on every data table",
+      "csf": "PR.AA-05",
+      "sp80053": [
+        "AC-3",
+        "AC-6",
+        "SC-4"
+      ],
+      "sp800171": [
+        "3.1.3"
+      ],
+      "probe": "rls",
+      "weight": 3,
+      "status": "PASS",
+      "evidence": "7 table(s), RLS enabled on all",
+      "findings": []
+    },
+    {
+      "id": "PR-05",
+      "fn": "PROTECT",
+      "title": "Least privilege: privileged (service-role) keys never reach the client",
+      "csf": "PR.AA-05",
+      "sp80053": [
+        "AC-6",
+        "AC-6(5)"
+      ],
+      "sp800171": [
+        "3.1.5"
+      ],
+      "probe": "serviceRoleLeak",
+      "weight": 3,
+      "status": "PASS",
+      "evidence": "no privileged keys in client code",
+      "findings": []
+    },
+    {
+      "id": "PR-06",
+      "fn": "PROTECT",
+      "title": "Secrets are not committed to source",
+      "csf": "PR.DS-10",
+      "sp80053": [
+        "IA-5",
+        "IA-5(7)",
+        "SC-28"
+      ],
+      "sp800171": [
+        "3.5.10"
+      ],
+      "probe": "hardcodedSecrets",
+      "weight": 3,
+      "status": "PASS",
+      "evidence": "no credential literals detected in source",
+      "findings": []
+    },
+    {
+      "id": "PR-07",
+      "fn": "PROTECT",
+      "title": "Environment files are git-ignored and not tracked",
+      "csf": "PR.DS-10",
+      "sp80053": [
+        "IA-5",
+        "CM-6"
+      ],
+      "sp800171": [
+        "3.5.10"
+      ],
+      "probe": "envHygiene",
+      "weight": 3,
+      "status": "NA",
+      "evidence": "not a git repo",
+      "findings": []
+    },
+    {
+      "id": "PR-08",
+      "fn": "PROTECT",
+      "title": "Data in transit is protected (HSTS / HTTPS enforcement)",
+      "csf": "PR.DS-02",
+      "sp80053": [
+        "SC-8",
+        "SC-8(1)",
+        "SC-23"
+      ],
+      "sp800171": [
+        "3.13.8"
+      ],
+      "probe": "hsts",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "HSTS header set",
+      "findings": [
+        {
+          "file": "next.config.mjs",
+          "line": 8,
+          "text": "{ key: \"Strict-Transport-Security\", value: \"max-age=63072000; includeSubDomains; preload\" },"
+        }
+      ]
+    },
+    {
+      "id": "PR-09",
+      "fn": "PROTECT",
+      "title": "Data at rest is on an encrypted managed datastore",
+      "csf": "PR.DS-01",
+      "sp80053": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "sp800171": [
+        "3.13.16"
+      ],
+      "probe": "encryptedAtRest",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "Supabase Postgres (AES-256 at rest, managed)",
+      "findings": []
+    },
+    {
+      "id": "PR-10",
+      "fn": "PROTECT",
+      "title": "Secure configuration baseline: browser security headers",
+      "csf": "PR.PS-01",
+      "sp80053": [
+        "CM-6",
+        "SC-18",
+        "SI-10"
+      ],
+      "sp800171": [
+        "3.4.2"
+      ],
+      "probe": "securityHeaders",
+      "weight": 2,
+      "status": "WARN",
+      "evidence": "headers present: X-Frame-Options / frame-ancestors, X-Content-Type-Options, Referrer-Policy, Permissions-Policy; missing: Content-Security-Policy",
+      "findings": []
+    },
+    {
+      "id": "PR-11",
+      "fn": "PROTECT",
+      "title": "Input validation on server boundaries",
+      "csf": "PR.PS-01",
+      "sp80053": [
+        "SI-10"
+      ],
+      "sp800171": [
+        "3.14.1"
+      ],
+      "probe": "inputValidation",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "zod used in 5+ server file(s)",
+      "findings": []
+    },
+    {
+      "id": "PR-12",
+      "fn": "PROTECT",
+      "title": "Rate limiting / denial-of-service protection on APIs",
+      "csf": "PR.IR-04",
+      "sp80053": [
+        "SC-5",
+        "SC-5(2)"
+      ],
+      "sp800171": [],
+      "probe": "rateLimit",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "rate limiting implemented",
+      "findings": [
+        {
+          "file": "src/app/api/assessment/partial/route.ts",
+          "line": 8,
+          "text": "import { checkRateLimit, getClientIp } from \"@/lib/rate-limit\";"
+        },
+        {
+          "file": "src/app/api/assessment/partial/route.ts",
+          "line": 13,
+          "text": "// Guarded by per-IP rate limit and zod validation; service client only."
+        },
+        {
+          "file": "src/app/api/assessment/partial/route.ts",
+          "line": 17,
+          "text": "const rl = checkRateLimit(`assessment-partial:${ip}`, 10, 60_000);"
+        }
+      ]
+    },
+    {
+      "id": "PR-13",
+      "fn": "PROTECT",
+      "title": "Boundary protection: CORS origin allowlist",
+      "csf": "PR.IR-01",
+      "sp80053": [
+        "SC-7",
+        "AC-4"
+      ],
+      "sp800171": [
+        "3.13.1"
+      ],
+      "probe": "cors",
+      "weight": 1,
+      "status": "PASS",
+      "evidence": "same-origin only (no CORS headers emitted)",
+      "findings": []
+    },
+    {
+      "id": "PR-14",
+      "fn": "PROTECT",
+      "title": "Secure SDLC: CI enforces lint / typecheck / tests",
+      "csf": "PR.PS-06",
+      "sp80053": [
+        "SA-11",
+        "SA-15"
+      ],
+      "sp800171": [],
+      "probe": "ciGates",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "CI gates: lint, typecheck, test, build (3 workflow(s))",
+      "findings": []
+    },
+    {
+      "id": "PR-15",
+      "fn": "PROTECT",
+      "title": "Change control: protected default branch, PRs required",
+      "csf": "PR.PS-01",
+      "sp80053": [
+        "CM-3",
+        "CM-5"
+      ],
+      "sp800171": [
+        "3.4.3",
+        "3.4.5"
+      ],
+      "probe": "branchProtection",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "main protected: PR reviews, status checks",
+      "findings": []
+    },
+    {
+      "id": "PR-16",
+      "fn": "PROTECT",
+      "title": "Schema changes are versioned migrations",
+      "csf": "PR.PS-01",
+      "sp80053": [
+        "CM-3",
+        "CM-2"
+      ],
+      "sp800171": [
+        "3.4.3"
+      ],
+      "probe": "migrations",
+      "weight": 1,
+      "status": "PASS",
+      "evidence": "versioned migrations: supabase/migrations",
+      "findings": []
+    },
+    {
+      "id": "PR-17",
+      "fn": "PROTECT",
+      "title": "Static analysis / CodeQL or equivalent in CI",
+      "csf": "PR.PS-06",
+      "sp80053": [
+        "SA-11(1)",
+        "RA-5"
+      ],
+      "sp800171": [
+        "3.11.2"
+      ],
+      "probe": "staticAnalysis",
+      "weight": 1,
+      "status": "PASS",
+      "evidence": "SAST / secret scanning in CI",
+      "findings": []
+    },
+    {
+      "id": "DE-01",
+      "fn": "DETECT",
+      "title": "Runtime error / exception monitoring",
+      "csf": "DE.CM-09",
+      "sp80053": [
+        "SI-4",
+        "AU-6"
+      ],
+      "sp800171": [
+        "3.14.6"
+      ],
+      "probe": "errorMonitoring",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "Sentry, Vercel Analytics, Vercel Speed Insights",
+      "findings": []
+    },
+    {
+      "id": "DE-02",
+      "fn": "DETECT",
+      "title": "Audit trail of security-relevant events (auth, admin, data changes)",
+      "csf": "DE.CM-01",
+      "sp80053": [
+        "AU-2",
+        "AU-3",
+        "AU-12"
+      ],
+      "sp800171": [
+        "3.3.1",
+        "3.3.2"
+      ],
+      "probe": "auditLog",
+      "weight": 3,
+      "status": "WARN",
+      "evidence": "partial audit trail (table or writer, not both)",
+      "findings": [
+        {
+          "file": "src/lib/supabase-schema.sql",
+          "line": 149,
+          "text": "CREATE TABLE IF NOT EXISTS admin_activity_log ("
+        },
+        {
+          "file": "supabase/migrations/0001_baseline.sql",
+          "line": 245,
+          "text": "CREATE TABLE IF NOT EXISTS admin_activity_log ("
+        }
+      ]
+    },
+    {
+      "id": "DE-03",
+      "fn": "DETECT",
+      "title": "Sensitive data is not written to logs",
+      "csf": "DE.CM-09",
+      "sp80053": [
+        "AU-3(3)",
+        "SI-12"
+      ],
+      "privacy": "CT.DP-P4",
+      "probe": "piiInLogs",
+      "weight": 3,
+      "status": "PASS",
+      "evidence": "no sensitive identifiers passed to console logging",
+      "findings": []
+    },
+    {
+      "id": "RS-01",
+      "fn": "RESPOND",
+      "title": "Incident response procedure is documented",
+      "csf": "RS.MA-01",
+      "sp80053": [
+        "IR-1",
+        "IR-4",
+        "IR-8"
+      ],
+      "sp800171": [
+        "3.6.1"
+      ],
+      "probe": "incidentResponse",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "incident-response procedure documented",
+      "findings": []
+    },
+    {
+      "id": "RS-02",
+      "fn": "RESPOND",
+      "title": "Breach-notification obligations are identified",
+      "csf": "RS.CO-02",
+      "sp80053": [
+        "IR-6",
+        "PT-1"
+      ],
+      "privacy": "GV.PO-P5",
+      "probe": "breachNotification",
+      "weight": 1,
+      "status": "PASS",
+      "evidence": "breach-notification obligations documented",
+      "findings": []
+    },
+    {
+      "id": "RC-01",
+      "fn": "RECOVER",
+      "title": "Backup / restore posture is documented",
+      "csf": "RC.RP-01",
+      "sp80053": [
+        "CP-9",
+        "CP-10"
+      ],
+      "sp800171": [
+        "3.8.9"
+      ],
+      "probe": "backups",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "backup / restore posture documented",
+      "findings": []
+    },
+    {
+      "id": "RC-02",
+      "fn": "RECOVER",
+      "title": "Infrastructure is reproducible (deploy config committed)",
+      "csf": "RC.RP-03",
+      "sp80053": [
+        "CP-10",
+        "CM-2"
+      ],
+      "sp800171": [],
+      "probe": "reproducibleDeploy",
+      "weight": 1,
+      "status": "PASS",
+      "evidence": "deploy config: vercel.json",
+      "findings": []
+    },
+    {
+      "id": "PV-01",
+      "fn": "PRIVACY",
+      "title": "Privacy notice is published",
+      "csf": "GV.PO-01",
+      "sp80053": [
+        "PT-5"
+      ],
+      "privacy": "CM.AW-P1",
+      "probe": "privacyNotice",
+      "weight": 2,
+      "status": "PASS",
+      "evidence": "privacy page: compliance/policies/privacy-dsar-procedure.md",
+      "findings": []
+    },
+    {
+      "id": "PV-02",
+      "fn": "PRIVACY",
+      "title": "Consent / opt-out mechanism for communications",
+      "csf": "GV.PO-01",
+      "sp80053": [
+        "PT-4"
+      ],
+      "privacy": "CT.PO-P2",
+      "probe": "consentOptOut",
+      "weight": 1,
+      "status": "PASS",
+      "evidence": "consent / opt-out handled",
+      "findings": [
+        {
+          "file": "src/app/book/page.tsx",
+          "line": 21,
+          "text": "{ title: \"Careers are experiments, not ladders\", body: \"Every move is a hypothesis with a measurable result. You stop guessing and start running tests.\" },"
+        },
+        {
+          "file": "src/app/enterprise/page.tsx",
+          "line": 311,
+          "text": "Stop overpaying for technology <span className=\"italic text-accent\">that underdelivers.</span>"
+        },
+        {
+          "file": "src/app/healthcare/page.tsx",
+          "line": 150,
+          "text": "desc: \"Governance-first AI with built-in audit trails, consent management, bias monitoring, and data lineage tracking. Designed in from the start, not added aft"
+        }
+      ]
+    },
+    {
+      "id": "PV-03",
+      "fn": "PRIVACY",
+      "title": "Data retention / deletion capability",
+      "csf": "PR.DS-01",
+      "sp80053": [
+        "SI-12",
+        "MP-6"
+      ],
+      "privacy": "CT.DM-P4",
+      "probe": "dataDeletion",
+      "weight": 2,
+      "status": "WARN",
+      "evidence": "retention/deletion mentioned in docs only",
+      "findings": [
+        {
+          "file": "compliance/policies/data-retention-disposal-policy.md",
+          "line": 1,
+          "text": "# Data Retention and Disposal Policy"
+        },
+        {
+          "file": "compliance/policies/data-retention-disposal-policy.md",
+          "line": 6,
+          "text": "Keep data only as long as it serves the purpose it was collected for or as long as law requires; dispose of it securely and verifiably afterwards. Retention per"
+        },
+        {
+          "file": "compliance/policies/data-retention-disposal-policy.md",
+          "line": 8,
+          "text": "## Retention schedule"
+        }
+      ]
+    },
+    {
+      "id": "PV-04",
+      "fn": "PRIVACY",
+      "title": "No third-party trackers on data-entry surfaces",
+      "csf": "PR.DS-02",
+      "sp80053": [
+        "SC-7(10)",
+        "PT-3"
+      ],
+      "privacy": "CT.DP-P1",
+      "probe": "trackers",
+      "weight": 1,
+      "status": "PASS",
+      "evidence": "no third-party trackers",
+      "findings": []
+    }
+  ],
+  "overlays": {},
+  "waivers": {},
+  "topFindings": []
+}

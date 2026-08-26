@@ -3,7 +3,11 @@ import { createServerClient } from "@/lib/supabase";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { sendEmail } from "@/lib/send-email";
 import { isLikelyBot } from "@/lib/bot-check";
+import { contactSchema, formatIssues } from "@/lib/validation";
 
+// public endpoint: anonymous website contact form — public by design (no user
+// accounts on this surface). Protected by per-IP rate limit, bot heuristics
+// and zod validation; server-side Supabase writes only via service client.
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIp(request);
@@ -25,18 +29,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
-    const { name, email, organization, message } = body;
-
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    const parsed = contactSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatIssues(parsed.error) }, { status: 400 });
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
-    }
-    if (String(message).length > 5000 || String(name).length > 200) {
-      return NextResponse.json({ error: "Message too long" }, { status: 400 });
-    }
+    const { name, email, organization, message } = parsed.data;
 
     const [firstName, ...rest] = String(name).trim().split(/\s+/);
     const lastName = rest.join(" ") || null;
