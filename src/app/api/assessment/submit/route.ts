@@ -20,6 +20,7 @@ import { emailDay0, emailHotLeadAlert, emailLeadNotification } from "@/lib/email
 import { sendEmail } from "@/lib/send-email";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { isLikelyBot } from "@/lib/bot-check";
+import { assessmentSubmitSchema, formatIssues } from "@/lib/validation";
 
 const MAKE_WEBHOOK_URL =
   process.env.MAKE_WEBHOOK_URL ||
@@ -29,6 +30,9 @@ const CALENDLY_LINK =
   "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
 const JERMAINE_EMAIL = process.env.JERMAINE_EMAIL || "jermaine@jmcbtech.com";
 
+// public endpoint: anonymous AI readiness assessment submission — public by design
+// (lead-gen funnel, no account). Per-IP rate limit, bot heuristics and
+// zod validation guard it; Supabase writes use the server-only client.
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
   const rl = checkRateLimit(`assessment-submit:${ip}`, 5, 60_000);
@@ -46,9 +50,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
   }
 
-  if (!body.email || !body.answers || !body.companySize || !body.role) {
-    return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+  const parsed = assessmentSubmitSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ success: false, error: formatIssues(parsed.error) }, { status: 400 });
   }
+  body = parsed.data as Record<string, unknown>;
 
   // Drop bot submissions before emails/webhooks fire. Generic failure shape —
   // the assessment client falls back to local scoring, so a real user caught

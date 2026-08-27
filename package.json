@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "scan:nist": "node compliance/nist-scan/bin/nist-scan.js . --md compliance/SCORECARD.md --json compliance/scorecard.json"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.9",
@@ -24,7 +25,8 @@
     "react": "^18",
     "react-dom": "^18",
     "resend": "^6.8.0",
-    "svix": "^1.84.1"
+    "svix": "^1.84.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

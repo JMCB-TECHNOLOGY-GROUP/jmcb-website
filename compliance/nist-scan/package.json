@@ -1,0 +1,8 @@
+{
+  "name": "@jmcb/compliance-scan",
+  "version": "0.1.0",
+  "private": true,
+  "bin": {
+    "nist-scan": "bin/nist-scan.js"
+  }
+}

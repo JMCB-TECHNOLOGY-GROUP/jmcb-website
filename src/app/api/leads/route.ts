@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { isLikelyBot } from "@/lib/bot-check";
+import { leadSchema, formatIssues } from "@/lib/validation";
 
+// public endpoint: anonymous lead capture from the AI readiness assessment —
+// public by design (visitors have no account). Per-IP rate limit, bot
+// heuristics and zod validation guard it; writes go through the server client.
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIp(request);
@@ -23,6 +27,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
+    const parsed = leadSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatIssues(parsed.error) }, { status: 400 });
+    }
     const {
       firstName,
       lastName,
@@ -35,24 +43,7 @@ export async function POST(request: NextRequest) {
       band,
       answers,
       dimensions,
-    } = body;
-
-    // Validate required fields
-    if (!email || !firstName || !lastName) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "Invalid email format" },
-        { status: 400 }
-      );
-    }
+    } = parsed.data;
 
     const supabase = createServerClient();
 
