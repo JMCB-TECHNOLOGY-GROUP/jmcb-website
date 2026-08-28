@@ -66,7 +66,7 @@ const tracks = [
     tag: "",
     desc: "The track most training programmes skip. How to assess readiness, write usable policy, and stand up oversight aligned to the NIST AI Risk Management Framework — without stopping the work.",
     outcomes: [
-      "Readiness assessment across 10 ASCEND dimensions",
+      "Readiness assessment across the ASCEND dimensions",
       "Acceptable-use and disclosure policy people follow",
       "NIST AI RMF-aligned oversight practices",
       "Board and executive reporting that lands",
@@ -78,7 +78,7 @@ const formats = [
   {
     icon: Presentation,
     name: "Executive Briefing",
-    duration: "90 minutes",
+    duration: "Single session",
     desc: "For leadership teams that need to make a decision, not learn to prompt. What is real, what is hype, what it costs, and what to do first.",
     best: "Boards, executive teams, ministry and agency leadership",
   },
@@ -92,8 +92,8 @@ const formats = [
   {
     icon: GraduationCap,
     name: "Multi-Week Cohort",
-    duration: "6 weeks",
-    desc: "Weekly live sessions plus build time. Every participant ships something real and presents it. We document the outcomes — that record is the point.",
+    duration: "Multi-week",
+    desc: "Weekly live sessions plus build time. Every participant ships something real and presents it at a graduation. We document the outcomes — that record is the point.",
     best: "Workforce programmes, youth initiatives, internal academies",
   },
   {
@@ -132,9 +132,9 @@ export default function TrainingPage() {
             <span className="text-accent italic">we actually do.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-xl leading-relaxed mb-10">
-            Most AI training is a slide deck written by someone who has never shipped an agent. Ours is built from
-            production systems we maintain — in healthcare, government, and regulated industries. Your team leaves
-            having built something, not having watched someone build something.
+            We have run digital-skills cohorts for returning citizens under a county behavioural health programme, and
+            taken summer interns through a full AI curriculum. We also build the production systems we teach from.
+            Your team leaves having built something, not having watched someone build something.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
@@ -168,7 +168,7 @@ export default function TrainingPage() {
               <span className="italic text-accent">Shipping is not.</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              You can learn what a large language model is from a hundred free courses. What almost nobody teaches is
+              You can learn what a large language model is from countless free courses. What almost nobody teaches is
               the part that fails: connecting a model to your real data, keeping it accountable, and getting it past
               the people who have to sign for it.
             </p>
@@ -182,11 +182,11 @@ export default function TrainingPage() {
               },
               {
                 title: "Governance is in the room",
-                desc: "We teach oversight alongside capability. Teams that only learn the fun half get stopped by risk and legal three months later.",
+                desc: "We teach oversight alongside capability. Teams that only learn the fun half get stopped by risk and legal soon after.",
               },
               {
                 title: "Everyone ships",
-                desc: "Every format ends with something built and working. We document what each participant produced, because that record is what proves the training worked.",
+                desc: "Every format ends with something built and working, and cohorts end with a graduation. We document what each participant produced, because that record is what proves the training worked.",
               },
             ].map((item) => (
               <div key={item.title} className="bg-gray-50 rounded-xl p-7 border border-gray-200">
@@ -204,11 +204,11 @@ export default function TrainingPage() {
           <div className="text-center mb-14">
             <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">Curriculum</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
-              Four tracks, <span className="italic text-accent">mixed to fit you.</span>
+              Tracks, <span className="italic text-accent">mixed to fit you.</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Nobody needs all four. We scope from where your team actually is, and say so when a track is not worth
-              your money.
+              Nobody needs all of them. We scope from where your team actually is, and say so when a track is not
+              worth your money.
             </p>
           </div>
 
@@ -244,38 +244,45 @@ export default function TrainingPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">
-              What Backs The Teaching
+              Work We Have Done
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
-              The receipts, <span className="italic text-accent">stated plainly.</span>
+              We have taught the people
+              <br />
+              <span className="italic text-accent">most programmes give up on.</span>
             </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Before this was a service line, it was a standing contract teaching technology to people rebuilding
+              their lives. That is where our teaching method comes from, and it is a harder room than any corporate
+              training suite.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 mb-10">
             {[
               {
+                title: "The Damascus House Digital Literacy Program",
+                desc: "Our founder was contracted as Computer and Technology Trainer to Damascus House Community Development Corporation's RISTORe Program in Largo, Maryland — running digital-skills cohorts for returning citizens under the Prince George's County Health Department's behavioural health reentry programme. Participants were issued equipment, sat a final exam, and graduated at a ceremony.",
+              },
+              {
+                title: "A graduate came back as a co-instructor",
+                desc: "One participant finished the programme, kept going, and returned to teach alongside our founder. He later wrote a letter of support in his own name. Of everything on this page, that is the outcome we would point to first.",
+              },
+              {
+                title: "Delivered inside a government-funded programme",
+                desc: "The work ran under county behavioural health funding, to a schedule, with invoicing, safeguarding and reporting attached. It ended when county-level funding arrangements changed — not for want of results. We know how public-sector training programmes are actually run and paid for, because we have been inside one.",
+              },
+              {
+                title: "We have trained young people, not only adults",
+                desc: "As a host employer for a summer youth employment programme, we took our interns through Anthropic's AI curriculum to completion inside the placement, alongside real project work.",
+              },
+              {
                 title: "Anthropic Claude Partner Network",
-                desc: "JMCB Technology Group is a member of Anthropic's partner network for Claude implementation.",
-              },
-              {
-                title: "Anthropic Academy coursework",
-                desc: "Our founder has completed Anthropic's AI Fluency, Claude with the Anthropic API, Model Context Protocol, and Agent Skills courses.",
-              },
-              {
-                title: "We have trained young people, not just teams",
-                desc: "As a 2026 host employer for a US summer youth employment programme, we placed three interns and took all three through Anthropic's AI curriculum to completion inside the placement.",
+                desc: "JMCB Technology Group is a member of Anthropic's partner network for Claude implementation. Our founder has completed Anthropic's AI Fluency, Claude API, Model Context Protocol and Agent Skills courses.",
               },
               {
                 title: "Curriculum drawn from production work",
-                desc: "Teaching material comes from systems we build and run: a Claude-powered content platform, legislative and grants intelligence tools, a civic services platform for a US city agency, and public-health and maritime tooling for the Caribbean.",
-              },
-              {
-                title: "Governance practice, not governance theory",
-                desc: "We run our own NIST AI RMF and SOC 2 readiness tooling across our engineering estate, and teach from what that exercise actually surfaced.",
-              },
-              {
-                title: "Published thinking",
-                desc: "Our founder writes regularly on AI delivery and governance, and is the author of The Laboratory Method.",
+                desc: "Teaching material comes from systems we build and run: a Claude-powered content platform, legislative and grants intelligence tools, a civic services platform for a US city agency, and public-health and maritime tooling for the Caribbean. We also run our own NIST AI Risk Management Framework readiness tooling and teach from what it surfaced.",
               },
             ].map((item) => (
               <div key={item.title} className="flex gap-4">
@@ -290,8 +297,8 @@ export default function TrainingPage() {
 
           <p className="text-sm text-gray-500 max-w-3xl mx-auto text-center leading-relaxed">
             We list what we hold, not what it implies. Anthropic Academy courses are completed coursework rather than
-            proctored certification, and we say so rather than blur the two. If a claim matters to your procurement,
-            ask and we will send the evidence.
+            proctored certification, and we say so rather than blur the two. References for the Damascus House work
+            are available on request, and if a claim matters to your procurement, ask and we will send the evidence.
           </p>
         </div>
       </section>
@@ -302,7 +309,7 @@ export default function TrainingPage() {
           <div className="text-center mb-14">
             <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-4">Formats</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
-              From one briefing <span className="italic text-accent">to a full cohort.</span>
+              From a single briefing <span className="italic text-accent">to a full cohort.</span>
             </h2>
           </div>
 
