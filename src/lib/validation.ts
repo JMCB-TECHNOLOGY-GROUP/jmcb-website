@@ -35,6 +35,28 @@ export const leadSchema = z
   })
   .passthrough();
 
+// Programme applications (/program). Free-tier intake, so the bar is low by
+// design: enough to reach the applicant and to judge whether they have a real
+// task to work on. Long-form answers are capped to keep notes readable.
+export const programApplicationSchema = z
+  .object({
+    firstName: shortText.min(1),
+    lastName: shortText.min(1),
+    email,
+    phone: z.string().trim().max(40).optional().nullable(),
+    location: optionalShortText,
+    organization: optionalShortText,
+    role: optionalShortText,
+    // The question the whole programme hangs on — every project attaches to
+    // this task, so an application without one cannot be accepted.
+    realTask: z.string().trim().min(20).max(2000),
+    motivation: z.string().trim().max(2000).optional().nullable(),
+    tier: z.enum(["core", "capstone_interest"]).default("core"),
+    canAttend: z.boolean().default(false),
+    referral: optionalShortText,
+  })
+  .passthrough();
+
 export const partialCompletionSchema = z
   .object({
     email,

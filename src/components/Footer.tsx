@@ -31,6 +31,7 @@ export default function Footer() {
             <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Company</h4>
             <ul className="space-y-2.5">
               {[
+                { label: "Proof of Work Program", href: "/program" },
                 { label: "Leadership", href: "/leadership" },
                 { label: "Healthcare AI", href: "/healthcare" },
                 { label: "Enterprise AI", href: "/enterprise" },
