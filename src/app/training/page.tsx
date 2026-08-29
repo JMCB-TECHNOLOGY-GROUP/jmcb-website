@@ -17,6 +17,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 import { CALENDLY_URL } from "@/lib/constants";
+import { PROGRAM_NAME, SESSION_DAY, SESSION_TIME, COHORT } from "@/lib/program";
 import { trackEvent } from "@/lib/analytics";
 
 // Curriculum tracks. The Claude/agentic track is the one carrying delivery
@@ -323,6 +324,27 @@ export default function TrainingPage() {
                 <p className="text-xs text-gray-400">Best for: {format.best}</p>
               </div>
             ))}
+          </div>
+
+          {/* The Multi-Week Cohort format above is not hypothetical — Proof of
+              Work is it, run publicly and free. Keep this pointing at /program
+              so the format has something behind it. */}
+          <div className="mt-8 bg-primary rounded-xl p-8 md:p-10 flex flex-col md:flex-row md:items-center gap-6">
+            <div className="flex-1">
+              <p className="text-xs font-body font-semibold tracking-widest uppercase text-accent mb-3">
+                Running now — free and open
+              </p>
+              <h3 className="font-display text-2xl font-bold text-white mb-3">{PROGRAM_NAME}</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Our multi-week cohort, run publicly at no cost. Eight weeks, eight real projects on
+                your own work, {SESSION_DAY}s at {SESSION_TIME}. Applications for {COHORT.label} are
+                open — and organisations can run the same eight weeks privately.
+              </p>
+            </div>
+            <Link href="/program" className="btn-primary shrink-0">
+              See the programme
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </div>
         </div>
       </section>
