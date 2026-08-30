@@ -31,6 +31,25 @@ src/
 
 **Known issue:** `src/Lib/` uses a capital L — inconsistent with convention. Should be lowercase `src/lib/` in future refactor.
 
+## CV Parsing (Career Compass)
+
+`/api/career-assessment/resume` reads an uploaded CV in PDF, Word (`.docx`,
+`.doc`), OpenDocument, RTF or plain text.
+
+- `src/lib/document-formats.ts` is **client-safe**: extensions, format
+  detection and whitespace normalisation, with no parser imports.
+- `src/lib/document-text.ts` is **server only** and does the parsing. Never
+  import it from a client component — webpack will try to bundle Node's `fs`
+  and the build fails.
+- `pdf-parse`, `word-extractor` and `mammoth` are listed in
+  `experimental.serverComponentsExternalPackages` in `next.config.mjs`.
+  `pdf-parse` resolves pdfjs's worker relative to its own package, so bundling
+  it breaks at runtime with "Setting up fake worker failed". Do not remove
+  them from that list.
+- Everything the model returns about a CV is checked against the extracted
+  text (`verifyExtraction`, `verifyRewrites` in `src/lib/resume.ts`) and
+  dropped when it cannot be traced back to the document.
+
 ## Key Features
 - **AI Readiness Assessment:** Generates HTML reports via Claude API, stores in Supabase Storage
 - **Lead Capture:** POST /api/leads — validates email, stores lead + assessment data

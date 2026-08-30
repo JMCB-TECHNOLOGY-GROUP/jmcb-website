@@ -10,7 +10,7 @@ import {
   type CompassDimension,
 } from "@/lib/career-assessment";
 import { PROGRAM_NAME, WEEKS } from "@/lib/program";
-import { flattenSkills, type ResumeExtraction } from "@/lib/resume";
+import { flattenSkills, verifyRewrites, type ResumeExtraction } from "@/lib/resume";
 
 // Generates the personalised half of the Career Compass result: a written read
 // of where this person stands, a 90-day plan, and — when they gave us a CV —
@@ -37,6 +37,10 @@ interface ReportRequest {
   preferences?: Record<string, string | string[]>;
   targetTitle?: string;
   resume?: ResumeExtraction | null;
+  /** The applicant's own CV text, returned by the resume route. Rewrites are
+   *  checked against it so none can introduce a line or a figure the CV
+   *  does not contain. */
+  sourceText?: string | null;
 }
 
 function labelFor(fieldId: string, value: string | string[]): string {
@@ -87,6 +91,7 @@ export async function POST(request: NextRequest) {
     const dimensionScores = (body.dimensionScores || {}) as Record<CompassDimension, number>;
     const preferences = body.preferences || {};
     const resume = body.resume ?? null;
+    const sourceText = typeof body.sourceText === "string" ? body.sourceText : "";
     const band = getBand(score);
     const ranked = rankDimensions(dimensionScores);
     const weakest = ranked.slice(0, 2);
@@ -121,8 +126,8 @@ export async function POST(request: NextRequest) {
 - Years of experience: ${resume.yearsExperience ?? "unclear"}
 - Industries: ${resume.industries?.join(", ") || "not stated"}
 - Skills evidenced: ${skills.join(", ") || "none clearly evidenced"}
-- Achievements already carrying a number: ${resume.quantifiedAchievements?.join(" | ") || "none"}
-- Claims with no evidence: ${resume.unquantifiedClaims?.join(" | ") || "none"}
+- Achievements already carrying a number: ${resume.quantifiedAchievements?.map((a) => a.value).join(" | ") || "none"}
+- Claims with no figure attached: ${resume.unquantifiedClaims?.map((a) => a.value).join(" | ") || "none"}
 - Problems with the CV: ${resume.atsIssues?.join(" | ") || "none found"}
 - Missing for their target: ${resume.missingForTarget?.join(", ") || "nothing obvious"}`
       : "They did not give us a CV, so write the resume section as null.";
@@ -158,7 +163,9 @@ Write four things.
 
 4. training: one short paragraph, keyed "trainingWhy", saying which parts of ${PROGRAM_NAME} matter most for this specific person and why, given their weakest dimensions (${weakest.join(", ")}) and their CV. Do not list every week. Be specific about what they'd walk out with.
 
-Rules: no em dashes or en dashes. Use contractions. No corporate jargon, no "leverage", no "journey". Vary sentence length. Write like a person who has done this, not a careers website. Never invent an achievement, a number, or a skill the CV does not support.
+Rules: no em dashes or en dashes. Use contractions. No corporate jargon, no "leverage", no "journey". Vary sentence length. Write like a person who has done this, not a careers website.
+
+GROUNDING, which matters more than style: every "before" line must be copied VERBATIM from the CV text above. Never write a figure that is not already in the CV — where a number is needed and only they can supply it, write [X]. Rewrites whose "before" cannot be found in the CV, or which introduce an unsourced figure, are discarded before the applicant sees them, so a fabricated line is worse than no line.
 
 Respond ONLY with JSON in exactly this shape, no prose outside it:
 {"summary":"...","phases":[{"title":"Days 1-30: ...","body":"..."},{"title":"Days 31-60: ...","body":"..."},{"title":"Days 61-90: ...","body":"..."}],"resume":{"headline":"...","summary":"...","skillsSection":["..."],"bulletRewrites":[{"before":"...","after":"...","note":"..."}],"fixes":["..."]},"trainingWhy":"..."}`;
@@ -215,6 +222,25 @@ Respond ONLY with JSON in exactly this shape, no prose outside it:
       return NextResponse.json({ ...fallback, generated: false });
     }
 
+    // Drop any rewrite that isn't traceable to the CV. Without source text we
+    // cannot verify, so we return no rewrites rather than unchecked ones.
+    let rewriteResult: { resume: unknown; droppedRewrites: number } = {
+      resume: null,
+      droppedRewrites: 0,
+    };
+    if (resume && parsedReport.resume && typeof parsedReport.resume === "object") {
+      const r = parsedReport.resume as Record<string, unknown>;
+      const { kept, dropped } = verifyRewrites(
+        r.bulletRewrites as { before: string; after: string; note: string }[] | undefined,
+        sourceText
+      );
+      rewriteResult = {
+        resume: { ...r, bulletRewrites: kept },
+        droppedRewrites: dropped,
+      };
+      if (dropped) logError("career-report", new Error(`dropped ${dropped} unverifiable rewrites`));
+    }
+
     return NextResponse.json({
       summary: parsedReport.summary,
       phases: parsedReport.phases.slice(0, 3),
@@ -222,7 +248,8 @@ Respond ONLY with JSON in exactly this shape, no prose outside it:
       // Week numbers stay deterministic; only the reasoning is generated.
       training,
       trainingWhy: typeof parsedReport.trainingWhy === "string" ? parsedReport.trainingWhy : null,
-      resume: resume ? parsedReport.resume ?? null : null,
+      resume: rewriteResult.resume,
+      droppedRewrites: rewriteResult.droppedRewrites,
       generated: true,
     });
   } catch (error) {

@@ -114,9 +114,10 @@ Run the schema from `supabase-schema.sql` in the Supabase SQL Editor. This creat
 3. This bucket stores generated HTML assessment reports.
 4. Create a second bucket named `resumes` and keep it **private**.
 5. This bucket stores CVs uploaded through the Career Compass assessment
-   (`/career-assessment`). It holds personal data, so it must never be public
-   — the application reads from it only through short-lived signed URLs
-   (7 days) embedded in the notification email.
+   (`/career-assessment`) in whatever format the applicant sent — PDF, Word
+   (`.docx`, `.doc`), OpenDocument, RTF or plain text. It holds personal data,
+   so it must never be public — the application reads from it only through
+   short-lived signed URLs (7 days) embedded in the notification email.
 
 If the `resumes` bucket does not exist, CV upload still works: the file is read
 and the skills are extracted, but the original is not retained and the

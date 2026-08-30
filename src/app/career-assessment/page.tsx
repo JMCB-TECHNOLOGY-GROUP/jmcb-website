@@ -86,6 +86,13 @@ export default function CareerAssessmentPage() {
   const [resumeError, setResumeError] = useState("");
   const [resumeName, setResumeName] = useState("");
   const [resumeText, setResumeText] = useState("");
+  // The applicant's own CV text, held in their session so the report step can
+  // verify its rewrites against the same document.
+  const [resumeSource, setResumeSource] = useState("");
+  const [resumeVerification, setResumeVerification] = useState<{
+    skillsKept: number;
+    skillsDropped: number;
+  } | null>(null);
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
@@ -154,6 +161,8 @@ export default function CareerAssessmentPage() {
         if (!res.ok) throw new Error(data.error || "We couldn't read that file.");
         setResumeExtraction(data.extraction ?? null);
         setResumePath(data.resumePath ?? null);
+        setResumeSource(data.sourceText ?? "");
+        setResumeVerification(data.verification ?? null);
         setResumeStatus("done");
       })
       .catch((err) => {
@@ -174,7 +183,7 @@ export default function CareerAssessmentPage() {
     reader.onload = () => {
       const result = String(reader.result || "");
       const base64 = result.includes(",") ? result.split(",")[1] : result;
-      startExtraction({ pdfBase64: base64, fileName: file.name }, file.name);
+      startExtraction({ fileBase64: base64, fileName: file.name }, file.name);
     };
     reader.onerror = () => {
       setResumeError("We couldn't open that file. Try pasting the text instead.");
@@ -241,6 +250,7 @@ export default function CareerAssessmentPage() {
             preferences,
             targetTitle,
             resume: resumeExtraction,
+            sourceText: resumeSource,
           }),
         }),
       ]);
@@ -422,6 +432,13 @@ export default function CareerAssessmentPage() {
               It also tells us which parts of the training you actually need, instead of putting you
               through all of it. We keep it private and only Jermaine sees it.
             </p>
+            <p className="text-gray-600 leading-relaxed mb-8">
+              <strong className="text-gray-900">Nothing gets invented.</strong> Every skill and every
+              rewritten line is checked back against your own document, and anything we can&rsquo;t
+              find in it is thrown away rather than shown to you. Where a number is needed that only
+              you know, you&rsquo;ll see <code className="text-sm bg-gray-100 px-1 rounded">[X]</code>{" "}
+              for you to fill in.
+            </p>
 
             <label
               htmlFor="cv-file"
@@ -436,7 +453,9 @@ export default function CareerAssessmentPage() {
               <span className="block font-semibold text-gray-900 mb-1">
                 Drop your CV here, or click to choose
               </span>
-              <span className="block text-sm text-gray-500">PDF, up to 2.5MB</span>
+              <span className="block text-sm text-gray-500">
+                PDF, Word (.docx, .doc), OpenDocument, RTF or plain text. Up to 2.5MB.
+              </span>
               <input
                 id="cv-file"
                 type="file"
@@ -455,7 +474,7 @@ export default function CareerAssessmentPage() {
 
             <div className="mt-8">
               <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="cv-text">
-                In Word or Google Docs? Paste the text instead.
+                Or paste the text instead.
               </label>
               <textarea
                 id="cv-text"
@@ -572,17 +591,29 @@ export default function CareerAssessmentPage() {
                   </p>
                 )}
                 <div className="flex flex-wrap gap-2">
-                  {flattenSkills(resumeExtraction).slice(0, 24).map((skill) => (
-                    <span key={skill} className="text-xs bg-white border border-gray-200 rounded-full px-3 py-1 text-gray-700">
-                      {skill}
-                    </span>
-                  ))}
+                  {(resumeExtraction.skillGroups ?? []).flatMap((g) =>
+                    g.skills.map((sk) => (
+                      <span
+                        key={`${g.category}-${sk.value}`}
+                        title={sk.evidence ? `From your CV: "${sk.evidence}"` : undefined}
+                        className="text-xs bg-white border border-gray-200 rounded-full px-3 py-1 text-gray-700"
+                      >
+                        {sk.value}
+                      </span>
+                    ))
+                  )}
                 </div>
                 {flattenSkills(resumeExtraction).length === 0 && (
                   <p className="text-sm text-gray-600">
-                    We couldn&rsquo;t pull clear skills out of that file. Your results still work.
+                    We couldn&rsquo;t find skills we could trace back to your document. Your results
+                    still work.
                   </p>
                 )}
+                <p className="text-xs text-gray-500 mt-4 leading-relaxed">
+                  Every one of these was found in your CV. Hover to see the words it came from.
+                  {resumeVerification && resumeVerification.skillsDropped > 0 &&
+                    ` We discarded ${resumeVerification.skillsDropped} we couldn't trace back to it.`}
+                </p>
               </div>
             )}
 

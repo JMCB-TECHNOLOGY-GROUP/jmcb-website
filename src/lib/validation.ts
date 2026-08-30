@@ -63,21 +63,30 @@ export const programApplicationSchema = z
 // upload is rejected here rather than at the model.
 export const resumeExtractSchema = z
   .object({
-    pdfBase64: z.string().max(3_600_000).optional().nullable(),
-    text: z.string().trim().max(60_000).optional().nullable(),
+    // Base64 of any accepted document type; the server picks the parser from
+    // fileName, so fileName is required whenever fileBase64 is present.
+    fileBase64: z.string().max(3_600_000).optional().nullable(),
     fileName: optionalShortText,
+    text: z.string().trim().max(60_000).optional().nullable(),
     targetRole: optionalShortText,
     targetTitle: optionalShortText,
   })
-  .refine((v) => Boolean(v.pdfBase64) || Boolean(v.text && v.text.length > 50), {
-    message: "Provide a PDF or at least 50 characters of CV text",
+  .refine((v) => Boolean(v.fileBase64 && v.fileName) || Boolean(v.text && v.text.length > 50), {
+    message: "Provide a document, or at least 50 characters of CV text",
   });
 
 // The extraction as it comes back from the client on final submit. Shapes are
 // bounded because this lands in the leads notes column.
+// Every claim carries the CV words that support it, because the server drops
+// anything it cannot find in the source text (see lib/resume.ts).
+const evidenced = z.object({
+  value: z.string().trim().max(500),
+  evidence: z.string().trim().max(1000),
+});
+
 const skillGroup = z.object({
   category: z.string().trim().max(80),
-  skills: z.array(z.string().trim().max(120)).max(40),
+  skills: z.array(evidenced).max(40),
 });
 
 export const resumeExtractionSchema = z.object({
@@ -85,8 +94,8 @@ export const resumeExtractionSchema = z.object({
   yearsExperience: z.number().int().min(0).max(70).optional().nullable(),
   industries: z.array(z.string().trim().max(120)).max(10).optional().nullable(),
   skillGroups: z.array(skillGroup).max(8).optional().nullable(),
-  quantifiedAchievements: z.array(z.string().trim().max(500)).max(10).optional().nullable(),
-  unquantifiedClaims: z.array(z.string().trim().max(500)).max(5).optional().nullable(),
+  quantifiedAchievements: z.array(evidenced).max(10).optional().nullable(),
+  unquantifiedClaims: z.array(evidenced).max(5).optional().nullable(),
   atsIssues: z.array(z.string().trim().max(500)).max(8).optional().nullable(),
   missingForTarget: z.array(z.string().trim().max(200)).max(10).optional().nullable(),
   education: z.array(z.string().trim().max(300)).max(8).optional().nullable(),
