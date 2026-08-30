@@ -41,6 +41,17 @@ async function makeOdt(paragraphs: string[]): Promise<Buffer> {
   return zip.generateAsync({ type: "nodebuffer" });
 }
 
+/** Writes content.xml verbatim, for exercising tag/entity handling. */
+async function makeOdtRaw(rawBody: string): Promise<Buffer> {
+  const zip = new JSZip();
+  zip.file("mimetype", "application/vnd.oasis.opendocument.text");
+  zip.file(
+    "content.xml",
+    `<?xml version="1.0" encoding="UTF-8"?><office:document-content xmlns:office="urn:oasis" xmlns:text="urn:text"><office:body><office:text><text:p>${rawBody}</text:p></office:text></office:body></office:document-content>`
+  );
+  return zip.generateAsync({ type: "nodebuffer" });
+}
+
 /** A minimal single-page PDF with a real text layer. */
 function makePdf(line: string): Buffer {
   const stream = Buffer.from(`BT /F1 12 Tf 72 720 Td (${line}) Tj ET`);
@@ -143,6 +154,33 @@ describe("text extraction", () => {
     await expect(extractDocumentText(Buffer.from("not an odt"), "odt")).rejects.toThrow(
       /couldn't open|damaged/i
     );
+  });
+});
+
+// Both of these were flagged by CodeQL as high-severity findings in the first
+// version of odfXmlToText, and both were genuine.
+describe("OpenDocument tag and entity handling", () => {
+  it("strips tags that only appear once an inner tag is removed", async () => {
+    const buf = await makeOdtRaw("<scr<x>ipt>alert(1)</script>Jane Doe");
+    const text = await extractDocumentText(buf, "odt");
+    expect(text).not.toContain("<script");
+    expect(text).not.toContain("<scr");
+    expect(text).toContain("Jane Doe");
+  });
+
+  it("decodes entities once, so an escaped entity stays escaped", async () => {
+    // The document literally says "&lt;b&gt;", so that is what the text is.
+    const buf = await makeOdtRaw("&amp;lt;b&amp;gt; and Smith &amp; Sons");
+    const text = await extractDocumentText(buf, "odt");
+    expect(text).toContain("&lt;b&gt;");
+    expect(text).toContain("Smith & Sons");
+    expect(text).not.toContain("<b>");
+  });
+
+  it("decodes ordinary entities normally", async () => {
+    const buf = await makeOdtRaw("Managed &quot;special projects&quot; &amp; ops");
+    const text = await extractDocumentText(buf, "odt");
+    expect(text).toContain('"special projects" & ops');
   });
 });
 

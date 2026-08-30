@@ -43,18 +43,41 @@ function rtfToText(raw: string): string {
   );
 }
 
-/** Pulls the text nodes out of an OpenDocument content.xml. */
+/** XML entities we decode, resolved in a single pass (see below). */
+const XML_ENTITIES: Record<string, string> = {
+  "&amp;": "&",
+  "&lt;": "<",
+  "&gt;": ">",
+  "&quot;": '"',
+  "&apos;": "'",
+};
+
+/**
+ * Pulls the text nodes out of an OpenDocument content.xml.
+ *
+ * Two things here are deliberate and were both real bugs first:
+ *
+ * 1. Tags are stripped in a loop until the string stops changing. One pass is
+ *    not enough, because removing an inner tag can splice the remaining text
+ *    into a NEW tag: "<scr<x>ipt>" becomes "<script>" after a single pass.
+ *
+ * 2. Entities are decoded in ONE pass through a lookup, not by chained
+ *    replaces. Replacing "&amp;" first and "&lt;" after double-unescapes:
+ *    "&amp;lt;" would come out as "<" when the document actually said the
+ *    literal text "&lt;".
+ */
 function odfXmlToText(xml: string): string {
-  return normalizeWhitespace(
-    xml
-      .replace(/<text:(p|h)[^>]*>/g, "\n")
-      .replace(/<[^>]+>/g, "")
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&quot;/g, '"')
-      .replace(/&apos;/g, "'")
-  );
+  let text = xml.replace(/<text:(p|h)[^>]*>/g, "\n");
+
+  let previous: string;
+  do {
+    previous = text;
+    text = text.replace(/<[^>]*>/g, "");
+  } while (text !== previous);
+
+  text = text.replace(/&(?:amp|lt|gt|quot|apos);/g, (m) => XML_ENTITIES[m] ?? m);
+
+  return normalizeWhitespace(text);
 }
 
 /**
