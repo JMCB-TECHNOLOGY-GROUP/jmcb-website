@@ -261,6 +261,20 @@ export default function ProgramPage() {
       {/* ===== APPLY ===== */}
       <section id="apply" className="py-20 sm:py-24 bg-gray-50 scroll-mt-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          {/* Not everyone is ready to apply cold. The Career Compass gives
+              them a reason to engage now and tells us what they want. */}
+          <div className="max-w-xl mx-auto mb-12 rounded-2xl border border-gray-200 bg-white p-6 text-center">
+            <p className="text-gray-700 leading-relaxed mb-4">
+              Not sure this is the right thing for you? Take the free six-minute Career Compass
+              first. It scores your job search across seven dimensions and tells you honestly
+              whether the role you want is realistic today.
+            </p>
+            <Link href="/career-assessment" className="btn-outline text-sm">
+              Take the Career Compass
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
           <div className="text-center mb-10">
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Apply for {COHORT.label}

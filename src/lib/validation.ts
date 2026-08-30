@@ -57,6 +57,37 @@ export const programApplicationSchema = z
   })
   .passthrough();
 
+// Career Compass submissions (/career-assessment). Two halves: `preferences`
+// is the free-form capture of what the applicant wants from their next job,
+// `answers` is the scored COMPASS set. Both are bounded so a scripted post
+// can't stuff the leads table's notes column.
+export const careerAssessmentSchema = z
+  .object({
+    firstName: shortText.min(1),
+    lastName: shortText.min(1),
+    email,
+    phone: z.string().trim().max(40).optional().nullable(),
+    location: optionalShortText,
+    targetTitle: optionalShortText,
+    // Preference ids map to PREFERENCE_FIELDS; values are option ids, or an
+    // array of them for multi-select fields.
+    preferences: z
+      .record(z.string().max(60), z.union([z.string().max(60), z.array(z.string().max(60)).max(10)]))
+      .refine((p) => Object.keys(p).length <= 30, "too many preference fields"),
+    answers,
+    score: z.number().int().min(0).max(100),
+    band: shortText,
+    dimensions: z.record(z.string().max(60), z.number()).optional().nullable(),
+    complete: z.boolean().default(false),
+    // Set from the applicant's own tick box on the results step — never
+    // inferred server-side. Gates founding-cohort registration.
+    joinFoundingCohort: z.boolean().default(false),
+    utmSource: optionalShortText,
+    utmMedium: optionalShortText,
+    utmCampaign: optionalShortText,
+  })
+  .passthrough();
+
 export const partialCompletionSchema = z
   .object({
     email,

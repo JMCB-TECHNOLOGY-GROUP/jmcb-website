@@ -37,6 +37,7 @@ export default function Footer() {
                 { label: "Enterprise AI", href: "/enterprise" },
                 { label: "Associations", href: "/associations" },
                 { label: "AI Assessment", href: "/assessment" },
+                { label: "Career Compass (job seekers)", href: "/career-assessment" },
                 { label: "Insights", href: "/insights" },
                 { label: "Contact", href: "/contact" },
               ].map((l) => (
