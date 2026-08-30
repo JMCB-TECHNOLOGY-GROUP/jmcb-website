@@ -24,6 +24,12 @@ const nextConfig = {
     outputFileTracingIncludes: {
       "/api/book/download": ["./src/content/book/**/*"],
     },
+    // CV parsing (/api/career-assessment/resume) must not be bundled.
+    // pdf-parse loads pdfjs's worker by a path relative to its own package;
+    // once webpack relocates the code that path breaks at runtime with
+    // "Setting up fake worker failed". Keeping these external makes Node
+    // require them from node_modules, where their internal paths still hold.
+    serverComponentsExternalPackages: ["pdf-parse", "word-extractor", "mammoth"],
   },
   images: {
     unoptimized: true,

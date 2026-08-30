@@ -279,6 +279,17 @@ export default function AssessmentPage() {
                   Start Your Assessment <span>→</span>
                 </button>
               </div>
+
+              {/* This assessment scores an ORGANISATION. Individuals kept
+                  landing here and finding nothing relevant to them — send them
+                  to the Career Compass instead of losing them. */}
+              <p className="text-center text-sm text-gray-500 mt-8 pt-8 border-t border-gray-100">
+                Looking for a job rather than assessing a company?{" "}
+                <a href="/career-assessment" className="text-accent font-semibold hover:underline">
+                  Take the Career Compass instead
+                </a>{" "}
+                — it scores your job search, not your business.
+              </p>
             </motion.div>
           )}
 
