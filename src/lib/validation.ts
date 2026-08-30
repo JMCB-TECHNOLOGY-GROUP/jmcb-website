@@ -57,6 +57,42 @@ export const programApplicationSchema = z
   })
   .passthrough();
 
+// CV extraction (/api/career-assessment/resume). Either a base64 PDF or
+// pasted text, never both required. The base64 cap mirrors MAX_RESUME_BYTES
+// in lib/resume.ts once base64 inflation is accounted for, so an oversized
+// upload is rejected here rather than at the model.
+export const resumeExtractSchema = z
+  .object({
+    pdfBase64: z.string().max(3_600_000).optional().nullable(),
+    text: z.string().trim().max(60_000).optional().nullable(),
+    fileName: optionalShortText,
+    targetRole: optionalShortText,
+    targetTitle: optionalShortText,
+  })
+  .refine((v) => Boolean(v.pdfBase64) || Boolean(v.text && v.text.length > 50), {
+    message: "Provide a PDF or at least 50 characters of CV text",
+  });
+
+// The extraction as it comes back from the client on final submit. Shapes are
+// bounded because this lands in the leads notes column.
+const skillGroup = z.object({
+  category: z.string().trim().max(80),
+  skills: z.array(z.string().trim().max(120)).max(40),
+});
+
+export const resumeExtractionSchema = z.object({
+  currentTitle: z.string().trim().max(200).optional().nullable(),
+  yearsExperience: z.number().int().min(0).max(70).optional().nullable(),
+  industries: z.array(z.string().trim().max(120)).max(10).optional().nullable(),
+  skillGroups: z.array(skillGroup).max(8).optional().nullable(),
+  quantifiedAchievements: z.array(z.string().trim().max(500)).max(10).optional().nullable(),
+  unquantifiedClaims: z.array(z.string().trim().max(500)).max(5).optional().nullable(),
+  atsIssues: z.array(z.string().trim().max(500)).max(8).optional().nullable(),
+  missingForTarget: z.array(z.string().trim().max(200)).max(10).optional().nullable(),
+  education: z.array(z.string().trim().max(300)).max(8).optional().nullable(),
+  summary: z.string().trim().max(2000).optional().nullable(),
+});
+
 // Career Compass submissions (/career-assessment). Two halves: `preferences`
 // is the free-form capture of what the applicant wants from their next job,
 // `answers` is the scored COMPASS set. Both are bounded so a scripted post
@@ -82,6 +118,10 @@ export const careerAssessmentSchema = z
     // Set from the applicant's own tick box on the results step — never
     // inferred server-side. Gates founding-cohort registration.
     joinFoundingCohort: z.boolean().default(false),
+    // Present only when the applicant gave us a CV. resumePath is the private
+    // storage object key, never a URL — signed URLs are minted server-side.
+    resume: resumeExtractionSchema.optional().nullable(),
+    resumePath: z.string().trim().max(300).optional().nullable(),
     utmSource: optionalShortText,
     utmMedium: optionalShortText,
     utmCampaign: optionalShortText,

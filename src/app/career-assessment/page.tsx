@@ -2,7 +2,17 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, ArrowLeft, CheckCircle2, Compass, Loader2, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
+  Compass,
+  Loader2,
+  Sparkles,
+  Upload,
+  FileText,
+  AlertCircle,
+} from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {
@@ -20,8 +30,14 @@ import {
   type CompassDimension,
 } from "@/lib/career-assessment";
 import { PROGRAM_NAME, COHORT, SESSION_DAY, SESSION_TIME } from "@/lib/program";
+import {
+  validateResumeFile,
+  flattenSkills,
+  ACCEPTED_EXTENSIONS,
+  type ResumeExtraction,
+} from "@/lib/resume";
 
-type Stage = "intro" | "preferences" | "compass" | "capture" | "analyzing" | "results";
+type Stage = "intro" | "preferences" | "resume" | "compass" | "capture" | "analyzing" | "results";
 type PrefValue = string | string[];
 
 const ANALYZING_STEPS = [
@@ -40,13 +56,36 @@ export default function CareerAssessmentPage() {
   const [targetTitle, setTargetTitle] = useState("");
   const [profile, setProfile] = useState({ firstName: "", lastName: "", email: "", phone: "", location: "" });
   const [joinFounding, setJoinFounding] = useState(true);
-  const [report, setReport] = useState<{ summary: string; phases?: { title: string; body: string }[] } | null>(null);
+  type ResumeRewrite = {
+    headline?: string;
+    summary?: string;
+    skillsSection?: string[];
+    bulletRewrites?: { before: string; after: string; note: string }[];
+    fixes?: string[];
+  };
+  type Report = {
+    summary: string;
+    phases?: { title: string; body: string }[];
+    resume?: ResumeRewrite | null;
+    training?: { week: number; project: string; theme: string }[];
+    trainingWhy?: string | null;
+  };
+  const [report, setReport] = useState<Report | null>(null);
   const [analyzingStep, setAnalyzingStep] = useState(0);
   const [submitError, setSubmitError] = useState("");
   const [registered, setRegistered] = useState(false);
   const [website, setWebsite] = useState("");
   const [formStartedAt] = useState(() => Date.now());
   const [utm, setUtm] = useState({ utmSource: "", utmMedium: "", utmCampaign: "" });
+
+  // CV capture. Extraction is kicked off when they hand the file over and runs
+  // while they answer the COMPASS questions, so nobody waits on the model.
+  const [resumeStatus, setResumeStatus] = useState<"idle" | "reading" | "done" | "error" | "skipped">("idle");
+  const [resumeExtraction, setResumeExtraction] = useState<ResumeExtraction | null>(null);
+  const [resumePath, setResumePath] = useState<string | null>(null);
+  const [resumeError, setResumeError] = useState("");
+  const [resumeName, setResumeName] = useState("");
+  const [resumeText, setResumeText] = useState("");
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
@@ -90,7 +129,58 @@ export default function CareerAssessmentPage() {
 
   function nextPref() {
     if (prefIndex < PREFERENCE_FIELDS.length - 1) setPrefIndex((i) => i + 1);
-    else setStage("compass");
+    else setStage("resume");
+  }
+
+  // ── CV handling ──
+  // Deliberately fire-and-forget: we move the applicant straight on to the
+  // COMPASS questions and let the read finish in the background.
+  function startExtraction(payload: Record<string, unknown>, label: string) {
+    setResumeStatus("reading");
+    setResumeError("");
+    setResumeName(label);
+    setStage("compass");
+    fetch("/api/career-assessment/resume", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...payload,
+        targetRole: (preferences.targetField as string) || undefined,
+        targetTitle: targetTitle || undefined,
+      }),
+    })
+      .then(async (res) => {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "We couldn't read that file.");
+        setResumeExtraction(data.extraction ?? null);
+        setResumePath(data.resumePath ?? null);
+        setResumeStatus("done");
+      })
+      .catch((err) => {
+        setResumeError(err instanceof Error ? err.message : "We couldn't read that file.");
+        setResumeStatus("error");
+      });
+  }
+
+  function handleResumeFile(file: File | undefined) {
+    if (!file) return;
+    const problem = validateResumeFile(file);
+    if (problem) {
+      setResumeError(problem);
+      setResumeStatus("error");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || "");
+      const base64 = result.includes(",") ? result.split(",")[1] : result;
+      startExtraction({ pdfBase64: base64, fileName: file.name }, file.name);
+    };
+    reader.onerror = () => {
+      setResumeError("We couldn't open that file. Try pasting the text instead.");
+      setResumeStatus("error");
+    };
+    reader.readAsDataURL(file);
   }
 
   // ── compass handling ──
@@ -127,6 +217,8 @@ export default function CareerAssessmentPage() {
       dimensions: dimensionScores,
       complete,
       joinFoundingCohort: joinFounding && complete,
+      resume: resumeExtraction,
+      resumePath,
       website,
       formStartedAt,
       ...utm,
@@ -148,6 +240,7 @@ export default function CareerAssessmentPage() {
             dimensionScores,
             preferences,
             targetTitle,
+            resume: resumeExtraction,
           }),
         }),
       ]);
@@ -161,7 +254,14 @@ export default function CareerAssessmentPage() {
 
       if (reportRes.status === "fulfilled" && reportRes.value.ok) {
         const d = await reportRes.value.json().catch(() => null);
-        if (d?.summary) setReport({ summary: d.summary, phases: d.phases });
+        if (d?.summary)
+          setReport({
+            summary: d.summary,
+            phases: d.phases,
+            resume: d.resume ?? null,
+            training: d.training ?? [],
+            trainingWhy: d.trainingWhy ?? null,
+          });
       }
     } catch {
       setSubmitError("We couldn't save your results, but here they are.");
@@ -304,12 +404,117 @@ export default function CareerAssessmentPage() {
           </section>
         )}
 
+        {/* ===== CV ===== */}
+        {stage === "resume" && (
+          <section className="max-w-2xl mx-auto px-4 sm:px-6 pt-28 pb-20">
+            <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-3">
+              Your CV · optional but worth it
+            </p>
+            <h2 className="font-display text-3xl font-bold text-gray-900 mb-3">
+              Give us your CV and we&rsquo;ll rewrite it for you.
+            </h2>
+            <p className="text-gray-600 leading-relaxed mb-3">
+              We read it to see what you can actually evidence, then hand back a reformatted
+              version: a headline aimed at the role you want, your weak lines rewritten, and the
+              skills section ordered the way employers screen for.
+            </p>
+            <p className="text-gray-600 leading-relaxed mb-8">
+              It also tells us which parts of the training you actually need, instead of putting you
+              through all of it. We keep it private and only Jermaine sees it.
+            </p>
+
+            <label
+              htmlFor="cv-file"
+              className="block border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center cursor-pointer hover:border-accent hover:bg-cream/40 transition-colors"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                handleResumeFile(e.dataTransfer.files?.[0]);
+              }}
+            >
+              <Upload className="w-8 h-8 text-accent mx-auto mb-4" />
+              <span className="block font-semibold text-gray-900 mb-1">
+                Drop your CV here, or click to choose
+              </span>
+              <span className="block text-sm text-gray-500">PDF, up to 2.5MB</span>
+              <input
+                id="cv-file"
+                type="file"
+                accept={ACCEPTED_EXTENSIONS}
+                className="hidden"
+                onChange={(e) => handleResumeFile(e.target.files?.[0])}
+              />
+            </label>
+
+            {resumeError && (
+              <p className="mt-4 text-sm text-red-600 flex items-start gap-2" role="alert">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>{resumeError}</span>
+              </p>
+            )}
+
+            <div className="mt-8">
+              <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="cv-text">
+                In Word or Google Docs? Paste the text instead.
+              </label>
+              <textarea
+                id="cv-text"
+                rows={6}
+                value={resumeText}
+                onChange={(e) => setResumeText(e.target.value)}
+                placeholder="Paste your CV here…"
+                className={field}
+              />
+              <button
+                onClick={() => startExtraction({ text: resumeText }, "pasted CV")}
+                disabled={resumeText.trim().length < 50}
+                className="btn-outline mt-3 text-sm disabled:opacity-40"
+              >
+                Use this text
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-4 mt-10 pt-8 border-t border-gray-100">
+              <button
+                onClick={() => setStage("preferences")}
+                className="text-sm text-gray-500 hover:text-gray-900 inline-flex items-center gap-1"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back
+              </button>
+              <button
+                onClick={() => {
+                  setResumeStatus("skipped");
+                  setStage("compass");
+                }}
+                className="ml-auto text-sm text-gray-500 hover:text-gray-900 underline"
+              >
+                Skip — I don&rsquo;t have it to hand
+              </button>
+            </div>
+          </section>
+        )}
+
         {/* ===== COMPASS ===== */}
         {stage === "compass" && question && (
           <section className="max-w-2xl mx-auto px-4 sm:px-6 pt-28 pb-20">
             <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-3">
               {question.dimension} · {qIndex + 1} of {COMPASS_QUESTIONS.length}
             </p>
+
+            {/* The CV read runs while they answer, so surface it quietly here
+                rather than making them wait on a spinner earlier. */}
+            {resumeStatus === "reading" && (
+              <p className="text-xs text-gray-500 flex items-center gap-2 mb-4">
+                <Loader2 className="w-3 h-3 animate-spin" /> Reading {resumeName} in the background…
+              </p>
+            )}
+            {resumeStatus === "done" && (
+              <p className="text-xs text-gray-500 flex items-center gap-2 mb-4">
+                <CheckCircle2 className="w-3 h-3 text-accent" /> CV read. We&rsquo;ll show you what we
+                found at the end.
+              </p>
+            )}
             <h2 className="font-display text-3xl font-bold text-gray-900 mb-4">{question.questionText}</h2>
             <p className="text-gray-600 leading-relaxed mb-8 border-l-4 border-gray-200 pl-4">
               {question.helpText}
@@ -334,7 +539,7 @@ export default function CareerAssessmentPage() {
 
             <div className="flex items-center gap-4 mt-8">
               <button
-                onClick={() => (qIndex > 0 ? setQIndex((i) => i - 1) : setStage("preferences"))}
+                onClick={() => (qIndex > 0 ? setQIndex((i) => i - 1) : setStage("resume"))}
                 className="text-sm text-gray-500 hover:text-gray-900 inline-flex items-center gap-1"
               >
                 <ArrowLeft className="w-4 h-4" /> Back
@@ -354,6 +559,32 @@ export default function CareerAssessmentPage() {
               You&rsquo;ll see your score and plan on the next screen either way. We email a copy so
               you still have it in a month, when it matters.
             </p>
+
+            {resumeStatus === "done" && resumeExtraction && (
+              <div className="mb-8 rounded-2xl border border-gray-200 bg-gray-50 p-6">
+                <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-3">
+                  What we found in your CV
+                </p>
+                {resumeExtraction.currentTitle && (
+                  <p className="text-sm text-gray-700 mb-3">
+                    <strong>{resumeExtraction.currentTitle}</strong>
+                    {resumeExtraction.yearsExperience != null && ` · ${resumeExtraction.yearsExperience} years`}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  {flattenSkills(resumeExtraction).slice(0, 24).map((skill) => (
+                    <span key={skill} className="text-xs bg-white border border-gray-200 rounded-full px-3 py-1 text-gray-700">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+                {flattenSkills(resumeExtraction).length === 0 && (
+                  <p className="text-sm text-gray-600">
+                    We couldn&rsquo;t pull clear skills out of that file. Your results still work.
+                  </p>
+                )}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="absolute left-[-9999px]" aria-hidden="true">
@@ -594,6 +825,123 @@ export default function CareerAssessmentPage() {
                       </div>
                     </>
                   )}
+                </div>
+              </section>
+            )}
+
+            {/* Reformatted CV */}
+            {report?.resume && (
+              <section className="border-t border-gray-200">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+                  <div className="flex items-center gap-2 mb-6">
+                    <FileText className="w-5 h-5 text-accent" />
+                    <p className="text-xs tracking-widest uppercase text-accent font-semibold">
+                      Your CV, reformatted
+                    </p>
+                  </div>
+                  <h2 className="font-display text-3xl font-bold text-gray-900 mb-8">
+                    Copy this straight into your CV
+                  </h2>
+
+                  {report.resume.headline && (
+                    <div className="mb-8">
+                      <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">
+                        Headline
+                      </p>
+                      <p className="font-display text-xl font-bold text-gray-900">
+                        {report.resume.headline}
+                      </p>
+                    </div>
+                  )}
+
+                  {report.resume.summary && (
+                    <div className="mb-8">
+                      <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">
+                        Professional summary
+                      </p>
+                      <p className="text-gray-700 leading-relaxed">{report.resume.summary}</p>
+                    </div>
+                  )}
+
+                  {report.resume.skillsSection && report.resume.skillsSection.length > 0 && (
+                    <div className="mb-8">
+                      <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-3">
+                        Skills section, ordered for your target
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {report.resume.skillsSection.map((sk) => (
+                          <span key={sk} className="text-sm bg-cream border border-accent/30 rounded-full px-3 py-1 text-gray-800">
+                            {sk}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {report.resume.bulletRewrites && report.resume.bulletRewrites.length > 0 && (
+                    <div className="mb-8">
+                      <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-4">
+                        Your lines, rewritten
+                      </p>
+                      <div className="space-y-5">
+                        {report.resume.bulletRewrites.map((b, i) => (
+                          <div key={i} className="border border-gray-200 rounded-xl overflow-hidden">
+                            <p className="text-sm text-gray-500 line-through px-5 py-3 bg-gray-50 leading-relaxed">
+                              {b.before}
+                            </p>
+                            <p className="text-gray-900 px-5 py-3 leading-relaxed font-medium">{b.after}</p>
+                            {b.note && (
+                              <p className="text-xs text-gray-600 px-5 py-3 bg-cream leading-relaxed border-t border-gray-100">
+                                {b.note}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {report.resume.fixes && report.resume.fixes.length > 0 && (
+                    <div>
+                      <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-3">
+                        Structural fixes
+                      </p>
+                      <ul className="space-y-2">
+                        {report.resume.fixes.map((f) => (
+                          <li key={f} className="flex gap-3 text-gray-700 leading-relaxed">
+                            <span className="text-accent">—</span>
+                            <span>{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+
+            {/* Training aimed at their gaps */}
+            {report?.training && report.training.length > 0 && (
+              <section className="bg-gray-50 border-y border-gray-200">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+                  <h2 className="font-display text-3xl font-bold text-gray-900 mb-4">
+                    The training you actually need
+                  </h2>
+                  <p className="text-gray-700 leading-relaxed max-w-2xl mb-10">
+                    {report.trainingWhy ??
+                      `Based on your two weakest dimensions, these are the ${PROGRAM_NAME} weeks that matter most for you.`}
+                  </p>
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    {report.training.map((t) => (
+                      <div key={t.week} className="bg-white border border-gray-200 rounded-xl p-6">
+                        <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-2">
+                          Week {t.week}
+                        </p>
+                        <h3 className="font-display text-lg font-bold text-gray-900 mb-1">{t.theme}</h3>
+                        <p className="text-sm text-gray-600">You ship: {t.project}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </section>
             )}

@@ -10,6 +10,7 @@ import {
   PREFERENCE_FIELDS,
   getBand,
 } from "@/lib/career-assessment";
+import { flattenSkills } from "@/lib/resume";
 import {
   PROGRAM_NAME,
   COHORT,
@@ -78,6 +79,8 @@ export async function POST(request: NextRequest) {
       dimensions,
       complete,
       joinFoundingCohort,
+      resume,
+      resumePath,
       utmSource,
       utmMedium,
       utmCampaign,
@@ -95,6 +98,32 @@ export async function POST(request: NextRequest) {
       (f) => `${f.question}\n  → ${labelFor(f.id, preferences[f.id])}`
     );
 
+    const skills = flattenSkills(resume);
+
+    // Read back the stored CV for the alert email. Signed rather than public,
+    // and short-lived — see the storage note in the resume route.
+    let resumeUrl: string | null = null;
+
+    const resumeLines = resume
+      ? [
+          "",
+          "CV",
+          resume.currentTitle ? `  Current title: ${resume.currentTitle}` : null,
+          resume.yearsExperience != null ? `  Years of experience: ${resume.yearsExperience}` : null,
+          resume.industries?.length ? `  Industries: ${resume.industries.join(", ")}` : null,
+          skills.length ? `  Skills: ${skills.join(", ")}` : null,
+          resume.quantifiedAchievements?.length
+            ? `  Already quantified:\n${resume.quantifiedAchievements.map((a) => `    - ${a}`).join("\n")}`
+            : null,
+          resume.atsIssues?.length
+            ? `  CV problems:\n${resume.atsIssues.map((a) => `    - ${a}`).join("\n")}`
+            : null,
+          resume.missingForTarget?.length
+            ? `  Missing for their target: ${resume.missingForTarget.join(", ")}`
+            : null,
+        ].filter((l) => l !== null)
+      : ["", "CV: not provided"];
+
     const note = [
       `[${ASSESSMENT_NAME} — ${new Date().toISOString()}]`,
       `Score: ${score}/100 (${band.label})`,
@@ -111,6 +140,7 @@ export async function POST(request: NextRequest) {
       "",
       "COMPASS",
       ...Object.entries(dimensions ?? {}).map(([d, v]) => `  ${d}: ${v}/5`),
+      ...resumeLines,
     ]
       .filter((l) => l !== null)
       .join("\n");
@@ -153,6 +183,17 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    if (resumePath) {
+      try {
+        const { data: signed } = await supabase.storage
+          .from("resumes")
+          .createSignedUrl(resumePath, 60 * 60 * 24 * 7);
+        resumeUrl = signed?.signedUrl ?? null;
+      } catch {
+        // A missing bucket must not cost us the alert email.
+      }
+    }
+
     // ── Alert Jermaine. The lead is saved, so mail failure is non-fatal. ──
     const subject = registeredFounding
       ? `FOUNDING COHORT — ${firstName} ${lastName} (${score}/100)`
@@ -184,6 +225,19 @@ export async function POST(request: NextRequest) {
            )
            .join("")}
        </ul>
+       ${
+         resume
+           ? `<h3 style="margin-bottom:4px">Their CV</h3>
+              <p style="margin-top:0">
+                ${resume.currentTitle ? `<strong>Now:</strong> ${esc(resume.currentTitle)}<br>` : ""}
+                ${resume.yearsExperience != null ? `<strong>Experience:</strong> ${resume.yearsExperience} years<br>` : ""}
+                ${resume.industries?.length ? `<strong>Industries:</strong> ${esc(resume.industries.join(", "))}<br>` : ""}
+                ${skills.length ? `<strong>Skills:</strong> ${esc(skills.join(", "))}<br>` : ""}
+                ${resume.missingForTarget?.length ? `<strong>Missing for their target:</strong> ${esc(resume.missingForTarget.join(", "))}<br>` : ""}
+                ${resumeUrl ? `<a href="${resumeUrl}">Open their CV</a> (link expires in 7 days)` : ""}
+              </p>`
+           : "<p><em>No CV provided.</em></p>"
+       }
        <h3 style="margin-bottom:4px">COMPASS</h3>
        <ul style="margin-top:0">
          ${Object.entries(dimensions ?? {})
