@@ -14,6 +14,7 @@ import {
 import {
   extractDocumentText,
   kindForFileName,
+  mimeForFileName,
   normalizeWhitespace,
   UnreadableDocumentError,
 } from "@/lib/document-text";
@@ -28,7 +29,7 @@ import {
 // dropped when it isn't there. Nothing unverifiable reaches the applicant.
 //
 // STORAGE: the original is written to a PRIVATE Supabase bucket named
-// `resumes`, which must be created manually (see docs/deployment.md). If the
+// `resumes`, created by supabase/migrations/0002_resumes_bucket.sql. If the
 // bucket is missing or the write fails, extraction still succeeds and returns
 // resumePath: null — a missing bucket must never cost the applicant their
 // results. Signed URLs are minted at submit time, never here.
@@ -172,7 +173,9 @@ export async function POST(request: NextRequest) {
         const ext = fileName.toLowerCase().split(".").pop() || "bin";
         const key = `cv-${randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from(RESUME_BUCKET).upload(key, fileBuffer, {
-          contentType: request.headers.get("content-type") ?? "application/octet-stream",
+          // The FILE's type, not the request's — the request is JSON, so
+          // reading its content-type here mislabelled every stored CV.
+          contentType: mimeForFileName(fileName),
           upsert: false,
         });
         if (error) logWarn("resume-extract", `storage write failed: ${error.message}`, { fileName });

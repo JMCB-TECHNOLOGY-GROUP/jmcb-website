@@ -25,6 +25,7 @@ import {
 export {
   ACCEPTED_EXTENSIONS,
   kindForFileName,
+  mimeForFileName,
   normalizeWhitespace,
   UnreadableDocumentError,
   type DocumentKind,
