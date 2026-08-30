@@ -93,6 +93,9 @@ export default function CareerAssessmentPage() {
     skillsKept: number;
     skillsDropped: number;
   } | null>(null);
+  // Which profile fields we filled in from the CV, so the capture step can
+  // present itself as a confirmation instead of a form.
+  const [prefilled, setPrefilled] = useState<string[]>([]);
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
@@ -163,6 +166,27 @@ export default function CareerAssessmentPage() {
         setResumePath(data.resumePath ?? null);
         setResumeSource(data.sourceText ?? "");
         setResumeVerification(data.verification ?? null);
+
+        // Fill the contact step from the CV so they confirm rather than
+        // retype. Only ever fills a field that is still empty, so anything
+        // the applicant has already typed wins.
+        const c = data.extraction?.contact;
+        if (c) {
+          const filled: string[] = [];
+          setProfile((prev) => {
+            const next = { ...prev };
+            for (const key of ["firstName", "lastName", "email", "phone", "location"] as const) {
+              const value = c[key];
+              if (value && !next[key]) {
+                next[key] = value;
+                filled.push(key);
+              }
+            }
+            return next;
+          });
+          setPrefilled(filled);
+        }
+
         setResumeStatus("done");
       })
       .catch((err) => {
@@ -572,11 +596,20 @@ export default function CareerAssessmentPage() {
           <section className="max-w-2xl mx-auto px-4 sm:px-6 pt-28 pb-20">
             <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-3">Last step</p>
             <h2 className="font-display text-3xl font-bold text-gray-900 mb-3">
-              Where should we send your results?
+              {prefilled.length > 0 ? "Is this right?" : "Where should we send your results?"}
             </h2>
             <p className="text-gray-600 leading-relaxed mb-8">
-              You&rsquo;ll see your score and plan on the next screen either way. We email a copy so
-              you still have it in a month, when it matters.
+              {prefilled.length > 0 ? (
+                <>
+                  We took these off your CV so you don&rsquo;t have to type them again. Change
+                  anything that&rsquo;s wrong or out of date, then carry on.
+                </>
+              ) : (
+                <>
+                  You&rsquo;ll see your score and plan on the next screen either way. We email a copy
+                  so you still have it in a month, when it matters.
+                </>
+              )}
             </p>
 
             {resumeStatus === "done" && resumeExtraction && (
@@ -626,19 +659,25 @@ export default function CareerAssessmentPage() {
 
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="firstName">First name</label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="firstName">First name{prefilled.includes("firstName") && (
+                    <span className="ml-2 font-normal text-accent text-xs">from your CV</span>
+                  )}</label>
                   <input id="firstName" required value={profile.firstName}
                     onChange={(e) => setProfile({ ...profile, firstName: e.target.value })} className={field} />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="lastName">Last name</label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="lastName">Last name{prefilled.includes("lastName") && (
+                    <span className="ml-2 font-normal text-accent text-xs">from your CV</span>
+                  )}</label>
                   <input id="lastName" required value={profile.lastName}
                     onChange={(e) => setProfile({ ...profile, lastName: e.target.value })} className={field} />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="email">Email</label>
+                <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="email">Email{prefilled.includes("email") && (
+                    <span className="ml-2 font-normal text-accent text-xs">from your CV</span>
+                  )}</label>
                 <input id="email" type="email" required value={profile.email}
                   onChange={(e) => setProfile({ ...profile, email: e.target.value })} className={field} />
               </div>
@@ -646,14 +685,24 @@ export default function CareerAssessmentPage() {
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="phone">
-                    Phone <span className="font-normal text-gray-400">optional</span>
+                    Phone{" "}
+                    {prefilled.includes("phone") ? (
+                      <span className="font-normal text-accent text-xs">from your CV</span>
+                    ) : (
+                      <span className="font-normal text-gray-400">optional</span>
+                    )}
                   </label>
                   <input id="phone" type="tel" value={profile.phone}
                     onChange={(e) => setProfile({ ...profile, phone: e.target.value })} className={field} />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="location">
-                    City / country <span className="font-normal text-gray-400">optional</span>
+                    City / country{" "}
+                    {prefilled.includes("location") ? (
+                      <span className="font-normal text-accent text-xs">from your CV</span>
+                    ) : (
+                      <span className="font-normal text-gray-400">optional</span>
+                    )}
                   </label>
                   <input id="location" value={profile.location}
                     onChange={(e) => setProfile({ ...profile, location: e.target.value })} className={field} />
@@ -679,7 +728,7 @@ export default function CareerAssessmentPage() {
               )}
 
               <button type="submit" className="btn-primary w-full text-base">
-                See my results
+                {prefilled.length > 0 ? "Confirm and see my results" : "See my results"}
                 <ArrowRight className="w-5 h-5" />
               </button>
               <p className="text-xs text-gray-500 text-center">

@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
 import {
   MAX_RESUME_BYTES,
+  findEmails,
+  findPhones,
+  findLinkedIn,
+  resolveContact,
   validateResumeFile,
   flattenSkills,
   normalizeExtraction,
@@ -161,6 +165,81 @@ describe("verifyExtraction", () => {
 
   it("reports counts that add up to what it was given", () => {
     expect(report.skillsKept + report.skillsDropped).toBe(2);
+  });
+});
+
+describe("contact details", () => {
+  const CONTACT_CV = `Jane Doe
+Riverside, Ohio
+jane.doe@example.com | +1 (555) 234-9981
+linkedin.com/in/janedoe
+Operations Manager, Riverside Health, 2018 to 2026
+Referee: Tom Smith, tom.smith@riverside.example.org, 555-111-2222`;
+
+  it("finds every email in the document", () => {
+    expect(findEmails(CONTACT_CV)).toEqual([
+      "jane.doe@example.com",
+      "tom.smith@riverside.example.org",
+    ]);
+  });
+
+  it("finds phone numbers and ignores year ranges", () => {
+    const phones = findPhones(CONTACT_CV);
+    expect(phones.some((p) => p.replace(/\D/g, "") === "15552349981")).toBe(true);
+    expect(phones.some((p) => p.includes("2018"))).toBe(false);
+  });
+
+  it("ignores numbers too short to be a phone number", () => {
+    expect(findPhones("Managed 12 staff over 3 years, saving 4500 hours")).toEqual([]);
+  });
+
+  it("finds a LinkedIn profile", () => {
+    expect(findLinkedIn(CONTACT_CV)).toBe("linkedin.com/in/janedoe");
+  });
+
+  it("keeps the applicant's own email when the model picks it over a referee's", () => {
+    const c = resolveContact({ email: "jane.doe@example.com", phone: "+1 (555) 234-9981" }, CONTACT_CV);
+    expect(c.email).toBe("jane.doe@example.com");
+    expect(c.phone?.replace(/\D/g, "")).toBe("15552349981");
+  });
+
+  it("refuses an email the CV does not contain, falling back to one it does", () => {
+    const c = resolveContact({ email: "invented@nowhere.com" }, CONTACT_CV);
+    expect(c.email).toBe("jane.doe@example.com");
+  });
+
+  it("refuses a phone number the CV does not contain", () => {
+    const c = resolveContact({ phone: "+1 (999) 000-1111" }, CONTACT_CV);
+    expect(c.phone?.replace(/\D/g, "")).not.toBe("19990001111");
+  });
+
+  it("matches a phone the model reformatted, since the digits are the same", () => {
+    const c = resolveContact({ phone: "15552349981" }, CONTACT_CV);
+    expect(c.phone?.replace(/\D/g, "")).toBe("15552349981");
+  });
+
+  it("keeps a name that appears in the CV", () => {
+    const c = resolveContact({ firstName: "Jane", lastName: "Doe" }, CONTACT_CV);
+    expect(c.firstName).toBe("Jane");
+    expect(c.lastName).toBe("Doe");
+  });
+
+  it("drops a name the CV never mentions", () => {
+    const c = resolveContact({ firstName: "Bartholomew", lastName: "Fictional" }, CONTACT_CV);
+    expect(c.firstName).toBeUndefined();
+    expect(c.lastName).toBeUndefined();
+  });
+
+  it("keeps a location present in the CV and drops one that isn't", () => {
+    expect(resolveContact({ location: "Riverside" }, CONTACT_CV).location).toBe("Riverside");
+    expect(resolveContact({ location: "Reykjavik" }, CONTACT_CV).location).toBeUndefined();
+  });
+
+  it("returns empty fields rather than throwing when the CV has no contact block", () => {
+    const c = resolveContact(undefined, "Just some prose with no details at all.");
+    expect(c.email).toBeUndefined();
+    expect(c.phone).toBeUndefined();
+    expect(c.firstName).toBeUndefined();
   });
 });
 

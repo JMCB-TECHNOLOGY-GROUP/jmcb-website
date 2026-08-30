@@ -108,6 +108,7 @@ export async function POST(request: NextRequest) {
       ? [
           "",
           "CV",
+          resume.contact?.linkedin ? `  LinkedIn: ${resume.contact.linkedin}` : null,
           resume.currentTitle ? `  Current title: ${resume.currentTitle}` : null,
           resume.yearsExperience != null ? `  Years of experience: ${resume.yearsExperience}` : null,
           resume.industries?.length ? `  Industries: ${resume.industries.join(", ")}` : null,
@@ -229,6 +230,7 @@ export async function POST(request: NextRequest) {
          resume
            ? `<h3 style="margin-bottom:4px">Their CV</h3>
               <p style="margin-top:0">
+                ${resume.contact?.linkedin ? `<strong>LinkedIn:</strong> ${esc(resume.contact.linkedin)}<br>` : ""}
                 ${resume.currentTitle ? `<strong>Now:</strong> ${esc(resume.currentTitle)}<br>` : ""}
                 ${resume.yearsExperience != null ? `<strong>Experience:</strong> ${resume.yearsExperience} years<br>` : ""}
                 ${resume.industries?.length ? `<strong>Industries:</strong> ${esc(resume.industries.join(", "))}<br>` : ""}

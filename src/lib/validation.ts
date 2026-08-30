@@ -90,6 +90,18 @@ const skillGroup = z.object({
 });
 
 export const resumeExtractionSchema = z.object({
+  // Lifted off the CV so the applicant confirms rather than retypes.
+  contact: z
+    .object({
+      firstName: z.string().trim().max(120).optional().nullable(),
+      lastName: z.string().trim().max(120).optional().nullable(),
+      email: z.string().trim().max(254).optional().nullable(),
+      phone: z.string().trim().max(60).optional().nullable(),
+      location: z.string().trim().max(200).optional().nullable(),
+      linkedin: z.string().trim().max(300).optional().nullable(),
+    })
+    .optional()
+    .nullable(),
   currentTitle: z.string().trim().max(200).optional().nullable(),
   yearsExperience: z.number().int().min(0).max(70).optional().nullable(),
   industries: z.array(z.string().trim().max(120)).max(10).optional().nullable(),

@@ -41,7 +41,23 @@ export type SkillGroup = {
   skills: Evidenced[];
 };
 
+/**
+ * Contact details lifted off the CV so the applicant confirms rather than
+ * retypes. Email and phone are found by regex against the source text, never
+ * by the model, so they cannot be invented; the model only says which of the
+ * found candidates belongs to the applicant.
+ */
+export type ContactDetails = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  linkedin?: string;
+};
+
 export type ResumeExtraction = {
+  contact?: ContactDetails;
   currentTitle?: string;
   yearsExperience?: number;
   industries?: string[];
@@ -137,6 +153,74 @@ export function figuresAreGrounded(after: string, ...sources: string[]): boolean
   return numbersIn(after).every((n) => allowed.has(n));
 }
 
+// ── contact details ─────────────────────────────────────────
+
+// Deliberately found by pattern, not by the model. A CV's email and phone are
+// literal strings in the document, so there is no reason to let anything
+// paraphrase them.
+
+const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
+const LINKEDIN_RE = /(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+/gi;
+// Loose shape, then filtered on digit count so dates and money don't match.
+const PHONE_RE = /\+?\d[\d\s().-]{7,}\d/g;
+
+export function findEmails(sourceText: string): string[] {
+  return Array.from(new Set((sourceText.match(EMAIL_RE) ?? []).map((e) => e.trim())));
+}
+
+export function findLinkedIn(sourceText: string): string | undefined {
+  return (sourceText.match(LINKEDIN_RE) ?? [])[0]?.trim();
+}
+
+export function findPhones(sourceText: string): string[] {
+  const out: string[] = [];
+  for (const raw of sourceText.match(PHONE_RE) ?? []) {
+    const candidate = raw.trim().replace(/[.\-\s]+$/, "");
+    const digits = candidate.replace(/\D/g, "");
+    // Real numbers are 9 to 15 digits. Shorter is a year range or a quantity;
+    // longer is usually two numbers that ran together.
+    if (digits.length >= 9 && digits.length <= 15) out.push(candidate);
+  }
+  return Array.from(new Set(out));
+}
+
+/**
+ * Settles the contact block. The model may only choose among values that are
+ * literally present in the CV; anything else falls back to the first candidate
+ * the document offers, and a name that isn't in the document is dropped.
+ */
+export function resolveContact(
+  proposed: ContactDetails | undefined,
+  sourceText: string
+): ContactDetails {
+  const emails = findEmails(sourceText);
+  const phones = findPhones(sourceText);
+
+  const chosenEmail =
+    proposed?.email && emails.some((e) => e.toLowerCase() === proposed.email!.toLowerCase())
+      ? emails.find((e) => e.toLowerCase() === proposed.email!.toLowerCase())
+      : emails[0];
+
+  const digitsOf = (s: string) => s.replace(/\D/g, "");
+  const chosenPhone =
+    proposed?.phone && phones.some((p) => digitsOf(p) === digitsOf(proposed.phone!))
+      ? phones.find((p) => digitsOf(p) === digitsOf(proposed.phone!))
+      : phones[0];
+
+  // Names and location are the model's to read, but must appear in the CV.
+  const keepIfPresent = (value: string | undefined) =>
+    value && appearsInSource(value, sourceText) ? value.trim() : undefined;
+
+  return {
+    firstName: keepIfPresent(proposed?.firstName),
+    lastName: keepIfPresent(proposed?.lastName),
+    email: chosenEmail,
+    phone: chosenPhone,
+    location: keepIfPresent(proposed?.location),
+    linkedin: findLinkedIn(sourceText),
+  };
+}
+
 // ── file acceptance ─────────────────────────────────────────
 
 export function validateResumeFile(file: { type: string; size: number; name: string }): string | null {
@@ -184,6 +268,7 @@ THE RULE THAT MATTERS MOST: every skill, achievement and claim you return must c
 
 Extract:
 
+- contact: {"firstName": "", "lastName": "", "email": "", "phone": "", "location": ""} — the applicant's own details as written at the top of the CV. If the document contains more than one email or phone number, choose the one that belongs to the applicant rather than a referee or a previous employer. Copy them exactly. Leave a field empty rather than guessing it.
 - currentTitle: their most recent job title, exactly as written.
 - yearsExperience: a single integer. Work it out from the employment dates. If the dates do not allow a calculation, omit it rather than guessing.
 - industries: sectors they have actually worked in.
@@ -198,7 +283,7 @@ Extract:
 Rules: no em dashes or en dashes. Never state a number that is not in the CV.
 
 Respond ONLY with JSON in this exact shape, no prose around it:
-{"currentTitle":"","yearsExperience":0,"industries":[],"skillGroups":[{"category":"","skills":[{"value":"","evidence":""}]}],"quantifiedAchievements":[{"value":"","evidence":""}],"unquantifiedClaims":[{"value":"","evidence":""}],"atsIssues":[],"missingForTarget":[],"education":[],"summary":""}`;
+{"contact":{"firstName":"","lastName":"","email":"","phone":"","location":""},"currentTitle":"","yearsExperience":0,"industries":[],"skillGroups":[{"category":"","skills":[{"value":"","evidence":""}]}],"quantifiedAchievements":[{"value":"","evidence":""}],"unquantifiedClaims":[{"value":"","evidence":""}],"atsIssues":[],"missingForTarget":[],"education":[],"summary":""}`;
 }
 
 // ── normalisation and verification ──────────────────────────
@@ -241,7 +326,18 @@ export function normalizeExtraction(raw: unknown): ResumeExtraction {
 
   const years = Number(o.yearsExperience);
 
+  const c = (o.contact ?? {}) as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : undefined);
+
   return {
+    // Proposed only — resolveContact decides what survives.
+    contact: {
+      firstName: str(c.firstName),
+      lastName: str(c.lastName),
+      email: str(c.email),
+      phone: str(c.phone),
+      location: str(c.location),
+    },
     currentTitle: typeof o.currentTitle === "string" && o.currentTitle.trim() ? o.currentTitle.trim() : undefined,
     yearsExperience: Number.isFinite(years) && years > 0 && years < 70 ? Math.round(years) : undefined,
     industries: strArray(o.industries, 10),
@@ -304,6 +400,7 @@ export function verifyExtraction(
   return {
     verified: {
       ...extraction,
+      contact: resolveContact(extraction.contact, sourceText),
       skillGroups,
       quantifiedAchievements: quantifiedChecked,
       unquantifiedClaims: unquantified,
