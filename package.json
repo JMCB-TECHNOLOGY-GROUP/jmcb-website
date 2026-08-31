@@ -13,7 +13,7 @@
     "scan:nist": "node compliance/nist-scan/bin/nist-scan.js . --md compliance/SCORECARD.md --json compliance/scorecard.json"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.36.9",
+    "@clerk/nextjs": "^7.3.0",
     "@sentry/nextjs": "^10.49.0",
     "@supabase/supabase-js": "^2.91.0",
     "@vercel/analytics": "^2.0.1",
