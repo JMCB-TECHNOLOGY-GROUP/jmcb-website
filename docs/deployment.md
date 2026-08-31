@@ -112,17 +112,33 @@ Run the schema from `supabase-schema.sql` in the Supabase SQL Editor. This creat
 1. In Supabase dashboard, go to Storage.
 2. Create a bucket named `reports` with public access enabled.
 3. This bucket stores generated HTML assessment reports.
-4. Create a second bucket named `resumes` and keep it **private**.
-5. This bucket stores CVs uploaded through the Career Compass assessment
-   (`/career-assessment`) in whatever format the applicant sent — PDF, Word
-   (`.docx`, `.doc`), OpenDocument, RTF or plain text. It holds personal data,
-   so it must never be public — the application reads from it only through
-   short-lived signed URLs (7 days) embedded in the notification email.
+4. The `resumes` bucket is created by migration, not by hand — see below.
 
-If the `resumes` bucket does not exist, CV upload still works: the file is read
-and the skills are extracted, but the original is not retained and the
-notification email carries no link to it. Nothing errors and the applicant
-still gets their results.
+### 3a. CV storage bucket (`resumes`)
+
+Career Compass (`/career-assessment`) stores the original CV a job seeker
+uploads. Create the bucket by applying the migrations:
+
+```bash
+npx supabase link --project-ref <your-project-ref>
+npx supabase db push
+```
+
+`supabase/migrations/0002_resumes_bucket.sql` creates it **private**, with a
+2.5MB size limit and the CV MIME types allow-listed. The migration is
+idempotent, so re-running it is safe.
+
+There is no `supabase storage` CLI command for creating a bucket — `db push`
+(or pasting that migration into the SQL editor) is the supported route.
+
+**This bucket holds other people's personal data.** Keep `public` false and do
+not add a select policy for `anon` or `authenticated`. The application reaches
+it only through the service role key and hands out nothing but signed URLs
+that expire after 7 days.
+
+Until the migration is applied the application still works: CV upload,
+extraction and results all succeed, the original simply is not retained and
+the notification email carries no link to it. Nothing errors.
 
 ### 4. Row Level Security
 

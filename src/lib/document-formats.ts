@@ -26,6 +26,33 @@ const EXTENSION_KIND: Record<string, DocumentKind> = {
   docm: "docx",
 };
 
+/**
+ * MIME type per extension, used when storing the original upload. Keyed by
+ * extension rather than by DocumentKind because several extensions share a
+ * kind but not a MIME type (.docm and .dotx both parse as docx).
+ *
+ * Must stay in step with the bucket's allowed_mime_types in
+ * supabase/migrations/0002_resumes_bucket.sql — a type missing there is
+ * rejected at upload.
+ */
+const EXTENSION_MIME: Record<string, string> = {
+  pdf: "application/pdf",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  docm: "application/vnd.ms-word.document.macroEnabled.12",
+  dotx: "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+  doc: "application/msword",
+  dot: "application/msword",
+  odt: "application/vnd.oasis.opendocument.text",
+  rtf: "application/rtf",
+  txt: "text/plain",
+  md: "text/markdown",
+};
+
+export function mimeForFileName(name: string): string {
+  const ext = name.toLowerCase().split(".").pop() ?? "";
+  return EXTENSION_MIME[ext] ?? "application/octet-stream";
+}
+
 export function kindForFileName(name: string): DocumentKind | null {
   const ext = name.toLowerCase().split(".").pop() ?? "";
   return EXTENSION_KIND[ext] ?? null;

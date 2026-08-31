@@ -49,6 +49,10 @@ src/
 - Everything the model returns about a CV is checked against the extracted
   text (`verifyExtraction`, `verifyRewrites` in `src/lib/resume.ts`) and
   dropped when it cannot be traced back to the document.
+- Uploaded originals go to the private `resumes` bucket, created by
+  `supabase/migrations/0002_resumes_bucket.sql` via `npx supabase db push`.
+  Its allowed MIME types must match `EXTENSION_MIME` in
+  `src/lib/document-formats.ts`; a test enforces that they stay in step.
 
 ## Key Features
 - **AI Readiness Assessment:** Generates HTML reports via Claude API, stores in Supabase Storage
