@@ -11,6 +11,7 @@ import {
   getBand,
 } from "@/lib/career-assessment";
 import { flattenSkills } from "@/lib/resume";
+import { reconcile, formatDiscrepancyLines } from "@/lib/career-crosscheck";
 import {
   PROGRAM_NAME,
   COHORT,
@@ -99,6 +100,18 @@ export async function POST(request: NextRequest) {
     );
 
     const skills = flattenSkills(resume);
+    // What they said versus what the CV shows. This is the line Jermaine
+    // reads first on a call, so it goes in the notes and the alert.
+    const discrepancies = reconcile(resume, answers);
+    const gapLines = resume
+      ? [
+          "",
+          "ANSWERS VS CV",
+          ...(discrepancies.length
+            ? formatDiscrepancyLines(discrepancies).map((l) => `  ${l}`)
+            : ["  In line on every question we could check."]),
+        ]
+      : [];
 
     // Read back the stored CV for the alert email. Signed rather than public,
     // and short-lived — see the storage note in the resume route.
@@ -142,6 +155,7 @@ export async function POST(request: NextRequest) {
       "COMPASS",
       ...Object.entries(dimensions ?? {}).map(([d, v]) => `  ${d}: ${v}/5`),
       ...resumeLines,
+      ...gapLines,
     ]
       .filter((l) => l !== null)
       .join("\n");
@@ -239,6 +253,21 @@ export async function POST(request: NextRequest) {
                 ${resumeUrl ? `<a href="${resumeUrl}">Open their CV</a> (link expires in 7 days)` : ""}
               </p>`
            : "<p><em>No CV provided.</em></p>"
+       }
+       ${
+         resume
+           ? `<h3 style="margin-bottom:4px">Answers vs CV</h3>
+              ${
+                discrepancies.length
+                  ? `<ul style="margin-top:0">${discrepancies
+                      .map(
+                        (d) =>
+                          `<li><strong>${esc(d.dimension)}:</strong> said "${esc(d.selfLabel)}" (${d.selfScore}/5), CV reads "${esc(d.cvLabel)}" (${d.cvScore}/5). ${esc(d.evidence)}</li>`
+                      )
+                      .join("")}</ul>`
+                  : '<p style="margin-top:0"><em>In line on every question we could check.</em></p>'
+              }`
+           : ""
        }
        <h3 style="margin-bottom:4px">COMPASS</h3>
        <ul style="margin-top:0">
