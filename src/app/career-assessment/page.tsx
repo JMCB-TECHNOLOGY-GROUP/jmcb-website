@@ -36,6 +36,13 @@ import {
   ACCEPTED_EXTENSIONS,
   type ResumeExtraction,
 } from "@/lib/resume";
+import {
+  CROSS_CHECKED_QUESTIONS,
+  cvChecksFor,
+  reconcile,
+  optionLabel,
+  rewriteLinkLine,
+} from "@/lib/career-crosscheck";
 
 type Stage = "intro" | "preferences" | "resume" | "compass" | "capture" | "analyzing" | "results";
 type PrefValue = string | string[];
@@ -218,6 +225,12 @@ export default function CareerAssessmentPage() {
 
   // ── compass handling ──
   const question = COMPASS_QUESTIONS[qIndex];
+  const questionIsCrossChecked = Boolean(question) && CROSS_CHECKED_QUESTIONS.includes(question.id);
+
+  // ── answers against the CV (deterministic, from the verified extraction) ──
+  const cvChecks = cvChecksFor(resumeExtraction);
+  const discrepancies = reconcile(resumeExtraction, answers);
+  const discrepancyFor = (questionId: string) => discrepancies.find((d) => d.questionId === questionId);
 
   function answerQuestion(value: number) {
     setAnswers((prev) => ({ ...prev, [question.id]: value }));
@@ -275,6 +288,7 @@ export default function CareerAssessmentPage() {
             targetTitle,
             resume: resumeExtraction,
             sourceText: resumeSource,
+            answers,
           }),
         }),
       ]);
@@ -552,10 +566,17 @@ export default function CareerAssessmentPage() {
                 <Loader2 className="w-3 h-3 animate-spin" /> Reading {resumeName} in the background…
               </p>
             )}
-            {resumeStatus === "done" && (
+            {resumeStatus === "done" && !questionIsCrossChecked && (
               <p className="text-xs text-gray-500 flex items-center gap-2 mb-4">
                 <CheckCircle2 className="w-3 h-3 text-accent" /> CV read. We&rsquo;ll show you what we
                 found at the end.
+              </p>
+            )}
+            {/* The evidence itself is held back until the results, so the
+                answer stays a self-rating and the comparison means something. */}
+            {resumeStatus === "done" && questionIsCrossChecked && (
+              <p className="text-xs text-gray-500 flex items-center gap-2 mb-4">
+                <FileText className="w-3 h-3 text-accent" /> We&rsquo;ll check this answer against your CV.
               </p>
             )}
             <h2 className="font-display text-3xl font-bold text-gray-900 mb-4">{question.questionText}</h2>
@@ -879,6 +900,71 @@ export default function CareerAssessmentPage() {
               </div>
             </section>
 
+            {/* Answers vs CV */}
+            {resumeExtraction && cvChecks.length > 0 && (
+              <section className="bg-gray-50 border-y border-gray-200">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+                  <h2 className="font-display text-3xl font-bold text-gray-900 mb-3">
+                    What you said, against what your CV shows
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed max-w-2xl mb-10">
+                    {discrepancies.length > 0
+                      ? `Four of the questions can be checked against your CV. On ${["one", "two", "three", "all four"][discrepancies.length - 1] ?? discrepancies.length} of them your answer and your CV disagree, and that gap is the most useful thing on this page.`
+                      : "Four of the questions can be checked against your CV. Your answers and your CV agree on all of them, which is rarer than you would think."}
+                  </p>
+                  <div className="space-y-4">
+                    {cvChecks.map((c) => {
+                      const self = answers[c.questionId];
+                      const gap = discrepancyFor(c.questionId);
+                      const q = COMPASS_QUESTIONS.find((x) => x.id === c.questionId);
+                      return (
+                        <div
+                          key={c.questionId}
+                          className={`rounded-2xl border p-6 bg-white ${gap ? "border-accent" : "border-gray-200"}`}
+                        >
+                          <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">
+                            {c.dimension}
+                          </p>
+                          <p className="font-semibold text-gray-900 mb-4">{q?.questionText}</p>
+                          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">You said</p>
+                              <p className="text-gray-900 font-medium">
+                                {typeof self === "number" ? optionLabel(c.questionId, self) : "Not answered"}
+                                {typeof self === "number" && (
+                                  <span className="text-gray-400 font-normal"> · {self}/5</span>
+                                )}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">Your CV reads as</p>
+                              <p className="text-gray-900 font-medium">
+                                {optionLabel(c.questionId, c.cvScore)}
+                                <span className="text-gray-400 font-normal"> · {c.cvScore}/5</span>
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-600 leading-relaxed mt-4">{c.evidence}</p>
+                          {gap ? (
+                            <div className="bg-cream rounded-lg p-4 mt-4">
+                              <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-2">
+                                {gap.direction === "cv-lower" ? "The CV is behind you" : "You are underselling"}
+                              </p>
+                              <p className="text-sm text-gray-800 leading-relaxed">{gap.advice}</p>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-gray-500 mt-4 inline-flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3 text-accent" /> In line
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            )}
+
             {/* AI-written read + 90 day plan */}
             {report && (
               <section className="bg-primary">
@@ -960,9 +1046,12 @@ export default function CareerAssessmentPage() {
 
                   {report.resume.bulletRewrites && report.resume.bulletRewrites.length > 0 && (
                     <div className="mb-8">
-                      <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-4">
+                      <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">
                         Your lines, rewritten
                       </p>
+                      {rewriteLinkLine(answers) && (
+                        <p className="text-sm text-gray-600 leading-relaxed mb-4">{rewriteLinkLine(answers)}</p>
+                      )}
                       <div className="space-y-5">
                         {report.resume.bulletRewrites.map((b, i) => (
                           <div key={i} className="border border-gray-200 rounded-xl overflow-hidden">

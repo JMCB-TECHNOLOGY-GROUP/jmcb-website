@@ -11,6 +11,7 @@ import {
 } from "@/lib/career-assessment";
 import { PROGRAM_NAME, WEEKS } from "@/lib/program";
 import { flattenSkills, verifyRewrites, type ResumeExtraction } from "@/lib/resume";
+import { reconcile, formatDiscrepancyLines } from "@/lib/career-crosscheck";
 
 // Generates the personalised half of the Career Compass result: a written read
 // of where this person stands, a 90-day plan, and — when they gave us a CV —
@@ -41,6 +42,8 @@ interface ReportRequest {
    *  checked against it so none can introduce a line or a figure the CV
    *  does not contain. */
   sourceText?: string | null;
+  /** Raw COMPASS answers, so the CV can be read against what they said. */
+  answers?: Record<string, number> | null;
 }
 
 function labelFor(fieldId: string, value: string | string[]): string {
@@ -92,6 +95,7 @@ export async function POST(request: NextRequest) {
     const preferences = body.preferences || {};
     const resume = body.resume ?? null;
     const sourceText = typeof body.sourceText === "string" ? body.sourceText : "";
+    const answers = body.answers && typeof body.answers === "object" ? body.answers : null;
     const band = getBand(score);
     const ranked = rankDimensions(dimensionScores);
     const weakest = ranked.slice(0, 2);
@@ -120,6 +124,15 @@ export async function POST(request: NextRequest) {
       .join("\n");
 
     const skills = flattenSkills(resume);
+    // Deterministic: where their self-rating and their CV disagree by two or
+    // more rungs. Computed here rather than trusted from the browser.
+    const discrepancies = reconcile(resume, answers);
+    const gapBlock = discrepancies.length
+      ? `Where what they SAID and what their CV SHOWS disagree (address each of these plainly in the summary, and aim the rewrites at them):
+${formatDiscrepancyLines(discrepancies).map((l) => `- ${l}`).join("\n")}`
+      : resume
+        ? "Their self-ratings match what the CV shows on every question we could check."
+        : "";
     const cvBlock = resume
       ? `They gave us their CV. Here is what it actually evidences:
 - Most recent title: ${resume.currentTitle || "not stated"}
@@ -129,7 +142,9 @@ export async function POST(request: NextRequest) {
 - Achievements already carrying a number: ${resume.quantifiedAchievements?.map((a) => a.value).join(" | ") || "none"}
 - Claims with no figure attached: ${resume.unquantifiedClaims?.map((a) => a.value).join(" | ") || "none"}
 - Problems with the CV: ${resume.atsIssues?.join(" | ") || "none found"}
-- Missing for their target: ${resume.missingForTarget?.join(", ") || "nothing obvious"}`
+- Missing for their target: ${resume.missingForTarget?.join(", ") || "nothing obvious"}
+
+${gapBlock}`
       : "They did not give us a CV, so write the resume section as null.";
 
     const prompt = `You are Jermaine Barker, founder of JMCB Technology Group, writing directly to a job seeker who has just finished the ${ASSESSMENT_NAME} assessment.
@@ -250,6 +265,7 @@ Respond ONLY with JSON in exactly this shape, no prose outside it:
       trainingWhy: typeof parsedReport.trainingWhy === "string" ? parsedReport.trainingWhy : null,
       resume: rewriteResult.resume,
       droppedRewrites: rewriteResult.droppedRewrites,
+      discrepancies,
       generated: true,
     });
   } catch (error) {
