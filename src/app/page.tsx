@@ -5,8 +5,8 @@ import Image from "next/image";
 import { ArrowRight, Shield, Brain, ChevronRight, Clock, Target, Users, CheckCircle2, Building2, Sparkles, ArrowUpRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/ai-strategy-ai-agents-consultation";
+import { CALENDLY_URL } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
 
 export default function HomePage() {
   return (
@@ -44,7 +44,7 @@ export default function HomePage() {
               Take Free AI Assessment
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base" onClick={() => trackEvent("calendly_click", { location: "home_hero" })}>
               Book Strategy Briefing
             </Link>
           </div>
@@ -61,8 +61,8 @@ export default function HomePage() {
             {[
               { stat: "$2B+", label: "Programs Managed" },
               { stat: "15+", label: "Years Enterprise Leadership" },
-              { stat: "90", label: "Days to First AI Workflow" },
-              { stat: "27+", label: "Years Maritime Operations" },
+              { stat: "30", label: "Days to Working AI" },
+              { stat: "Claude", label: "Partner Network Member" },
             ].map((item) => (
               <div key={item.label} className="text-center">
                 <div className="text-2xl md:text-3xl font-display font-bold text-gray-900">{item.stat}</div>
@@ -129,6 +129,9 @@ export default function HomePage() {
             <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Our leadership combines AI strategy, large-scale program delivery,
               and 27+ years of maritime operations experience across the Caribbean.
+              Behind them is a dedicated team of engineers, consultants, and certified
+              professionals building AI products across healthcare, maritime, civic, and
+              education, based in Washington, D.C. and serving the US and the Caribbean.
             </p>
           </div>
 
@@ -142,13 +145,13 @@ export default function HomePage() {
                 <h3 className="text-xl font-display font-bold text-gray-900 mb-1">Jermaine Barker</h3>
                 <p className="text-sm font-semibold text-accent mb-4">Founder & Chief Executive Officer</p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-3">
-                  Jermaine leads JMCB Technology Group with 15+ years of enterprise technology leadership, including oversight of large-scale programs exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused on Healthcare and AI Safety, he brings scientific rigor and governance-first thinking to every engagement.
+                  Jermaine leads JMCB Technology Group with 15+ years in federal health technology, including oversight of large-scale programs exceeding $2B in scope. A Johns Hopkins Ward Infinity Fellow focused on Healthcare and AI Safety, he brings scientific rigor and governance-first thinking to every engagement.
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-5">
-                  He holds an M.S. in Molecular Genetics from Howard University and co-founded Vital Guardian AI, which won both the Johns Hopkins Ward Infinity Pitch Competition and Community Impact Award.
+                  He holds an M.S. in Molecular Genetics from Howard University, multiple Anthropic certifications, and membership in the Claude Partner Network. He co-founded Vital Guardian AI, which won both the Johns Hopkins Ward Infinity Pitch Competition and Community Impact Award.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {["Johns Hopkins Fellow", "Howard M.S.", "$2B+ Programs", "AI Safety"].map((t) => (
+                  {["Johns Hopkins Fellow", "Howard M.S.", "$2B+ Programs", "AI Safety", "Anthropic Certified"].map((t) => (
                     <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
                   ))}
                 </div>
@@ -163,14 +166,11 @@ export default function HomePage() {
               <div className="p-7">
                 <h3 className="text-xl font-display font-bold text-gray-900 mb-1">David Cheddie</h3>
                 <p className="text-sm font-semibold text-accent mb-4">Chief Operating Officer</p>
-                <p className="text-sm text-gray-600 leading-relaxed mb-3">
-                  David brings 27+ years of maritime engineering and fleet operations leadership to JMCB Technology Group. He holds an unlimited Chief Engineer certification (3000KW+) with extensive experience managing DP Class 2 vessel operations across the Caribbean and offshore sectors.
-                </p>
                 <p className="text-sm text-gray-600 leading-relaxed mb-5">
-                  His career spans senior engineering roles with Edison Chouest Offshore, Hornbeck Offshore Services, and Svitzer Marine. David operates across the Caribbean with dual presence in the Washington D.C. metro area.
+                  David leads JMCB Technology Group's Caribbean operations and government delivery, with deep operational expertise in the region's maritime sector. His background spans 27+ years in maritime engineering and fleet operations across the Caribbean.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {["Unlimited Chief Engineer", "DP Class 2", "Edison Chouest", "Caribbean Ops"].map((t) => (
+                  {["Unlimited Chief Engineer", "DP Class 2", "Caribbean Ops"].map((t) => (
                     <span key={t} className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full border border-gray-200">{t}</span>
                   ))}
                 </div>
@@ -198,7 +198,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {[
               {
                 name: "ASCEND Content Manager",
@@ -207,14 +207,25 @@ export default function HomePage() {
                 href: "https://ascend.jmcbtech.com",
                 status: "Live",
                 color: "bg-green-500",
+                cta: "Visit Platform",
               },
               {
                 name: "Tendivo Health",
-                tag: "Healthcare AI",
-                desc: "Patient-facing AI layer for chronic disease management. Built to work on top of existing health records systems, reaching patients where traditional care falls short.",
-                href: "/products",
-                status: "Pilot",
+                tag: "Health Records Platform",
+                desc: "Turns the messy medical records patients actually get into one complete, clinician-verified health picture. Nothing dropped, everything understood.",
+                href: "https://tendivohealth.com",
+                status: "Live",
+                color: "bg-green-500",
+                cta: "Visit Platform",
+              },
+              {
+                name: "MarineOps",
+                tag: "Maritime GovTech",
+                desc: "Maritime operations platform for small-state maritime administrations and port operators, the ones least equipped to meet the IMO Maritime Single Window mandate. Built with and for Guyana and the wider Caribbean first.",
+                href: "/contact",
+                status: "In Development",
                 color: "bg-accent",
+                cta: "Demo on request",
               },
               {
                 name: "LeapIQ",
@@ -223,6 +234,7 @@ export default function HomePage() {
                 href: "/products",
                 status: "Pilot",
                 color: "bg-accent",
+                cta: "Learn More",
               },
             ].map((product) => (
               <div key={product.name} className="group bg-white rounded-xl border border-gray-200 p-7 card-hover flex flex-col">
@@ -236,7 +248,7 @@ export default function HomePage() {
                 <h3 className="font-display text-xl font-bold text-gray-900 mb-3">{product.name}</h3>
                 <p className="text-sm text-gray-600 leading-relaxed mb-5 flex-1">{product.desc}</p>
                 <Link href={product.href} target={product.href.startsWith("http") ? "_blank" : undefined} rel={product.href.startsWith("http") ? "noopener noreferrer" : undefined} className="text-sm font-semibold text-accent hover:text-amber-700 transition-colors inline-flex items-center gap-1.5">
-                  {product.status === "Live" ? "Visit Platform" : "Learn More"}
+                  {product.cta}
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -272,7 +284,7 @@ export default function HomePage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               { letter: "A", word: "Assess", desc: "Identify your highest-impact AI use cases and what's blocking them" },
-              { letter: "S", word: "Strategize", desc: "Define priorities, ROI targets, and a 30/60/90-day roadmap" },
+              { letter: "S", word: "Strategize", desc: "Define priorities, ROI targets, and a 30/90 execution plan" },
               { letter: "C", word: "Construct", desc: "Confirm your tools, data access, and team readiness" },
               { letter: "E", word: "Execute", desc: "Pilot one workflow with clear success metrics" },
               { letter: "N", word: "Navigate", desc: "Implement guardrails for responsible, governed AI" },
@@ -323,8 +335,8 @@ export default function HomePage() {
                 name: "AI Strategy Sprint",
                 price: "",
                 duration: "30-day engagement",
-                desc: "A complete AI playbook with a 90-day execution plan.",
-                features: ["Everything in Readiness Scan", "Detailed 30/60/90-day plan", "Vendor-agnostic tool recommendations", "Workforce enablement roadmap", "Governance framework template"],
+                desc: "A complete AI playbook with a 30/90 execution plan.",
+                features: ["Everything in Readiness Scan", "Detailed 30/90 execution plan", "Vendor-agnostic tool recommendations", "Workforce enablement roadmap", "Governance framework template"],
                 best: "Organizations that need a structured execution plan",
                 popular: true,
               },
@@ -357,8 +369,8 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <p className="text-xs text-gray-400 mb-4">Best for: {tier.best}</p>
-                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"}>
-                  Discuss This Option
+                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"} onClick={() => trackEvent("calendly_click", { location: "home_services", tier: tier.name })}>
+                  Book a Demo
                 </Link>
               </div>
             ))}
@@ -369,7 +381,7 @@ export default function HomePage() {
               <h4 className="font-display font-bold text-gray-900">AI Advisory Retainer</h4>
               <p className="text-sm text-gray-500">Ongoing strategy sessions, governance oversight, and scaling support. Custom-scoped to your needs.</p>
             </div>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm whitespace-nowrap">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm whitespace-nowrap" onClick={() => trackEvent("calendly_click", { location: "home_retainer" })}>
               Learn More
             </Link>
           </div>
@@ -400,8 +412,8 @@ export default function HomePage() {
               {
                 icon: Building2,
                 industry: "Mid-Market Companies",
-                focus: "From idea to production in 90 days",
-                desc: "Our ASCEND assessment pinpoints the highest-impact workflows, then we build a 90-day plan to get your first AI workflow live.",
+                focus: "Working AI in 30 days, governed production in 90",
+                desc: "Our ASCEND assessment pinpoints the highest-impact workflows, then we get your first AI workflow live in 30 days and take it to governed production in 90.",
                 img: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80&auto=format",
               },
               {
@@ -425,26 +437,32 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Testimonials */}
+          {/* Named results */}
           <div className="grid md:grid-cols-2 gap-6">
             {[
               {
-                quote: "Jermaine brought a level of structure and rigor we hadn't experienced before. He understood our compliance requirements from day one and focused entirely on what would actually move the needle for us.",
-                role: "Managing Partner",
-                org: "Healthcare Practice Group",
+                client: "Storc",
+                result: "Built and shipped the technology platform behind this patented maternal health SaaS, connecting expecting mothers, providers, and first responders through cloud-based patient tracking.",
+                type: "Product Build + Fractional CTO",
+                url: "mystorc.com",
               },
               {
-                quote: "We went from talking about AI to having a real plan in weeks. The governance framework alone changed how our leadership thinks about responsible technology adoption.",
-                role: "COO",
-                org: "Professional Services Firm",
+                client: "Runwei",
+                result: "Delivered an AI-powered capital access platform helping underrepresented entrepreneurs find and win non-dilutive funding through a chat-based, multilingual interface.",
+                type: "Product Build + AI Strategy",
+                url: "runwei.io",
               },
-            ].map((t, i) => (
-              <div key={i} className="bg-white border border-gray-200 rounded-xl p-7">
+            ].map((t) => (
+              <div key={t.client} className="bg-white border border-gray-200 rounded-xl p-7">
                 <div className="w-8 h-1 bg-accent rounded mb-5" />
-                <p className="text-gray-700 italic leading-relaxed mb-5">"{t.quote}"</p>
-                <div>
-                  <div className="text-sm font-semibold text-gray-900">{t.role}</div>
-                  <div className="text-xs text-gray-500">{t.org}</div>
+                <div className="text-lg font-display font-bold text-gray-900 mb-2">{t.client}</div>
+                <p className="text-gray-700 leading-relaxed mb-5">{t.result}</p>
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-semibold text-accent">{t.type}</div>
+                  <a href={`https://${t.url}`} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-gray-400 hover:text-accent transition-colors inline-flex items-center gap-1">
+                    {t.url}
+                    <ArrowUpRight className="w-3 h-3" />
+                  </a>
                 </div>
               </div>
             ))}
@@ -565,7 +583,7 @@ export default function HomePage() {
             {[
               { value: "$2B+", label: "Programs Managed" },
               { value: "15+", label: "Years Tech Leadership" },
-              { value: "90", label: "Days to First AI Workflow" },
+              { value: "30", label: "Days to Working AI" },
               { value: "10", label: "ASCEND\u2122 Dimensions" },
             ].map((s) => (
               <div key={s.label} className="text-center">
@@ -592,7 +610,7 @@ export default function HomePage() {
               Start Free Assessment
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-base">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline text-base" onClick={() => trackEvent("calendly_click", { location: "home_final_cta" })}>
               Book Strategy Briefing
             </Link>
           </div>

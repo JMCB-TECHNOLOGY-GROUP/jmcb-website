@@ -5,7 +5,8 @@ import { ArrowRight, TrendingDown, DollarSign, BarChart3, CheckCircle2, Clock, S
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const CALENDLY_URL = "https://calendly.com/jermaine-jmcbtech/enterprise-ai-strategy";
+import { CALENDLY_ENTERPRISE_URL as CALENDLY_URL } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
 
 export default function EnterprisePage() {
   return (
@@ -33,7 +34,7 @@ export default function EnterprisePage() {
               Take Free AI Assessment
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base" onClick={() => trackEvent("calendly_click", { location: "enterprise_hero" })}>
               Book Strategy Call
             </Link>
           </div>
@@ -103,7 +104,7 @@ export default function EnterprisePage() {
               { num: "02", title: "Workflow Analysis", desc: "Where your team loses hours to manual processes and handoffs" },
               { num: "03", title: "AI Opportunity Map", desc: "Specific use cases ranked by ROI impact and implementation ease" },
               { num: "04", title: "Cost Reduction Plan", desc: "Concrete savings from eliminating overlap, waste, and shelfware" },
-              { num: "05", title: "90-Day Roadmap", desc: "Prioritized action plan with quick wins in the first 30 days" },
+              { num: "05", title: "30/90 Roadmap", desc: "Prioritized action plan: working AI in 30 days, governed production in 90" },
             ].map((step) => (
               <div key={step.num} className="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 hover:border-accent/40 transition-all duration-300">
                 <span className="text-accent font-display font-bold text-sm">{step.num}</span>
@@ -264,7 +265,7 @@ export default function EnterprisePage() {
                 price: "",
                 duration: "4-6 weeks",
                 desc: "A complete AI strategy with the business case and cost reduction plan to get executive buy-in.",
-                features: ["Full ASCEND Assessment (10 dimensions)", "Technology spend reduction roadmap", "Use case prioritization with ROI projections", "Implementation roadmap (30/60/90 day)", "Governance framework", "Executive presentation with financial model"],
+                features: ["Full ASCEND Assessment (10 dimensions)", "Technology spend reduction roadmap", "Use case prioritization with ROI projections", "Implementation roadmap (30/90)", "Governance framework", "Executive presentation with financial model"],
                 best: "Companies ready to build their AI roadmap",
                 popular: true,
               },
@@ -294,8 +295,8 @@ export default function EnterprisePage() {
                   ))}
                 </ul>
                 <p className="text-xs text-gray-400 mb-4">Best for: {tier.best}</p>
-                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"}>
-                  {tier.popular ? "Start Strategy Sprint" : "Discuss This Option"}
+                <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className={tier.popular ? "btn-primary text-sm justify-center" : "btn-outline text-sm justify-center"} onClick={() => trackEvent("calendly_click", { location: "enterprise_tiers", tier: tier.name })}>
+                  {tier.popular ? "Start Strategy Sprint" : "Book a Demo"}
                 </Link>
               </div>
             ))}
@@ -313,7 +314,7 @@ export default function EnterprisePage() {
             Schedule a free strategy call. We'll discuss your tech stack, your goals, and where the savings are hiding. No obligation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-base">
+            <Link href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-base" onClick={() => trackEvent("calendly_click", { location: "enterprise_final_cta" })}>
               Schedule Strategy Call
               <ArrowRight className="w-5 h-5" />
             </Link>

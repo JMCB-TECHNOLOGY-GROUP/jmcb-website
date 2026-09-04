@@ -31,11 +31,15 @@ export default function Footer() {
             <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Company</h4>
             <ul className="space-y-2.5">
               {[
+                { label: "Proof of Work Program", href: "/program" },
                 { label: "Leadership", href: "/leadership" },
                 { label: "Healthcare AI", href: "/healthcare" },
                 { label: "Enterprise AI", href: "/enterprise" },
                 { label: "Associations", href: "/associations" },
                 { label: "AI Assessment", href: "/assessment" },
+                { label: "Career Compass (job seekers)", href: "/career-assessment" },
+                { label: "Insights", href: "/insights" },
+                { label: "Contact", href: "/contact" },
               ].map((l) => (
                 <li key={l.label}>
                   <Link href={l.href} className="text-sm text-gray-400 hover:text-white transition-colors">{l.label}</Link>
@@ -64,9 +68,10 @@ export default function Footer() {
           <p className="text-xs text-gray-600">
             &copy; {new Date().getFullYear()} JMCB Technology Group. All rights reserved.
           </p>
-          <p className="text-xs text-gray-600">
-            Washington, D.C. &middot; Caribbean
-          </p>
+          <div className="text-xs text-gray-600 text-center sm:text-right space-y-1">
+            <p>Member of the Claude Partner Network &middot; Anthropic-certified team</p>
+            <p>Washington, D.C. &middot; Caribbean</p>
+          </div>
         </div>
       </div>
     </footer>

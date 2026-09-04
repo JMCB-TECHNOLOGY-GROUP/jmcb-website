@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Layers, Heart, GraduationCap, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Layers, Heart, GraduationCap, Ship, CheckCircle2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -15,6 +15,8 @@ const products = [
     status: "Live",
     statusColor: "bg-green-500",
     url: "https://ascend.jmcbtech.com",
+    ctaLabel: "",
+    ctaHref: "",
     img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80&auto=format",
     description: "ASCEND Content Manager is a SaaS platform that gives businesses consistent, on-brand content output without the overhead of a full marketing team. It combines AI-powered content generation with multi-platform social media management, scheduling, and analytics.",
     features: [
@@ -30,21 +32,43 @@ const products = [
   {
     icon: Heart,
     name: "Tendivo Health",
-    tagline: "Patient-facing AI for chronic disease management.",
-    status: "Pilot",
+    tagline: "Your Medical Records, In Your Hands.",
+    status: "Live",
+    statusColor: "bg-green-500",
+    url: "https://tendivohealth.com",
+    ctaLabel: "",
+    ctaHref: "",
+    img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80&auto=format",
+    description: "Tendivo Health is a health record platform for patients and clinics. It takes the messy record exports patients actually receive, FHIR files, C-CDA documents, PDFs of lab results, and turns them into one complete health picture. Anything it can't parse is kept, never dropped, and AI proposes real clinical codes for the leftovers, with a clinician confirming every suggestion before it touches the record. For small clinics, Tendivo adds remote patient monitoring for hypertension and diabetes, starting with community practices in New York City.",
+    features: [
+      "Imports the record exports patients actually receive: FHIR, C-CDA, and PDFs of labs",
+      "Nothing dropped: anything unparsed is kept and surfaced, never silently discarded",
+      "AI proposes real clinical codes for the leftovers, a clinician confirms every suggestion",
+      "Remote patient monitoring for hypertension and diabetes",
+      "Built for patients and small community practices",
+    ],
+    stack: "",
+    audience: "Patients, small clinics, community practices",
+  },
+  {
+    icon: Ship,
+    name: "MarineOps",
+    tagline: "Maritime operations for small-state administrations and port operators.",
+    status: "In Development",
     statusColor: "bg-accent",
     url: "",
-    img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80&auto=format",
-    description: "Tendivo Health is a patient-facing AI layer built to work on top of existing health records systems like RioMed and Cellma NEHRS. Rather than replacing clinical infrastructure, Tendivo adds an intelligent engagement layer that reaches patients where traditional healthcare systems fail them. Born from the Vital Guardian AI platform (Johns Hopkins Ward Infinity winner), Tendivo focuses on chronic disease populations in underserved markets.",
+    ctaLabel: "Demo on request",
+    ctaHref: "/contact",
+    img: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=800&q=80&auto=format",
+    description: "MarineOps is a maritime operations platform for small-state maritime administrations and port operators. The IMO Maritime Single Window mandate has applied to every member state since 2024, and small administrations are the least equipped to meet it. MarineOps brings the daily work of sailing safety into one place: digital passenger manifests, vessel and crew compliance across certificates, licensing, and inspections, incident and search-and-rescue response readiness, and the operational reporting administrations depend on. It is built with and for Guyana and the wider Caribbean first, and designed for small maritime states worldwide, from the Caribbean to the Pacific and West Africa. The platform is in active development, and demos are given personally on request.",
     features: [
-      "FHIR R4 mapping for interoperability with existing EHR systems",
-      "Offline-capable sync engine for low-connectivity environments",
-      "Community Health Worker (CHW) portal for field-based care",
-      "AI-driven patient engagement and medication adherence workflows",
-      "Population health analytics for care gap identification",
+      "Digital passenger manifests and sailing safety",
+      "Vessel and crew compliance: certificates, licensing, and inspections",
+      "Incident and search-and-rescue response readiness",
+      "Operational reporting for administrations and port operators",
     ],
-    stack: "Next.js, PostgreSQL, FHIR R4, Offline Sync Engine",
-    audience: "Health systems, FQHCs, international health ministries, IDB health projects",
+    stack: "",
+    audience: "Small-state maritime administrations and port operators, Guyana and the wider Caribbean first",
   },
   {
     icon: GraduationCap,
@@ -53,6 +77,8 @@ const products = [
     status: "Pilot",
     statusColor: "bg-accent",
     url: "",
+    ctaLabel: "",
+    ctaHref: "",
     img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80&auto=format",
     description: "LeapIQ is an adaptive AI educational delivery platform that personalizes learning paths in real time. It identifies individual knowledge gaps and dynamically adjusts content, pacing, and assessment difficulty to accelerate student outcomes. Built on the same scientific rigor that drives all JMCB products.",
     features: [
@@ -125,9 +151,11 @@ export default function ProductsPage() {
                   ))}
                 </ul>
 
-                <div className="flex items-center gap-6 text-xs text-gray-400 mb-5">
-                  <span><span className="font-semibold text-gray-500">Stack:</span> {product.stack}</span>
-                </div>
+                {product.stack && (
+                  <div className="flex items-center gap-6 text-xs text-gray-400 mb-5">
+                    <span><span className="font-semibold text-gray-500">Stack:</span> {product.stack}</span>
+                  </div>
+                )}
                 <p className="text-xs text-gray-400 mb-5">
                   <span className="font-semibold text-gray-500">Built for:</span> {product.audience}
                 </p>
@@ -137,6 +165,12 @@ export default function ProductsPage() {
                     Visit Platform
                     <ArrowUpRight className="w-4 h-4" />
                   </a>
+                )}
+                {!product.url && product.ctaHref && (
+                  <Link href={product.ctaHref} className="btn-primary text-sm">
+                    {product.ctaLabel}
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
                 )}
               </div>
             </div>

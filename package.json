@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "scan:nist": "node compliance/nist-scan/bin/nist-scan.js . --md compliance/SCORECARD.md --json compliance/scorecard.json"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.9",
@@ -18,12 +19,20 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^1.3.1",
     "framer-motion": "^11.18.0",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.562.0",
+    "mammoth": "^1.12.2",
+    "marked": "^18.0.6",
     "next": "^14.2.35",
+    "pdf-parse": "^2.4.5",
     "react": "^18",
     "react-dom": "^18",
     "resend": "^6.12.3",
     "svix": "^1.84.1"
+    "resend": "^6.8.0",
+    "svix": "^1.84.1",
+    "word-extractor": "^1.0.4",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { trackEvent } from "@/lib/analytics";
 import {
   getQuestionsForSize,
   calculateOverallScore,
@@ -62,7 +63,7 @@ const ROLES: { value: Role; label: string }[] = [
 
 const ASCEND_ITEMS = [
   { letter: "A", word: "Assess", desc: "Identify your best AI use cases + what's blocking them" },
-  { letter: "S", word: "Strategize", desc: "Pick priorities and define ROI with a 30/60/90-day roadmap" },
+  { letter: "S", word: "Strategize", desc: "Pick priorities and define ROI with a 30/90 execution plan" },
   { letter: "C", word: "Construct", desc: "Confirm your tools, skills, and data access" },
   { letter: "E", word: "Execute", desc: "Pilot one workflow with clear success metrics" },
   { letter: "N", word: "Navigate", desc: "Put guardrails in place for responsible AI" },
@@ -138,6 +139,8 @@ function HBar({ label, score, benchmark, color }: { label: string; score: number
 
 export default function AssessmentPage() {
   const [stage, setStage] = useState<Stage>("intro");
+  // Bot screening timestamp — a real assessment takes minutes, scripts post instantly
+  const [formStartedAt] = useState(() => Date.now());
   const [profile, setProfile] = useState<UserProfile>({ companySize: null, role: null, organization: "", firstName: "", lastName: "", email: "" });
   const [questions, setQuestions] = useState<AssessmentQuestion[]>([]);
   const [qIndex, setQIndex] = useState(0);
@@ -205,10 +208,11 @@ export default function AssessmentPage() {
   };
 
   const submitAssessment = async (fa: Record<string, number>) => {
+    trackEvent("assessment_completed", { companySize: profile.companySize || null });
     setStage("analyzing"); setAnalyzingStep(0);
     const safety = setTimeout(() => { setResults(p => p || buildLocal(fa)); setStage("results"); }, 5000);
     try {
-      const res = await fetch("/api/assessment/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ firstName: profile.firstName, lastName: profile.lastName, email: profile.email, organization: profile.organization, companySize: profile.companySize, role: profile.role, answers: fa, ...utmParams }) });
+      const res = await fetch("/api/assessment/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ firstName: profile.firstName, lastName: profile.lastName, email: profile.email, organization: profile.organization, companySize: profile.companySize, role: profile.role, answers: fa, formStartedAt, ...utmParams }) });
       if (!res.ok) throw new Error(`${res.status}`);
       const d = await res.json();
       if (d.success) { clearTimeout(safety); setResults({ overallScore: d.overallScore, dimensionScores: d.dimensionScores, weakestDimension: d.weakestDimension, strongestDimension: d.strongestDimension, leadScore: d.leadScore, reportBranding: d.reportBranding, priorityActions: d.priorityActions, serviceRecommendations: d.serviceRecommendations, benchmarks: d.benchmarks }); setTimeout(() => setStage("results"), 4000); }
@@ -275,6 +279,17 @@ export default function AssessmentPage() {
                   Start Your Assessment <span>→</span>
                 </button>
               </div>
+
+              {/* This assessment scores an ORGANISATION. Individuals kept
+                  landing here and finding nothing relevant to them — send them
+                  to the Career Compass instead of losing them. */}
+              <p className="text-center text-sm text-gray-500 mt-8 pt-8 border-t border-gray-100">
+                Looking for a job rather than assessing a company?{" "}
+                <a href="/career-assessment" className="text-accent font-semibold hover:underline">
+                  Take the Career Compass instead
+                </a>{" "}
+                — it scores your job search, not your business.
+              </p>
             </motion.div>
           )}
 
@@ -474,7 +489,7 @@ export default function AssessmentPage() {
                 </h3>
                 <p className="text-sm text-gray-400 mb-5 leading-relaxed">
                   {Object.values(results.dimensionScores).filter(s => s < 3).length >= 3
-                    ? `Your biggest gap is ${results.weakestDimension}. Your strongest area is ${results.strongestDimension}. Let's map out what to tackle first and build a 90-day plan together.`
+                    ? `Your biggest gap is ${results.weakestDimension}. Your strongest area is ${results.strongestDimension}. Let's map out what to tackle first and build a 30/90 plan together.`
                     : Object.values(results.dimensionScores).filter(s => s < 3).length >= 1
                     ? `You're solid in most areas, with ${results.weakestDimension} as your biggest opportunity. A quick strategy session will help us turn that into a win.`
                     : `You're ahead of most organizations. The question now is how to move fast and get the most out of your AI investments.`

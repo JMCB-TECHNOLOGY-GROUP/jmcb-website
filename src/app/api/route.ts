@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID, timingSafeEqual } from "node:crypto";
 import { createServerClient } from "@/lib/supabase";
+
+function checkWebhookAuth(request: NextRequest): boolean {
+  const expected = process.env.REPORT_WEBHOOK_SECRET;
+  if (!expected) return false;
+  const provided = request.headers.get("x-webhook-secret");
+  if (!provided || provided.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(provided), Buffer.from(expected));
+}
 
 // Result profiles for the report
 const resultProfiles = {
@@ -25,6 +34,9 @@ const resultProfiles = {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!checkWebhookAuth(request)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const body = await request.json();
     const {
       firstName,
@@ -146,9 +158,10 @@ export async function POST(request: NextRequest) {
 </body>
 </html>`;
 
-    // Store the HTML report and generate a unique ID
-    const reportId = `report-${Date.now()}-${Math.random().toString(36).substring(7)}`;
-    
+    // Cryptographically random ID — old Date.now() + Math.random() pattern
+    // was partially guessable (timestamp known, Math.random not CSPRNG).
+    const reportId = `report-${randomUUID()}`;
+
     const supabase = createServerClient();
 
     // Store HTML report in Supabase Storage
@@ -164,13 +177,20 @@ export async function POST(request: NextRequest) {
       // Continue without storage - return HTML directly
     }
 
-    // Get public URL if upload succeeded
+    // Signed URL with 7-day TTL — replaces getPublicUrl which exposed
+    // PII reports indefinitely to anyone who guessed/leaked the URL.
+    // ASSUMES: 'reports' bucket is set to PRIVATE in Supabase Studio.
+    // If bucket is still public, signed URLs are belt-and-suspenders.
     let reportUrl = null;
     if (uploadData) {
-      const { data: urlData } = supabase.storage
+      const { data: urlData, error: urlError } = await supabase.storage
         .from('reports')
-        .getPublicUrl(`${reportId}.html`);
-      reportUrl = urlData.publicUrl;
+        .createSignedUrl(`${reportId}.html`, 60 * 60 * 24 * 7);
+      if (urlError) {
+        console.error('Signed URL error:', urlError);
+      } else {
+        reportUrl = urlData.signedUrl;
+      }
     }
 
     return NextResponse.json({
