@@ -426,18 +426,18 @@ FULL TRANSCRIPT WITH SCORES:
 ${turns
   .map(
     (t, i) =>
-      `Q${i + 1}: ${t.question}\nA${i + 1}: ${t.answer}\nScores: structure ${t.score.structure}, evidence ${t.score.evidence}, relevance ${t.score.relevance}, concision ${t.score.concision}`
+      `Q${i + 1} (questionId "${t.questionId}"): ${t.question}\nA${i + 1}: ${t.answer}\nScores: structure ${t.score.structure}, evidence ${t.score.evidence}, relevance ${t.score.relevance}, concision ${t.score.concision}`
   )
   .join("\n\n")}
 
 Computed: overall ${debrief.overall}/100 (${debrief.band.label}). Strongest: ${debrief.strongest}. Weakest: ${weakestLabel}.
 
-Write four things.
+Write four things. All four are required.
 1. summary: three short paragraphs, spoken as the interviewer, on how this went and whether you would advance them. Honest. Name the one habit that cost them most (it is ${weakestLabel}) and the one thing they did well.
 2. fixes: exactly three specific things to do before the real interview, each one sentence, each tied to something they actually said.
-3. rewrittenAnswers: the two weakest answers rewritten in first person the way a strong candidate would say them, as [{"questionId":"...","answer":"..."}]. Use ONLY facts from their answers and the CV facts. Write [X] where a figure is needed that they did not give. Never invent a number, a company, or an outcome.
+3. rewrittenAnswers: REQUIRED, exactly ${Math.min(2, turns.length)} ${turns.length === 1 ? "entry" : "entries"}: the ${turns.length === 1 ? "answer" : "two lowest-scoring answers"} rewritten in first person the way a strong candidate would say ${turns.length === 1 ? "it" : "them"}, each under 120 words. "questionId" must be one of: ${turns.map((t) => `"${t.questionId}"`).join(", ")}. Use ONLY facts from their answers and the CV facts. Write [X] where a figure is needed that they did not give. Never invent a number, a company, or an outcome.
 4. coachNotes: one paragraph written for a careers coach or HR partner who was not in the room: what this candidate needs, what they should practise, and what an employer would see. Plain and useful.
 
 Rules: no em dashes or en dashes. No jargon, no "journey", no "leverage". Respond ONLY with JSON in exactly this shape:
-{"summary":"...","fixes":["...","...","..."],"rewrittenAnswers":[{"questionId":"...","answer":"..."}],"coachNotes":"..."}`;
+{"summary":"...","fixes":["...","...","..."],"rewrittenAnswers":[{"questionId":"${turns[0]?.questionId ?? "opener"}","answer":"..."}],"coachNotes":"..."}`;
 }
