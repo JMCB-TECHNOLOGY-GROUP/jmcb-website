@@ -361,7 +361,10 @@ export function buildSkillPlan(input: SkillPlanInput): PlanEntry[] {
     if (!text) continue;
     const rule = GAP_RULES.find((r) => r.match.test(text));
     const base = rule ? rule.entry : fallbackGap(text);
-    push({ ...base, why: `The role expects ${text.replace(/\.$/, "")}, and your CV does not show it. Better to close part of it than to be surprised by the question.` });
+    // The extraction writes gaps as sentence fragments ("Any hands on AI…"),
+    // so the first letter drops to lower case inside the sentence.
+    const fragment = text.replace(/\.$/, "").replace(/^[A-Z](?![A-Z])/, (c) => c.toLowerCase());
+    push({ ...base, why: `The role expects ${fragment}, and your CV does not show it. Better to close part of it than to be surprised by the question.` });
   }
 
   return out.slice(0, input.max ?? 3);

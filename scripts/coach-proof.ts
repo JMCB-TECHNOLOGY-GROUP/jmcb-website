@@ -16,6 +16,7 @@ const session: CoachSession = {
   persona: buildPersona("AI Solutions Architect", extraction.industries ?? []),
   cvFacts: buildCvFacts(extraction),
   cvText: String(probe.sourceText ?? "").slice(0, 60_000),
+  missingForTarget: (extraction.missingForTarget ?? []).slice(0, 10),
   questions: buildQuestionPlan({ targetTitle: "AI Solutions Architect", extraction, answers: { a1: 4, o1: 4 } }),
 };
 
@@ -55,7 +56,8 @@ async function main() {
   const { status, data } = await post("/api/interview-coach/debrief", {
     session,
     turns,
-    contact: { firstName: "Jermaine", lastName: "Barker", email },
+    // Pass "-" as the email to skip recording (no lead row, no alert email).
+    contact: email && email !== "-" ? { firstName: "Jermaine", lastName: "Barker", email } : undefined,
     coachRef: "production proof",
     formStartedAt: Date.now() - 5 * 60_000,
   });
@@ -67,6 +69,16 @@ async function main() {
   console.log("  fixes:", data.fixes);
   console.log("  rewrittenAnswers:", data.rewrittenAnswers?.length ?? 0);
   console.log("  coachNotes:", String(data.coachNotes).slice(0, 400).replace(/\s+/g, " "), "…");
+  console.log("\nPLAN");
+  for (const p of data.plan ?? []) {
+    console.log(`  [${p.key}] ${p.area}: ${p.why}`);
+    if (p.before) console.log(`    before: ${String(p.before).slice(0, 160)}…`);
+    if (p.after) console.log(`    after:  ${String(p.after).slice(0, 160)}…`);
+    console.log(`    skills: ${p.skills.join(" | ")}`);
+    console.log(`    courses: ${p.courses.map((c: { name: string; cost: string }) => `${c.name} (${c.cost})`).join(" | ")}`);
+    console.log(`    drill: ${p.drill.slice(0, 140)}…`);
+    console.log(`    done when: ${p.measure}`);
+  }
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });
