@@ -29,6 +29,7 @@ import {
   type Debrief,
 } from "@/lib/interview-coach";
 import { validateResumeFile, ACCEPTED_EXTENSIONS, type ResumeExtraction } from "@/lib/resume";
+import type { PlanEntry } from "@/lib/skill-plan";
 
 // The Interview Coach. Everything deterministic (persona, question plan,
 // averages) is built in the browser from lib/interview-coach.ts; the two
@@ -69,6 +70,7 @@ type DebriefResult = Debrief & {
   fixes: string[];
   rewrittenAnswers: { questionId: string; question: string; answer: string }[];
   coachNotes: string;
+  plan?: PlanEntry[];
   generated: boolean;
   recorded?: boolean;
 };
@@ -173,6 +175,7 @@ export default function InterviewCoachPage() {
       persona: buildPersona(targetTitle.trim(), extraction?.industries ?? []),
       cvFacts: buildCvFacts(extraction),
       cvText: sourceText || undefined,
+      missingForTarget: (extraction?.missingForTarget ?? []).filter(Boolean).slice(0, 10),
       questions,
     };
     setSession(s);
@@ -599,6 +602,69 @@ export default function InterviewCoachPage() {
                     )}
                   </div>
                 </section>
+
+                {debrief.plan && debrief.plan.length > 0 && (
+                  <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+                    <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-3">Turn the weak area into a skill</p>
+                    <h2 className="font-display text-3xl font-bold text-gray-900 mb-3">Your plan</h2>
+                    <p className="text-gray-600 leading-relaxed max-w-2xl mb-10">
+                      Each weak area, your own example of it, the strong version, the skill behind the difference, a course that teaches it, a drill that builds it, and how you will know it is fixed.
+                    </p>
+                    <div className="space-y-8">
+                      {debrief.plan.map((p) => (
+                        <div key={p.key} className="border border-gray-200 rounded-2xl overflow-hidden">
+                          <div className="p-6">
+                            <h3 className="font-display text-2xl font-bold text-gray-900 mb-2">{p.area}</h3>
+                            <p className="text-gray-700 leading-relaxed">{p.why}</p>
+                          </div>
+                          {p.before && p.after && (
+                            <div className="grid md:grid-cols-2 border-t border-gray-200">
+                              <div className="p-6 bg-gray-50 border-b md:border-b-0 md:border-r border-gray-200">
+                                <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">What you said</p>
+                                <p className="text-sm text-gray-600 leading-relaxed">{p.before}</p>
+                              </div>
+                              <div className="p-6 bg-cream">
+                                <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-2">The strong version</p>
+                                <p className="text-sm text-gray-900 leading-relaxed">{p.after}</p>
+                              </div>
+                            </div>
+                          )}
+                          <div className="grid md:grid-cols-2 gap-6 p-6 border-t border-gray-200">
+                            <div>
+                              <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">The skill</p>
+                              <ul className="space-y-1.5 text-sm text-gray-800">
+                                {p.skills.map((s) => (
+                                  <li key={s} className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" /><span>{s}</span></li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div>
+                              <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">Learn it</p>
+                              <ul className="space-y-2 text-sm">
+                                {p.courses.map((c) => (
+                                  <li key={c.name}>
+                                    <a href={c.url} target={c.url.startsWith("/") ? undefined : "_blank"} rel="noreferrer" className="text-gray-900 font-medium underline decoration-accent underline-offset-2">{c.name}</a>
+                                    <span className="text-gray-500"> · {c.provider} · {c.cost} · {c.hours}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                          <div className="grid md:grid-cols-2 gap-6 p-6 border-t border-gray-200 bg-gray-50">
+                            <div>
+                              <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">Practise it</p>
+                              <p className="text-sm text-gray-800 leading-relaxed">{p.drill}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">Done when</p>
+                              <p className="text-sm text-gray-800 leading-relaxed">{p.measure}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
 
                 <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
                   <details className="border border-gray-200 rounded-2xl p-6">

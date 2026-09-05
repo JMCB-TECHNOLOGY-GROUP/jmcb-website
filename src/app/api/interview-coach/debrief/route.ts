@@ -8,6 +8,7 @@ import { logError, logWarn } from "@/lib/logger";
 import { formatIssues } from "@/lib/validation";
 import { extractJsonObject } from "@/lib/model-json";
 import { coachSessionSchema, coachTurnSchema } from "@/lib/interview-coach-schemas";
+import { buildSkillPlan, formatSkillPlan } from "@/lib/skill-plan";
 import {
   COACH_NAME,
   RUBRIC,
@@ -198,12 +199,31 @@ export async function POST(request: NextRequest) {
     }
     if (rewritesDropped) logWarn("coach-debrief", `dropped ${rewritesDropped} ungrounded rewrites`);
 
+    // The plan: weakest two rubric lines, then what the role expects that the
+    // CV lacks. The "before" is the candidate's lowest-scoring answer on that
+    // line, the "after" its grounded rewrite when one survived.
+    const rubricOrder = [...RUBRIC.map((r) => r.key)].sort((a, b) => debrief.averages[a] - debrief.averages[b]);
+    const examples: Record<string, { before: string; after: string }> = {};
+    for (const key of rubricOrder.slice(0, 2)) {
+      const worst = [...turns].sort((a, b) => a.score[key] - b.score[key])[0];
+      const rewrite = worst && rewrittenAnswers.find((r) => r.questionId === worst.questionId);
+      if (worst && rewrite) examples[key] = { before: worst.answer, after: rewrite.answer };
+      else if (worst?.score.betterAnswer) examples[key] = { before: worst.answer, after: worst.score.betterAnswer };
+    }
+    const plan = buildSkillPlan({
+      weakRubric: rubricOrder.slice(0, 2),
+      missingForTarget: session.missingForTarget ?? [],
+      examples,
+      max: 4,
+    });
+
     const result = {
       ...debrief,
       summary: wasGenerated ? generated.summary! : fallback.summary,
       fixes: fixes.length ? fixes : fallback.fixes,
       rewrittenAnswers,
       coachNotes: coachNotes || fallback.coachNotes,
+      plan,
       generated: wasGenerated,
     };
 
@@ -221,6 +241,9 @@ export async function POST(request: NextRequest) {
           "",
           "COACH NOTES",
           `  ${result.coachNotes}`,
+          "",
+          "PLAN",
+          ...formatSkillPlan(plan).map((l) => `  ${l}`),
           "",
           "TRANSCRIPT",
           ...turns.flatMap((t, i) => [
@@ -262,7 +285,18 @@ export async function POST(request: NextRequest) {
            <h3 style="margin-bottom:4px">Coach notes</h3>
            <p style="margin-top:0">${esc(result.coachNotes)}</p>
            <h3 style="margin-bottom:4px">Rubric</h3>
-           <ul style="margin-top:0">${RUBRIC.map((r) => `<li>${esc(r.label)}: ${result.averages[r.key]}/5</li>`).join("")}</ul>`,
+           <ul style="margin-top:0">${RUBRIC.map((r) => `<li>${esc(r.label)}: ${result.averages[r.key]}/5</li>`).join("")}</ul>
+           <h3 style="margin-bottom:4px">Plan</h3>
+           ${plan
+             .map(
+               (p) =>
+                 `<p style="margin:0 0 8px"><strong>${esc(p.area)}</strong>: ${esc(p.why)}<br>
+                  <em>Skills:</em> ${esc(p.skills.join("; "))}<br>
+                  <em>Courses:</em> ${p.courses.map((c) => `${esc(c.name)} (${esc(c.provider)}, ${esc(c.cost)})`).join("; ")}<br>
+                  <em>Drill:</em> ${esc(p.drill)}<br>
+                  <em>Done when:</em> ${esc(p.measure)}</p>`
+             )
+             .join("")}`,
           email
         );
       } catch (e) {

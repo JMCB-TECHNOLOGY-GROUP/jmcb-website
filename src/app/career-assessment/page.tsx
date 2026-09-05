@@ -44,6 +44,7 @@ import {
   rewriteLinkLine,
 } from "@/lib/career-crosscheck";
 import { HANDOFF_KEY, type CoachHandoff } from "@/lib/interview-coach";
+import { buildSkillPlan } from "@/lib/skill-plan";
 
 type Stage = "intro" | "preferences" | "resume" | "compass" | "capture" | "analyzing" | "results";
 type PrefValue = string | string[];
@@ -232,6 +233,19 @@ export default function CareerAssessmentPage() {
   const cvChecks = cvChecksFor(resumeExtraction);
   const discrepancies = reconcile(resumeExtraction, answers);
   const discrepancyFor = (questionId: string) => discrepancies.find((d) => d.questionId === questionId);
+
+  // The plan for the two weakest dimensions: skill, course, drill, measure.
+  // The Offer example is their own weakest CV line and its grounded rewrite,
+  // when the report produced one.
+  const firstRewrite = report?.resume?.bulletRewrites?.[0];
+  const skillPlan = buildSkillPlan({
+    weakDimensions: ranked.slice(0, 2),
+    missingForTarget: resumeExtraction?.missingForTarget ?? [],
+    examples: firstRewrite
+      ? { Offer: { before: firstRewrite.before, after: firstRewrite.after }, Proof: { before: firstRewrite.before, after: firstRewrite.after } }
+      : {},
+    max: 3,
+  });
 
   // Hands the CV and answers to the Interview Coach so nobody uploads twice.
   // sessionStorage: same tab, gone when the tab closes, never sent anywhere.
@@ -980,6 +994,71 @@ export default function CareerAssessmentPage() {
                       );
                     })}
                   </div>
+                </div>
+              </section>
+            )}
+
+            {/* Skill plan */}
+            {skillPlan.length > 0 && (
+              <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+                <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-3">Turn the weak area into a skill</p>
+                <h2 className="font-display text-3xl font-bold text-gray-900 mb-3">Your plan</h2>
+                <p className="text-gray-600 leading-relaxed max-w-2xl mb-10">
+                  For each weak area: the skill behind it, a named course that teaches it, a drill that builds it, and how you will know it is fixed.
+                  {firstRewrite ? " The Offer example is your own CV line and its rewrite." : ""}
+                </p>
+                <div className="space-y-8">
+                  {skillPlan.map((p) => (
+                    <div key={p.key} className="border border-gray-200 rounded-2xl overflow-hidden">
+                      <div className="p-6">
+                        <h3 className="font-display text-2xl font-bold text-gray-900 mb-2">{p.area}</h3>
+                        <p className="text-gray-700 leading-relaxed">{p.why}</p>
+                      </div>
+                      {p.before && p.after && (
+                        <div className="grid md:grid-cols-2 border-t border-gray-200">
+                          <div className="p-6 bg-gray-50 border-b md:border-b-0 md:border-r border-gray-200">
+                            <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">Your CV says</p>
+                            <p className="text-sm text-gray-600 leading-relaxed">{p.before}</p>
+                          </div>
+                          <div className="p-6 bg-cream">
+                            <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-2">The strong version</p>
+                            <p className="text-sm text-gray-900 leading-relaxed">{p.after}</p>
+                          </div>
+                        </div>
+                      )}
+                      <div className="grid md:grid-cols-2 gap-6 p-6 border-t border-gray-200">
+                        <div>
+                          <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">The skill</p>
+                          <ul className="space-y-1.5 text-sm text-gray-800">
+                            {p.skills.map((s) => (
+                              <li key={s} className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" /><span>{s}</span></li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">Learn it</p>
+                          <ul className="space-y-2 text-sm">
+                            {p.courses.map((c) => (
+                              <li key={c.name}>
+                                <a href={c.url} target={c.url.startsWith("/") ? undefined : "_blank"} rel="noreferrer" className="text-gray-900 font-medium underline decoration-accent underline-offset-2">{c.name}</a>
+                                <span className="text-gray-500"> · {c.provider} · {c.cost} · {c.hours}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-6 p-6 border-t border-gray-200 bg-gray-50">
+                        <div>
+                          <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">Practise it</p>
+                          <p className="text-sm text-gray-800 leading-relaxed">{p.drill}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs tracking-widest uppercase text-gray-500 font-semibold mb-2">Done when</p>
+                          <p className="text-sm text-gray-800 leading-relaxed">{p.measure}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </section>
             )}

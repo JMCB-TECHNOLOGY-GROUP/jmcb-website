@@ -28,6 +28,7 @@ export const coachSessionSchema = z.object({
   persona: z.string().trim().max(3000),
   cvFacts: z.string().trim().max(8000),
   cvText: z.string().max(60_000).optional().nullable(),
+  missingForTarget: z.array(z.string().trim().max(200)).max(10).optional().nullable(),
   questions: z.array(coachQuestionSchema).min(2).max(8),
 });
 
