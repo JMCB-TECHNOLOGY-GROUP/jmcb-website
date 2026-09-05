@@ -126,29 +126,74 @@ export async function POST(request: NextRequest) {
       logWarn("coach-debrief", "ANTHROPIC_API_KEY not configured");
     }
 
+    // The model does not always honour the exact shape: fixes arrive as
+    // objects or one numbered string, coach notes as an object, rewrites
+    // under a different key. Coerce what can be coerced and log what fell
+    // back, so a shape drift shows up in the logs rather than as canned text
+    // on the applicant's screen (which is how the first production run
+    // surfaced it).
+    const asText = (v: unknown): string => {
+      if (typeof v === "string") return v.trim();
+      if (Array.isArray(v)) return v.map(asText).filter(Boolean).join(" ");
+      if (v && typeof v === "object") {
+        const o = v as Record<string, unknown>;
+        for (const k of ["text", "fix", "note", "value", "answer", "body", "content"]) {
+          if (typeof o[k] === "string") return (o[k] as string).trim();
+        }
+        return Object.values(o).map(asText).filter(Boolean).join(" ");
+      }
+      return "";
+    };
+    const asList = (v: unknown): string[] => {
+      if (Array.isArray(v)) return v.map(asText).filter(Boolean);
+      if (typeof v === "string") {
+        return v
+          .split(/\n+/)
+          .map((l) => l.replace(/^\s*(?:\d+[.)]|[-*•])\s*/, "").trim())
+          .filter(Boolean);
+      }
+      return [];
+    };
+
+    const g = generated as Record<string, unknown>;
+    const fixes = asList(g.fixes ?? g.actions ?? g.nextSteps).slice(0, 3);
+    const coachNotes = asText(g.coachNotes ?? g.coach_notes ?? g.notesForCoach);
+    const rawRewrites = g.rewrittenAnswers ?? g.rewrites ?? g.rewritten_answers;
+
     // Ground every rewritten answer against what the candidate said for that
     // question, plus the CV. Drop, don't soften.
-    const rewrittenAnswers = (Array.isArray(generated.rewrittenAnswers) ? generated.rewrittenAnswers : [])
+    let rewritesDropped = 0;
+    const rewrittenAnswers = (Array.isArray(rawRewrites) ? rawRewrites : [])
       .map((r) => {
-        const turn = turns.find((t) => t.questionId === r?.questionId);
-        if (!turn || typeof r?.answer !== "string") return null;
-        const grounded = groundBetterAnswer(
-          r.answer,
-          `${turn.answer}\n${turn.followUpAnswer ?? ""}`,
-          session.cvText ?? "",
-          session.cvFacts
-        );
-        return grounded ? { questionId: r.questionId, question: turn.question, answer: grounded } : null;
+        const o = (r ?? {}) as Record<string, unknown>;
+        const answerText = asText(o.answer ?? o.rewrite ?? o.rewrittenAnswer ?? o.text);
+        const turn =
+          turns.find((t) => t.questionId === o.questionId) ??
+          turns.find((t) => typeof o.question === "string" && t.question === o.question);
+        if (!turn || !answerText) return null;
+        const grounded = groundBetterAnswer(answerText, `${turn.answer}\n${turn.followUpAnswer ?? ""}`, session.cvText ?? "", session.cvFacts);
+        if (!grounded) rewritesDropped++;
+        return grounded ? { questionId: turn.questionId, question: turn.question, answer: grounded } : null;
       })
       .filter((r): r is { questionId: string; question: string; answer: string } => Boolean(r))
       .slice(0, 2);
 
+    if (wasGenerated && (!fixes.length || !coachNotes || (!rewrittenAnswers.length && !rewritesDropped))) {
+      logWarn("coach-debrief", "model reply missed fields, fell back", {
+        keys: Object.keys(g),
+        fixesType: typeof g.fixes,
+        coachNotesType: typeof g.coachNotes,
+        rewritesType: Array.isArray(rawRewrites) ? `array(${rawRewrites.length})` : typeof rawRewrites,
+      });
+    }
+    if (rewritesDropped) logWarn("coach-debrief", `dropped ${rewritesDropped} ungrounded rewrites`);
+
     const result = {
       ...debrief,
       summary: wasGenerated ? generated.summary! : fallback.summary,
-      fixes: Array.isArray(generated.fixes) && generated.fixes.length ? generated.fixes.slice(0, 3) : fallback.fixes,
+      fixes: fixes.length ? fixes : fallback.fixes,
       rewrittenAnswers,
-      coachNotes: typeof generated.coachNotes === "string" && generated.coachNotes.trim() ? generated.coachNotes : fallback.coachNotes,
+      coachNotes: coachNotes || fallback.coachNotes,
       generated: wasGenerated,
     };
 
