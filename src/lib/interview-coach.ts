@@ -61,6 +61,8 @@ export type CoachSession = {
   cvFacts: string;
   /** The CV's own text, for grounding suggested answers. Optional. */
   cvText?: string;
+  /** What the target role expects that the CV does not show. Feeds the skill plan. */
+  missingForTarget?: string[];
   questions: CoachQuestion[];
 };
 
