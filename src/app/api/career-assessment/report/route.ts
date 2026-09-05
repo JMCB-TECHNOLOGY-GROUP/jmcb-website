@@ -12,6 +12,7 @@ import {
 import { PROGRAM_NAME, WEEKS } from "@/lib/program";
 import { flattenSkills, verifyRewrites, type ResumeExtraction } from "@/lib/resume";
 import { reconcile, formatDiscrepancyLines } from "@/lib/career-crosscheck";
+import { extractJsonObject } from "@/lib/model-json";
 
 // Generates the personalised half of the Career Compass result: a written read
 // of where this person stands, a 90-day plan, and — when they gave us a CV —
@@ -26,7 +27,7 @@ import { reconcile, formatDiscrepancyLines } from "@/lib/career-crosscheck";
 // src/app/api/assessment/report/route.ts, which avoids taking on the
 // @anthropic-ai/sdk dependency for a single call. Keep the two consistent.
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-opus-5";
@@ -196,7 +197,8 @@ Respond ONLY with JSON in exactly this shape, no prose outside it:
         model: MODEL,
         // Larger than the pre-CV version: the reformat carries the bullet
         // rewrites, which are the longest part of the response.
-        max_tokens: 8000,
+        // Thinking tokens count against this cap. See the resume route.
+        max_tokens: 20000,
         // Adaptive thinking is on by default for this model. Medium effort
         // keeps the round trip short enough for a page the user is waiting on.
         output_config: { effort: "medium" },
@@ -217,8 +219,12 @@ Respond ONLY with JSON in exactly this shape, no prose outside it:
       return NextResponse.json({ ...fallback, generated: false });
     }
 
+    if (data.stop_reason === "max_tokens") {
+      logError("career-report", new Error("model output truncated at max_tokens"), { usage: data.usage });
+      return NextResponse.json({ ...fallback, generated: false });
+    }
+
     const text = data.content?.find((b: { type: string }) => b.type === "text")?.text ?? "";
-    const cleaned = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
 
     let parsedReport: {
       summary?: string;
@@ -227,9 +233,9 @@ Respond ONLY with JSON in exactly this shape, no prose outside it:
       trainingWhy?: string;
     };
     try {
-      parsedReport = JSON.parse(cleaned);
+      parsedReport = extractJsonObject(text) as typeof parsedReport;
     } catch {
-      logError("career-report", new Error("model returned unparseable JSON"));
+      logError("career-report", new Error("model returned unparseable JSON"), { head: text.slice(0, 200) });
       return NextResponse.json({ ...fallback, generated: false });
     }
 

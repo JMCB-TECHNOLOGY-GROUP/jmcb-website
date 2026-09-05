@@ -11,6 +11,7 @@ import {
   MAX_RESUME_BYTES,
   MAX_RESUME_TEXT,
 } from "@/lib/resume";
+import { extractJsonObject } from "@/lib/model-json";
 import {
   extractDocumentText,
   kindForFileName,
@@ -34,7 +35,7 @@ import {
 // resumePath: null — a missing bucket must never cost the applicant their
 // results. Signed URLs are minted at submit time, never here.
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-opus-5";
@@ -119,7 +120,12 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 4000,
+        // Adaptive thinking is on by default for this model and its tokens
+        // count against max_tokens. A senior CV of ~1,100 words produced more
+        // than 4,000 tokens of thinking plus JSON, truncated mid-object, and
+        // failed to parse (found 2026-09-04 on a real resume). Cap generously
+        // and check the stop reason below rather than guessing at the JSON.
+        max_tokens: 16000,
         output_config: { effort: "medium" },
         messages: [{ role: "user", content: `${instruction}\n\nThe CV:\n\n${sourceText}` }],
       }),
@@ -144,14 +150,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (data.stop_reason === "max_tokens") {
+      logError("resume-extract", new Error("model output truncated at max_tokens"), {
+        usage: data.usage,
+        chars: sourceText.length,
+      });
+      return NextResponse.json(
+        { error: "That CV is longer than we can read in one go. Try pasting the most recent two roles." },
+        { status: 502 }
+      );
+    }
+
     const raw = data.content?.find((b: { type: string }) => b.type === "text")?.text ?? "";
-    const cleaned = raw.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
 
     let extraction;
     try {
-      extraction = normalizeExtraction(JSON.parse(cleaned));
+      extraction = normalizeExtraction(extractJsonObject(raw));
     } catch {
-      logError("resume-extract", new Error("model returned unparseable JSON"));
+      logError("resume-extract", new Error("model returned unparseable JSON"), {
+        stopReason: data.stop_reason,
+        head: raw.slice(0, 200),
+      });
       return NextResponse.json(
         { error: "We couldn't make sense of that file. Try pasting the text instead." },
         { status: 502 }

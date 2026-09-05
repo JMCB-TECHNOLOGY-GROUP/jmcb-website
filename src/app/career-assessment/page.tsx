@@ -43,6 +43,7 @@ import {
   optionLabel,
   rewriteLinkLine,
 } from "@/lib/career-crosscheck";
+import { HANDOFF_KEY, type CoachHandoff } from "@/lib/interview-coach";
 
 type Stage = "intro" | "preferences" | "resume" | "compass" | "capture" | "analyzing" | "results";
 type PrefValue = string | string[];
@@ -231,6 +232,24 @@ export default function CareerAssessmentPage() {
   const cvChecks = cvChecksFor(resumeExtraction);
   const discrepancies = reconcile(resumeExtraction, answers);
   const discrepancyFor = (questionId: string) => discrepancies.find((d) => d.questionId === questionId);
+
+  // Hands the CV and answers to the Interview Coach so nobody uploads twice.
+  // sessionStorage: same tab, gone when the tab closes, never sent anywhere.
+  function handOffToCoach() {
+    try {
+      const handoff: CoachHandoff = {
+        targetTitle,
+        targetField: typeof preferences.targetField === "string" ? preferences.targetField : undefined,
+        firstName: profile.firstName || undefined,
+        extraction: resumeExtraction,
+        cvText: resumeSource || undefined,
+        answers,
+      };
+      sessionStorage.setItem(HANDOFF_KEY, JSON.stringify(handoff));
+    } catch {
+      /* storage blocked: the coach page still asks for the CV itself */
+    }
+  }
 
   function answerQuestion(value: number) {
     setAnswers((prev) => ({ ...prev, [question.id]: value }));
@@ -1114,6 +1133,22 @@ export default function CareerAssessmentPage() {
                 </div>
               </section>
             )}
+
+            {/* Interview Coach handoff */}
+            <section className="bg-gray-50 border-y border-gray-200">
+              <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+                <p className="text-xs tracking-widest uppercase text-accent font-semibold mb-3">Next: say it out loud</p>
+                <h2 className="font-display text-3xl font-bold text-gray-900 mb-3">Practise the interview this CV will get you</h2>
+                <p className="text-gray-600 leading-relaxed max-w-2xl mb-8">
+                  {resumeExtraction
+                    ? "The Interview Coach takes the CV you just gave us and the answers above, and interviews you as the hiring manager for the role you named. It asks about the lines with no number on them first."
+                    : "The Interview Coach interviews you as the hiring manager for the role you named, scores every answer, and rewrites your weakest ones. Bring a CV and the questions come from your own lines."}
+                </p>
+                <Link href="/interview-coach" onClick={handOffToCoach} className="btn-primary text-base">
+                  Start the mock interview <ArrowRight className="w-5 h-5" />
+                </Link>
+              </div>
+            </section>
 
             {/* CTA */}
             <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16 text-center">
