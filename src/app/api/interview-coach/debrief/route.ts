@@ -163,13 +163,20 @@ export async function POST(request: NextRequest) {
     // Ground every rewritten answer against what the candidate said for that
     // question, plus the CV. Drop, don't soften.
     let rewritesDropped = 0;
+    let rewritesUnmatched = 0;
     const rewrittenAnswers = (Array.isArray(rawRewrites) ? rawRewrites : [])
       .map((r) => {
         const o = (r ?? {}) as Record<string, unknown>;
         const answerText = asText(o.answer ?? o.rewrite ?? o.rewrittenAnswer ?? o.text);
+        const ref = String(o.questionId ?? o.id ?? o.question ?? "").trim();
+        // Accept the id, the question text, or a "Q2"/"2" reference to the
+        // transcript numbering the prompt used.
+        const byNumber = /^q?(\d+)$/i.exec(ref);
         const turn =
-          turns.find((t) => t.questionId === o.questionId) ??
-          turns.find((t) => typeof o.question === "string" && t.question === o.question);
+          turns.find((t) => t.questionId === ref) ??
+          turns.find((t) => t.question === ref) ??
+          (byNumber ? turns[Number(byNumber[1]) - 1] : undefined);
+        if (!turn) rewritesUnmatched++;
         if (!turn || !answerText) return null;
         const grounded = groundBetterAnswer(answerText, `${turn.answer}\n${turn.followUpAnswer ?? ""}`, session.cvText ?? "", session.cvFacts);
         if (!grounded) rewritesDropped++;
@@ -179,12 +186,15 @@ export async function POST(request: NextRequest) {
       .slice(0, 2);
 
     if (wasGenerated && (!fixes.length || !coachNotes || (!rewrittenAnswers.length && !rewritesDropped))) {
-      logWarn("coach-debrief", "model reply missed fields, fell back", {
-        keys: Object.keys(g),
-        fixesType: typeof g.fixes,
-        coachNotesType: typeof g.coachNotes,
-        rewritesType: Array.isArray(rawRewrites) ? `array(${rawRewrites.length})` : typeof rawRewrites,
-      });
+      // Detail goes in the message: the console line is what Vercel shows,
+      // and the extra object only reaches Sentry breadcrumbs.
+      const rewritesShape = Array.isArray(rawRewrites)
+        ? `array(${rawRewrites.length}) first=${JSON.stringify(rawRewrites[0] ?? null).slice(0, 160)}`
+        : typeof rawRewrites;
+      logWarn(
+        "coach-debrief",
+        `model reply missed fields: keys=${Object.keys(g).join(",")} fixes=${typeof g.fixes} coachNotes=${typeof g.coachNotes} rewrites=${rewritesShape} unmatched=${rewritesUnmatched}`
+      );
     }
     if (rewritesDropped) logWarn("coach-debrief", `dropped ${rewritesDropped} ungrounded rewrites`);
 
