@@ -89,6 +89,18 @@ export async function extractDocumentText(buffer: Buffer, kind: DocumentKind): P
   try {
     switch (kind) {
       case "pdf": {
+        // pdfjs polyfills DOMMatrix, ImageData and Path2D from @napi-rs/canvas
+        // and loads it with a dynamic import the bundler cannot trace. Loading
+        // it here by name makes it part of the traced graph, so it ships with
+        // the function. Without it, every PDF fails with "DOMMatrix is not
+        // defined" in production and only in production.
+        try {
+          await import("@napi-rs/canvas");
+        } catch (e) {
+          const err = new UnreadableDocumentError("We couldn't open that PDF here. Try a Word version, or paste the text.");
+          (err as Error & { cause?: unknown }).cause = e;
+          throw err;
+        }
         const { PDFParse } = await import("pdf-parse");
         const parser = new PDFParse({ data: new Uint8Array(buffer) });
         try {

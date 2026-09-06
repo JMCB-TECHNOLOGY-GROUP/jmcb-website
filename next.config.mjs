@@ -29,7 +29,18 @@ const nextConfig = {
     // once webpack relocates the code that path breaks at runtime with
     // "Setting up fake worker failed". Keeping these external makes Node
     // require them from node_modules, where their internal paths still hold.
-    serverComponentsExternalPackages: ["pdf-parse", "word-extractor", "mammoth"],
+    serverComponentsExternalPackages: ["pdf-parse", "word-extractor", "mammoth", "@napi-rs/canvas"],
+    // pdf-parse's pdfjs build loads @napi-rs/canvas dynamically for DOMMatrix,
+    // ImageData and Path2D. The function bundler only ships what it can
+    // trace, so the package was missing in production and every PDF upload
+    // failed with "DOMMatrix is not defined" (found 2026-09-06 on a real
+    // upload). Force the package and its Linux binary into the function.
+    outputFileTracingIncludes: {
+      "/api/career-assessment/resume": [
+        "./node_modules/@napi-rs/canvas/**/*",
+        "./node_modules/@napi-rs/canvas-linux-x64-gnu/**/*",
+      ],
+    },
   },
   images: {
     unoptimized: true,

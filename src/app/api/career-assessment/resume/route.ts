@@ -59,14 +59,6 @@ export async function POST(request: NextRequest) {
     }
     const { fileBase64, fileName, text, targetRole, targetTitle } = parsed.data;
 
-    if (!process.env.ANTHROPIC_API_KEY) {
-      logWarn("resume-extract", "ANTHROPIC_API_KEY not configured");
-      return NextResponse.json(
-        { error: "CV reading is temporarily unavailable. You can carry on without it." },
-        { status: 503 }
-      );
-    }
-
     // ── 1. Reduce whatever they sent to plain text ──
     let sourceText: string;
     let fileBuffer: Buffer | null = null;
@@ -105,6 +97,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "There wasn't enough readable text in that. Try another file, or paste it." },
         { status: 422 }
+      );
+    }
+
+    // The key check sits AFTER parsing on purpose: a deployment without the
+    // key (previews) still exercises every parser, and a PDF that fails to
+    // open is reported as that rather than as "unavailable".
+    if (!process.env.ANTHROPIC_API_KEY) {
+      logWarn("resume-extract", "ANTHROPIC_API_KEY not configured", { parsedChars: sourceText.length });
+      return NextResponse.json(
+        { error: "CV reading is temporarily unavailable. You can carry on without it." },
+        { status: 503 }
       );
     }
 
