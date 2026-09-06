@@ -39,6 +39,11 @@ const nextConfig = {
       "/api/career-assessment/resume": [
         "./node_modules/@napi-rs/canvas/**/*",
         "./node_modules/@napi-rs/canvas-linux-x64-gnu/**/*",
+        // pdfjs resolves its worker by path at runtime ("Setting up fake
+        // worker failed: Cannot find module .../pdf.worker.mjs"), so the
+        // whole build directory has to travel with the function too.
+        "./node_modules/pdfjs-dist/**/*",
+        "./node_modules/pdf-parse/**/*",
       ],
     },
   },
