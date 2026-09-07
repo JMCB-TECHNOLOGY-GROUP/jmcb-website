@@ -15,6 +15,9 @@ import AiWroteMostOfMyCodeThisYear, {
 } from "./ai-wrote-most-of-my-code-this-year";
 import OfflineFirstIsAWorldview, { meta as offlineFirstIsAWorldviewMeta } from "./offline-first-is-a-worldview";
 import WhyYourEhrExportIsAMess, { meta as whyYourEhrExportIsAMessMeta } from "./why-your-ehr-export-is-a-mess";
+import WhatADigitalPassengerManifestWouldHaveChanged, {
+  meta as whatADigitalPassengerManifestWouldHaveChangedMeta,
+} from "./what-a-digital-passenger-manifest-would-have-changed";
 
 export type { PostMeta } from "./types";
 
@@ -31,6 +34,10 @@ export const insightsPosts: InsightsPost[] = [
   { meta: aiWroteMostOfMyCodeThisYearMeta, Component: AiWroteMostOfMyCodeThisYear },
   { meta: offlineFirstIsAWorldviewMeta, Component: OfflineFirstIsAWorldview },
   { meta: whyYourEhrExportIsAMessMeta, Component: WhyYourEhrExportIsAMess },
+  {
+    meta: whatADigitalPassengerManifestWouldHaveChangedMeta,
+    Component: WhatADigitalPassengerManifestWouldHaveChanged,
+  },
 ].sort((a, b) => (a.meta.date < b.meta.date ? 1 : -1));
 
 export function getInsightPost(slug: string): InsightsPost | undefined {
