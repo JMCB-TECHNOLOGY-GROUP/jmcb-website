@@ -21,7 +21,6 @@
 | `src/lib/lead-scoring.ts` | Hot/Warm/Cold classification algorithm |
 | `src/app/api/assessment/submit/route.ts` | Full submission endpoint (replaces calling /api/leads + /api directly) |
 | `src/app/api/assessment/partial/route.ts` | Mid-assessment email capture + resume |
-| `src/app/api/assessment/report/route.ts` | Claude API-powered report content |
 | `src/app/api/admin/leads/route.ts` | Admin dashboard API with filters + actions |
 
 ---
@@ -91,7 +90,6 @@ src/app/admin/page.tsx             -> src/app/admin/page.tsx           (REPLACE)
 
 src/app/api/assessment/submit/route.ts   -> (NEW directory + file)
 src/app/api/assessment/partial/route.ts  -> (NEW directory + file)
-src/app/api/assessment/report/route.ts   -> (NEW directory + file)
 src/app/api/admin/leads/route.ts         -> (NEW directory + file)
 ```
 
