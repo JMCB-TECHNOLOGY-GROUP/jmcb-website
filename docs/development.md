@@ -124,11 +124,10 @@ To test email delivery locally:
 
 ## Working with the Claude API
 
-The assessment report endpoint (`/api/assessment/report`) uses the Claude API for AI-generated summaries. It calls the API directly via `fetch` (no SDK dependency).
+The Career Compass report endpoint (`/api/career-assessment/report`) uses the Claude API for AI-generated report content. It calls the Messages API directly via `fetch` (no SDK dependency).
 
-- If `ANTHROPIC_API_KEY` is not set, the endpoint falls back to template-based content.
-- The model used is `claude-sonnet-4-5-20250929`.
-- Two API calls are made per report: one for the executive summary, one for dimension recommendations.
+- If `ANTHROPIC_API_KEY` is not set, the endpoint falls back to a written template.
+- The former `/api/assessment/report` route was removed in September 2026: nothing called it (the AI readiness assessment posts to `/api/assessment/submit`), and it was reachable without auth or rate limiting.
 
 ## Common Development Tasks
 

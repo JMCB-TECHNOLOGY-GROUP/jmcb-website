@@ -49,7 +49,6 @@ Next.js Route Handlers in `src/app/api/` implement the backend logic:
 |-------------|---------|
 | `/api/leads` | Lead capture (POST) and listing (GET) |
 | `/api/assessment/submit` | Full assessment pipeline (score, save, email, webhook) |
-| `/api/assessment/report` | AI-generated executive summary via Claude API |
 | `/api/assessment/partial` | Partial completion save and resume |
 | `/api/admin/leads` | Admin lead management with password auth |
 | `/api/cron/nurture` | Automated nurture email sequence |
