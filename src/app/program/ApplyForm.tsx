@@ -109,10 +109,8 @@ export default function ApplyForm() {
             onChange={(e) => setForm({ ...form, email: e.target.value })} className={field} />
         </div>
         <div>
-          <label className={label} htmlFor="phone">
-            Phone <span className="font-normal text-gray-400">optional</span>
-          </label>
-          <input id="phone" type="tel" value={form.phone}
+          <label className={label} htmlFor="phone">Cell phone</label>
+          <input id="phone" type="tel" required minLength={7} autoComplete="tel" value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })} className={field} />
         </div>
       </div>
