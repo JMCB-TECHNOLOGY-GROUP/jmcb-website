@@ -43,7 +43,7 @@ export const programApplicationSchema = z
     firstName: shortText.min(1),
     lastName: shortText.min(1),
     email,
-    phone: z.string().trim().max(40).optional().nullable(),
+    phone: z.string().trim().min(7).max(40),
     location: optionalShortText,
     organization: optionalShortText,
     role: optionalShortText,
@@ -54,6 +54,49 @@ export const programApplicationSchema = z
     tier: z.enum(["core", "capstone_interest"]).default("core"),
     canAttend: z.boolean().default(false),
     referral: optionalShortText,
+  })
+  .passthrough();
+
+// Certification track intake (/certification/intake). Phone is required: this
+// is an onboarding form for people we are about to work with closely, and the
+// follow-up (agreement, account setup, exam booking) runs faster by text.
+const phone = z
+  .string()
+  .trim()
+  .min(7)
+  .max(40)
+  .regex(/^[+()\d\s.-]+$/, "Phone can contain digits, spaces, +, -, ( and ) only");
+
+export const certificationIntakeSchema = z
+  .object({
+    firstName: shortText.min(1),
+    lastName: shortText.min(1),
+    email,
+    phone,
+    smsOk: z.boolean().default(false),
+    preferredContact: z.enum(["email", "text", "whatsapp", "call"]).default("email"),
+    location: shortText.min(1),
+    timezone: shortText.min(1),
+    path: z.enum(["sprint", "associate"]),
+    exam: z.enum(["ccdv_f", "ccar_f", "not_sure"]),
+    experience: z.enum(["none", "some", "builder", "professional"]),
+    organization: optionalShortText,
+    role: optionalShortText,
+    linkedin: optionalShortText,
+    github: optionalShortText,
+    hoursPerWeek: z.number().int().min(1).max(40),
+    targetExamDate: z.string().trim().max(20).optional().nullable(),
+    // Associates only: the local part they would like for their jmcbtech.com
+    // address. A request, not a reservation — Jermaine issues the address.
+    addressRequest: z
+      .string()
+      .trim()
+      .max(64)
+      .regex(/^[a-z0-9._-]*$/i, "Letters, numbers, dots, dashes and underscores only")
+      .optional()
+      .nullable(),
+    goal: z.string().trim().min(10).max(2000),
+    acknowledgeFee: z.literal(true),
   })
   .passthrough();
 
