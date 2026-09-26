@@ -152,7 +152,7 @@ export default function AdminLabPage() {
                           {s.first_name} {s.last_name}
                         </button>
                         <div className="text-xs text-gray-500">{s.email}</div>
-                        <div className="text-xs text-gray-500">{s.phone || "no phone"}</div>
+                        <div className={`text-xs ${s.phone ? "text-gray-500" : "text-red-600"}`}>{s.phone || "no phone"}{s.timezone ? ` · ${s.timezone}` : ""}</div>
                       </td>
                       <td className={cell}>{p.done}/{p.total}<div className="text-xs text-gray-500">{p.next ? `next: ${STEP_META[p.next].title}` : "done"}</div></td>
                       <td className={cell}>{s.route ? ROUTES[s.route].exam : "—"}</td>
@@ -202,6 +202,7 @@ function StudentDetail({ s, subs, call, busy }: { s: AdminStudent; subs: AdminSu
   return (
     <div className="grid lg:grid-cols-2 gap-6 text-sm">
       <div className="space-y-2">
+        <p><strong>Contact:</strong> {s.phone || "no phone"} · {s.timezone || "no time zone"} · prefers {s.preferred_contact || "—"} · texts {s.sms_ok ? "OK" : "not OK"}{s.contact_confirmed_at ? "" : " (not confirmed yet)"}</p>
         <p><strong>Task:</strong> {s.real_task || "—"}</p>
         <p><strong>Intro:</strong> <span className="whitespace-pre-wrap">{s.intro || "—"}</span></p>
         <p><strong>Target role:</strong> {s.target_role || "—"}</p>

@@ -16,6 +16,7 @@ import {
 import { ONBOARDING_STEPS, type OnboardingStep, type RouteKey, type TrackKey } from "@/lib/lab-types";
 import { lessonFor } from "@/lib/lab-curriculum";
 import { formatSessionDate } from "@/lib/program";
+import { TIMEZONES } from "@/lib/certification";
 
 interface LabState {
   student: LabStudentView;
@@ -177,8 +178,57 @@ function StepBody({ step, state, act, busy, errFor }: { step: OnboardingStep; st
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setV({ ...v, [k]: e.target.value });
   const [answers, setAnswers] = useState<(RouteKey | null)[]>(ROUTE_QUESTIONS.map(() => null));
   const [route, setRoute] = useState<RouteKey | "">(s.route ?? "");
+  const [smsOk, setSmsOk] = useState(s.contact_confirmed_at ? s.sms_ok : true);
+  const [preferred, setPreferred] = useState<string>(s.preferred_contact ?? "text");
 
   switch (step) {
+    case "contact":
+      return (
+        <div className="space-y-3">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1" htmlFor="lab-phone">Cell phone (required)</label>
+              <input id="lab-phone" type="tel" autoComplete="tel" className={field} placeholder="+1 301 555 0123"
+                value={val("phone", s.phone ?? "")} onChange={set("phone")} />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1" htmlFor="lab-tz">Time zone (required)</label>
+              <select id="lab-tz" className={field} value={val("tz", s.timezone ?? "")}
+                onChange={(e) => setV({ ...v, tz: e.target.value })}>
+                <option value="" disabled>Choose…</option>
+                {TIMEZONES.map((t) => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3 items-end">
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1" htmlFor="lab-pref">Best way to reach you</label>
+              <select id="lab-pref" className={field} value={preferred} onChange={(e) => setPreferred(e.target.value)}>
+                <option value="text">Text</option>
+                <option value="whatsapp">WhatsApp</option>
+                <option value="call">Phone call</option>
+                <option value="email">Email</option>
+              </select>
+            </div>
+            <label className="flex gap-2 items-center text-sm text-gray-700 pb-2">
+              <input type="checkbox" checked={smsOk} onChange={(e) => setSmsOk(e.target.checked)} className="accent-[#D97706]" />
+              It&apos;s OK to text me about the programme
+            </label>
+          </div>
+          <button className={btn} disabled={busy === step}
+            onClick={() => act(step, {
+              action: "contact",
+              phone: val("phone", s.phone ?? ""),
+              timezone: val("tz", s.timezone ?? "") || undefined,
+              preferredContact: preferred,
+              smsOk,
+            })}>
+            {s.contact_confirmed_at ? "Update contact details" : "Confirm contact details"}
+          </button>
+          {s.contact_confirmed_at && <p className="text-sm text-green-700">Confirmed: {s.phone} · {s.timezone}</p>}
+          {errFor(step)}
+        </div>
+      );
     case "github":
       return (
         <div>

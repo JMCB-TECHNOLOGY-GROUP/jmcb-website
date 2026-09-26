@@ -28,6 +28,7 @@ export interface LabLesson {
 }
 
 export const ONBOARDING_STEPS = [
+  "contact",
   "github",
   "intro",
   "target_role",

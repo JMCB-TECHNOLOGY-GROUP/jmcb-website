@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { createServerClient } from "@/lib/supabase";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { sendEmail } from "@/lib/send-email";
 import { logError } from "@/lib/logger";
 import { createCheckout, studentByToken, trackFeeCents, verifyCheckout } from "@/lib/lab";
 import { ROUTES } from "@/lib/lab-shared";
+import { parseLabAction } from "@/lib/lab-actions";
 
 // Student portal API. The token in the path is the credential (a private link
 // emailed to each student); see lib/lab.ts. GET returns the student's state,
@@ -13,34 +13,6 @@ import { ROUTES } from "@/lib/lab-shared";
 
 const esc = (s: string) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-const text = (max: number) => z.string().trim().max(max);
-
-const actionSchema = z.discriminatedUnion("action", [
-  z.object({ action: z.literal("github"), username: z.string().trim().regex(/^[A-Za-z0-9-]{1,39}$/) }),
-  z.object({ action: z.literal("intro"), intro: text(1500).min(40), linkedin: text(300).optional().nullable() }),
-  z.object({
-    action: z.literal("target_role"),
-    targetRole: text(200).min(2),
-    postings: z
-      .array(z.object({ url: z.string().trim().url().max(1000), title: text(200).min(1), company: text(200).min(1) }))
-      .min(3)
-      .max(5),
-    skills: text(1500).min(10),
-  }),
-  z.object({ action: z.literal("route"), route: z.enum(["pl400", "claude_arch"]), reason: text(1000).min(10) }),
-  z.object({ action: z.literal("checkout") }),
-  z.object({ action: z.literal("verify_payment"), sessionId: z.string().trim().max(200) }),
-  z.object({ action: z.literal("agreement"), signature: text(200).min(3) }),
-  z.object({ action: z.literal("address_request"), local: z.string().trim().regex(/^[a-z0-9._-]{2,64}$/i) }),
-  z.object({
-    action: z.literal("submit"),
-    week: z.number().int().min(1).max(8),
-    track: z.enum(["core", "pl400", "claude_arch"]),
-    url: z.string().trim().url().max(1000).optional().nullable(),
-    body: text(5000).optional().nullable(),
-  }),
-]);
 
 async function load(token: string) {
   const student = await studentByToken(token);
@@ -85,17 +57,29 @@ export async function POST(request: NextRequest, { params }: { params: { token: 
     const student = await studentByToken(params.token);
     if (!student) return NextResponse.json({ error: "Link not recognised" }, { status: 404 });
 
-    const parsed = actionSchema.safeParse(await request.json());
-    if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.issues[0]?.message || "Invalid input" }, { status: 400 });
-    }
+    const parsed = parseLabAction(await request.json().catch(() => null));
+    if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
     const a = parsed.data;
+    // Contact details gate everything else: no one gets further into setup, or
+    // hands in work, without a confirmed cell phone and time zone.
+    if (a.action !== "contact" && !student.contact_confirmed_at) {
+      return NextResponse.json({ error: "Confirm your cell phone and time zone first (step 1)." }, { status: 400 });
+    }
     const supabase = createServerClient();
     const now = new Date().toISOString();
     const update = (patch: Record<string, unknown>) =>
       supabase.from("lab_students").update(patch).eq("id", student.id);
 
     switch (a.action) {
+      case "contact":
+        await update({
+          phone: a.phone,
+          sms_ok: a.smsOk,
+          preferred_contact: a.preferredContact,
+          timezone: a.timezone,
+          contact_confirmed_at: now,
+        });
+        break;
       case "github": {
         // Public GitHub API: 200 means the account exists.
         const gh = await fetch(`https://api.github.com/users/${encodeURIComponent(a.username)}`, {

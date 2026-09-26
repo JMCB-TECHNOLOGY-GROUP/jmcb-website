@@ -19,13 +19,14 @@ The Lab is the cohort LMS.
 
 | # | Step | Done when | Gate |
 |---|---|---|---|
-| 1 | GitHub account | Username checked against the GitHub API | — |
-| 2 | Introduce yourself | Intro saved (visible to classmates) | — |
-| 3 | Target role | Role, 3 current postings, and the skills repeated across them | — |
-| 4 | Route | Power Platform Developer (AB-400, replacing PL-400 from 16 Oct) or Claude Architect chosen, with a reason. Five questions suggest a route, but the student decides | — |
-| 5 | Pay track fee | Stripe Checkout paid, or marked paid by admin | Route chosen; `LAB_TRACK_FEE_CENTS` set |
-| 6 | Associate terms | Accepted by typing their legal name | Paid |
-| 7 | jmcbtech.com address | Issued by Jermaine | Terms accepted |
+| 1 | Contact details | Cell phone and time zone confirmed, plus text permission and preferred channel. **Required for everyone**, including students whose application already had a phone | — |
+| 2 | GitHub account | Username checked against the GitHub API | — |
+| 3 | Introduce yourself | Intro saved (visible to classmates) | — |
+| 4 | Target role | Role, 3 current postings, and the skills repeated across them | — |
+| 5 | Route | Power Platform Developer (AB-400, replacing PL-400 from 16 Oct) or Claude Architect chosen, with a reason. Five questions suggest a route, but the student decides | — |
+| 6 | Pay track fee | Stripe Checkout paid, or marked paid by admin | Route chosen; `LAB_TRACK_FEE_CENTS` set |
+| 7 | Associate terms | Accepted by typing their legal name | Paid |
+| 8 | jmcbtech.com address | Issued by Jermaine | Terms accepted |
 
 ## Settings
 

@@ -114,6 +114,7 @@ export async function POST(request: NextRequest) {
              <p><a href="${link}"><strong>Open your Lab</strong></a></p>
              <p>Before ${esc(formatSessionDate(COHORT.startDate))} (${esc(SESSION_DAY)}, ${esc(SESSION_TIME)}), please:</p>
              <ol>
+               <li>Confirm your cell phone and time zone.</li>
                <li>Create your GitHub account and add your username.</li>
                <li>Introduce yourself to the cohort.</li>
                <li>Find three real postings for the role you are aiming at.</li>
