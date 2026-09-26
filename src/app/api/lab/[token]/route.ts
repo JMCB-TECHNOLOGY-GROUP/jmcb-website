@@ -62,14 +62,19 @@ async function load(token: string) {
 }
 
 export async function GET(_req: NextRequest, { params }: { params: { token: string } }) {
-  const state = await load(params.token);
-  if (!state) return NextResponse.json({ error: "Link not recognised" }, { status: 404 });
-  const supabase = createServerClient();
-  await supabase
-    .from("lab_students")
-    .update({ last_seen_at: new Date().toISOString(), status: state.student.status === "invited" ? "active" : state.student.status })
-    .eq("id", state.student.id);
-  return NextResponse.json(state);
+  try {
+    const state = await load(params.token);
+    if (!state) return NextResponse.json({ error: "Link not recognised" }, { status: 404 });
+    const supabase = createServerClient();
+    await supabase
+      .from("lab_students")
+      .update({ last_seen_at: new Date().toISOString(), status: state.student.status === "invited" ? "active" : state.student.status })
+      .eq("id", state.student.id);
+    return NextResponse.json(state);
+  } catch (error) {
+    logError("lab", error);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest, { params }: { params: { token: string } }) {
