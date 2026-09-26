@@ -14,6 +14,10 @@ export interface LabStudentView {
   last_name: string;
   email: string;
   phone: string | null;
+  sms_ok: boolean;
+  preferred_contact: "text" | "whatsapp" | "call" | "email" | null;
+  timezone: string | null;
+  contact_confirmed_at: string | null;
   real_task: string | null;
   status: string;
   github_username: string | null;
@@ -43,6 +47,11 @@ export interface LabSubmissionView {
 }
 
 export const STEP_META: Record<OnboardingStep, { title: string; blurb: string }> = {
+  contact: {
+    title: "Confirm how to reach you",
+    blurb:
+      "Your cell phone and time zone are required. Setup, account details and exam reminders move faster by text, and sessions are scheduled in Eastern Time.",
+  },
   github: {
     title: "Create your GitHub account",
     blurb:
@@ -157,6 +166,8 @@ export const ASSOCIATE_TERMS = [
 
 export function isStepDone(s: LabStudentView, step: OnboardingStep): boolean {
   switch (step) {
+    case "contact":
+      return Boolean(s.contact_confirmed_at && s.phone && s.timezone);
     case "github":
       return Boolean(s.github_verified_at);
     case "intro":

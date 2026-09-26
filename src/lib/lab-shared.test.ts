@@ -7,6 +7,10 @@ const blank: LabStudentView = {
   last_name: "L",
   email: "a@example.com",
   phone: null,
+  sms_ok: false,
+  preferred_contact: null,
+  timezone: null,
+  contact_confirmed_at: null,
   real_task: null,
   status: "active",
   github_username: null,
@@ -26,7 +30,7 @@ const blank: LabStudentView = {
 
 describe("lab progress", () => {
   it("starts at GitHub with nothing done", () => {
-    expect(progress(blank)).toEqual({ done: 0, total: 7, next: "github" });
+    expect(progress(blank)).toEqual({ done: 0, total: 8, next: "contact" });
   });
 
   it("needs three postings and the skills list for the target-role step", () => {
@@ -39,6 +43,9 @@ describe("lab progress", () => {
   it("is complete only once the address is issued", () => {
     const all = {
       ...blank,
+      phone: "301 555 0123",
+      timezone: "ET (US Eastern)",
+      contact_confirmed_at: "t",
       github_verified_at: "t",
       intro: "hi",
       target_role: "r",
@@ -49,7 +56,14 @@ describe("lab progress", () => {
       agreement_signed_at: "t",
     };
     expect(progress(all).next).toBe("jmcb_address");
-    expect(progress({ ...all, jmcb_address: "a@jmcbtech.com" })).toEqual({ done: 7, total: 7, next: null });
+    expect(progress({ ...all, jmcb_address: "a@jmcbtech.com" })).toEqual({ done: 8, total: 8, next: null });
+  });
+});
+
+describe("contact step", () => {
+  it("is required even when the application already had a phone", () => {
+    expect(isStepDone({ ...blank, phone: "301 555 0123" }, "contact")).toBe(false);
+    expect(isStepDone({ ...blank, phone: "301 555 0123", timezone: "ET (US Eastern)", contact_confirmed_at: "t" }, "contact")).toBe(true);
   });
 });
 

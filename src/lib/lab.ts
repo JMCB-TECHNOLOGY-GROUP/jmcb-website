@@ -11,7 +11,7 @@ import type { LabStudentView } from "./lab-shared";
 export const LAB_COHORT = "cohort-1";
 
 export const STUDENT_COLUMNS =
-  "id, first_name, last_name, email, phone, real_task, status, github_username, github_verified_at, intro, linkedin, target_role, role_postings, role_skills, route, route_reason, paid_at, agreement_signed_at, address_request, jmcb_address";
+  "id, first_name, last_name, email, phone, sms_ok, preferred_contact, timezone, contact_confirmed_at, real_task, status, github_username, github_verified_at, intro, linkedin, target_role, role_postings, role_skills, route, route_reason, paid_at, agreement_signed_at, address_request, jmcb_address";
 
 export function newToken(): { token: string; hash: string } {
   const token = randomBytes(24).toString("base64url");
