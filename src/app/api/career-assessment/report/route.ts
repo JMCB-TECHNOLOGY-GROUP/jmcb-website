@@ -23,9 +23,8 @@ import { extractJsonObject } from "@/lib/model-json";
 // rather than blocking them. Every failure path returns a usable written
 // fallback — a job seeker must never see an empty report.
 //
-// Uses raw fetch against the Messages API to match
-// src/app/api/assessment/report/route.ts, which avoids taking on the
-// @anthropic-ai/sdk dependency for a single call. Keep the two consistent.
+// Uses raw fetch against the Messages API, which avoids taking on the
+// @anthropic-ai/sdk dependency for a single call.
 
 export const maxDuration = 120;
 
