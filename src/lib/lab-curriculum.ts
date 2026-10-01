@@ -137,7 +137,7 @@ export const LAB_LESSONS: LabLesson[] = [
     prep: [
       "Write down three recurring tasks from your job, volunteer role or studies, with a rough guess of how long each takes",
       "Bring one real (anonymised) example of the task's input and output, such as an invoice, a patient recall list or a report template",
-      "Start Anthropic Academy's AI Fluency course: the first module is enough",
+      "Required before Week 2: complete Anthropic Academy's free AI Fluency: Framework & Foundations course and save your certificate. Sign up with the same email you use for this programme",
     ],
     resources: [R.aiFluency, R.capabilities, R.projects],
     exercise:
@@ -206,11 +206,12 @@ export const LAB_LESSONS: LabLesson[] = [
       "Run the prompt on five real inputs, score each, and record every failure mode",
     ],
     prep: [
+      "Finish Anthropic Academy's AI Fluency: Framework & Foundations course if you have not already, and send your certificate to jermaine@jmcbtech.com",
       "Collect five real (anonymised) inputs for your task, including one awkward one",
       "Read Claude's prompting best practices page, at least the sections on being clear and using examples",
       "Write your five-point rubric before Thursday",
     ],
-    resources: [R.promptBest, R.promptOverview, R.consistency, R.projects],
+    resources: [R.aiFluency, R.promptBest, R.promptOverview, R.consistency, R.projects],
     exercise:
       "Write your prompt with clearly marked slots for the parts that change each run (for example {{vendor_name}}, {{invoice_text}}). Tell the model its role, the task, the exact output format and what to do when information is missing. Run it five times on your five real inputs in a fresh chat each time. Score every output against your rubric out of 5. Change one thing, re-run the worst case, and note whether it improved.",
     deliverable:
