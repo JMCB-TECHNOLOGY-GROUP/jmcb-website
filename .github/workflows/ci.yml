@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    # Every branch, not a named few: a feature branch used to be a blind spot,
+    # where the gates only ran if someone remembered to run them by hand.
+    branches: ['**']
   pull_request:
     branches: [main]
 

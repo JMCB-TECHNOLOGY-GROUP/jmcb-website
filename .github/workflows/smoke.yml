@@ -1,0 +1,52 @@
+# Smoke test against a DEPLOYED url.
+#
+# ci.yml proves the source parses and the gates pass. It cannot prove the
+# deployed thing works. scripts/smoke.mjs checks every route against a recorded
+# baseline of how production actually answers, so it catches a route that broke
+# (200 -> 500, a dead alias) and a route that stopped being private
+# (401 -> 200, the leak nobody notices).
+#
+# Trigger is deployment_status, which Vercel's GitHub integration fires when a
+# deploy finishes — so this runs right after a release, against that exact
+# deployment, and costs no Actions minutes while nothing is shipping. There is
+# deliberately NO schedule: across thirty-odd private repos a six-hourly cron
+# is about 2,000 Actions minutes a month. Liveness belongs in a monitor
+# (UptimeRobot), not in a cron here.
+#
+# Preview deploys are skipped: on a protected preview every route answers 302,
+# which would fail the baseline for no reason.
+#
+# Setup, once per project:
+#   1. node scripts/smoke.mjs --record --url https://<production-domain>
+#   2. commit smoke.config.json
+#   3. optional: set repo variable PRODUCTION_URL for manual runs
+# With no baseline the job passes quietly rather than failing a repo nobody
+# has set up yet.
+name: smoke
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Deployment to check (defaults to PRODUCTION_URL)'
+        required: false
+        type: string
+
+jobs:
+  smoke:
+    name: deployed routes answer as recorded
+    # On a deployment_status event: only a successful production deploy.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment_status.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Smoke
+        env:
+          SMOKE_URL: ${{ inputs.url || github.event.deployment_status.environment_url || vars.PRODUCTION_URL }}
+        run: node scripts/smoke.mjs

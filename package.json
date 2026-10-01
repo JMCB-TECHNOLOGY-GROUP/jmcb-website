@@ -10,7 +10,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "scan:nist": "node compliance/nist-scan/bin/nist-scan.js . --md compliance/SCORECARD.md --json compliance/scorecard.json"
+    "scan:nist": "node compliance/nist-scan/bin/nist-scan.js . --md compliance/SCORECARD.md --json compliance/scorecard.json",
+    "smoke": "node scripts/smoke.mjs",
+    "smoke:record": "node scripts/smoke.mjs --record"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.9",
